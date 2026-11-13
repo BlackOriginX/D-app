@@ -2,20 +2,15 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/widgets/app_snackbar.dart';
-import 'package:rider_app/service/location_permission_flow.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
-import 'package:rider_app/driver_features/settings/screens/change_pin_screen.dart';
-import 'package:rider_app/driver_features/settings/screens/set_pin_screen.dart';
 
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
@@ -29,10 +24,6 @@ class PrivacySecurityScreen extends StatefulWidget {
 }
 
 class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
-  bool _showProfile = false;
-  bool _shareLocation = true;
-  bool _hasPin = false;
-
   // App lock (Face / Fingerprint, or the phone's screen lock as fallback).
   final LocalAuthentication _auth = LocalAuthentication();
   bool _appLock = false;
@@ -55,9 +46,6 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
     final prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
     setState(() {
-      _showProfile = prefs.getBool('show_profile_to_driver') ?? false;
-      _shareLocation = prefs.getBool('location_sharing') ?? true;
-      _hasPin = (prefs.getString('account_pin') ?? '').length == 4;
       _appLock = prefs.getBool('app_lock_enabled') ?? false;
       _lockMethod = prefs.getString('app_lock_method') ?? 'pattern';
     });
@@ -207,60 +195,8 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
     }
   }
 
-  Future<void> _save(String key, bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(key, value);
-  }
-
-  /// Turning location sharing ON re-runs the disclosure + permission flow, so
-  /// a driver who denied earlier can re-enable it here (including background).
-  Future<void> _toggleLocation(bool value) async {
-    if (!value) {
-      setState(() => _shareLocation = false);
-      _save('location_sharing', false);
-      return;
-    }
-    final access = await LocationPermissionFlow.ensure(
-      context,
-      background: true,
-      force: true,
-    );
-    if (!mounted) return;
-    if (access == LocationAccess.none) {
-      // Blocked for good: only the phone's Settings can allow it now.
-      if (await Geolocator.checkPermission() ==
-          LocationPermission.deniedForever) {
-        if (!mounted) return;
-        AppSnackBar.showInfo(
-          context,
-          title: 'Location is blocked',
-          message: 'Allow location for Torkk Driver in your phone Settings.',
-        );
-        await Geolocator.openAppSettings();
-      }
-      return;
-    }
-    setState(() => _shareLocation = true);
-    _save('location_sharing', true);
-  }
-
-  Future<void> _openPin() async {
-    final prefs = await SharedPreferences.getInstance();
-    final hasPin = (prefs.getString('account_pin') ?? '').length == 4;
-    if (!mounted) return;
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
-        builder: (_) => hasPin ? const ChangePinScreen() : const SetPinScreen(),
-      ),
-    );
-    if (result == true) {
-      _load();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final accent = profileAccent(context);
     return ProfilePage(
       title: AppStrings.privacyPolicy,
       child: ListView(
@@ -271,68 +207,6 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
           context.h(20),
         ),
         children: [
-          Material(
-            color: context.adaptiveTint(const Color(0xFFF5F3FF)),
-            borderRadius: BorderRadius.circular(context.r(16)),
-            child: InkWell(
-              onTap: _openPin,
-              borderRadius: BorderRadius.circular(context.r(16)),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.w(14),
-                  vertical: context.h(14),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: context.w(40),
-                      height: context.w(40),
-                      decoration: BoxDecoration(
-                        color: context.torkk.surface,
-                        borderRadius: BorderRadius.circular(context.r(12)),
-                      ),
-                      child: Icon(
-                        Icons.lock_outline_rounded,
-                        color: accent,
-                        size: context.w(20),
-                      ),
-                    ),
-                    SizedBox(width: context.w(12)),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppStrings.setChangePin,
-                            style: AppTypography.bold.copyWith(
-                              color: context.torkk.textPrimary,
-                              fontSize: 14,
-                              height: 1.2,
-                            ),
-                          ),
-                          Text(
-                            _hasPin
-                                ? 'PIN is active. Tap to change PIN'
-                                : AppStrings.secureAccountPin,
-                            style: AppTypography.regular.copyWith(
-                              fontSize: 12,
-                              color: context.torkk.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      color: AppColors.slate400,
-                      size: context.w(22),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: context.h(12)),
           _PrivacySwitch(
             icon: _lockIcon,
             iconColor: _lockFailed
@@ -346,34 +220,6 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
                 : 'Set up a screen lock on your phone to use this',
             value: _appLock,
             onChanged: _toggleAppLock,
-          ),
-          SizedBox(height: context.h(18)),
-          Text(
-            AppStrings.privacySettings,
-            style: AppTypography.regular.copyWith(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: context.torkk.textSecondary,
-            ),
-          ),
-          SizedBox(height: context.h(10)),
-          _PrivacySwitch(
-            icon: Icons.person_outline_rounded,
-            title: AppStrings.showMyProfileToDriver,
-            subtitle: AppStrings.showMyProfileToDriverSubtitle,
-            value: _showProfile,
-            onChanged: (value) {
-              setState(() => _showProfile = value);
-              _save('show_profile_to_driver', value);
-            },
-          ),
-          SizedBox(height: context.h(12)),
-          _PrivacySwitch(
-            icon: Icons.location_on_outlined,
-            title: AppStrings.locationSharing,
-            subtitle: AppStrings.locationSharingSubtitle,
-            value: _shareLocation,
-            onChanged: _toggleLocation,
           ),
         ],
       ),
