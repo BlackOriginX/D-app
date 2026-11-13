@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_trips_screen_sections.dart';
 
 // --- DRIVER TRIP HISTORY SCREEN ---
@@ -84,7 +85,7 @@ class _DriverTripsScreenState extends State<DriverTripsScreen> {
         floatingActionButton: const AiChatButton(size: 48),
         backgroundColor: context.torkk.surfaceMuted,
         appBar: AppBar(
-          title: Text(
+          title: TText(
             widget.parcelsOnly ? 'Parcels' : widget.title,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -117,7 +118,7 @@ class _DriverTripsScreenState extends State<DriverTripsScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    TText(
                       _error!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.red),
@@ -125,7 +126,7 @@ class _DriverTripsScreenState extends State<DriverTripsScreen> {
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _loadTrips,
-                      child: const Text('Retry'),
+                      child: const TText('Retry'),
                     ),
                   ],
                 ),

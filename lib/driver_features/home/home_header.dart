@@ -3,6 +3,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
@@ -39,7 +40,7 @@ class HomeHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     _greeting,
                     style: AppTypography.regular.copyWith(
                       fontSize: 15,
@@ -49,7 +50,7 @@ class HomeHeader extends StatelessWidget {
                           : const Color(0xFF334155),
                     ),
                   ),
-                  Text(
+                  TText(
                     driverName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

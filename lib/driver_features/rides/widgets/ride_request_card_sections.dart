@@ -42,7 +42,7 @@ extension _RideRequestCardSections on RideRequestCard {
       if (femaleCount > 0) {
         badge2Color = const Color(0xFFEC4899);
         badge2Content = femaleCount > 1
-            ? Text(
+            ? TText(
                 '$femaleCount',
                 style: const TextStyle(
                   color: Colors.white,
@@ -61,7 +61,7 @@ extension _RideRequestCardSections on RideRequestCard {
       );
       if (totalCount > 1) {
         badge2Color = const Color(0xFF1D4ED8);
-        badge2Content = Text(
+        badge2Content = TText(
           '+${totalCount - 1}',
           style: const TextStyle(
             color: Colors.white,
@@ -79,7 +79,7 @@ extension _RideRequestCardSections on RideRequestCard {
       );
       if (totalCount > 1) {
         badge2Color = const Color(0xFFEC4899);
-        badge2Content = Text(
+        badge2Content = TText(
           '+${totalCount - 1}',
           style: const TextStyle(
             color: Colors.white,
@@ -141,7 +141,7 @@ extension _RideRequestCardSections on RideRequestCard {
         children: [
           const Icon(Icons.inventory_2_rounded, size: 16, color: Colors.white),
           const SizedBox(width: 4),
-          Text(
+          TText(
             (ride['item_weight'] ?? 'Parcel').toString(),
             style: const TextStyle(
               color: Colors.white,

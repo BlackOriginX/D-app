@@ -15,6 +15,7 @@ import 'package:rider_app/driver_features/settings/screens/settings_language_scr
 
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class DriverSettingsScreen extends StatelessWidget {
   const DriverSettingsScreen({super.key, this.onClose});
@@ -128,7 +129,7 @@ class _SettingsRow extends StatelessWidget {
             Icon(icon, color: context.torkk.textPrimary, size: context.w(20)),
             SizedBox(width: context.w(12)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 15,

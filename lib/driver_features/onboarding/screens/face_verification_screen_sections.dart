@@ -24,14 +24,14 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
               ),
             ),
             SizedBox(height: context.h(20)),
-            Text(
+            TText(
               AppStrings.allowCameraAccess,
               style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
             ),
             SizedBox(height: context.h(6)),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: context.w(24)),
-              child: Text(
+              child: TText(
                 AppStrings.allowCameraSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -86,12 +86,12 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
                 height: context.w(96),
               ),
               SizedBox(height: context.h(16)),
-              Text(
+              TText(
                 AppStrings.identityVerifiedFace,
                 style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
               ),
               SizedBox(height: context.h(6)),
-              Text(
+              TText(
                 AppStrings.identityVerifiedFaceSubtitle,
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
@@ -133,12 +133,12 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
                 height: context.w(96),
               ),
               SizedBox(height: context.h(16)),
-              Text(
+              TText(
                 AppStrings.faceVerificationFailed,
                 style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 AppStrings.faceVerificationFailedSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -159,7 +159,7 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       AppStrings.reason,
                       style: AppTypography.bold.copyWith(
                         color: context.torkk.textPrimary,
@@ -181,7 +181,7 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TText(
                                 _error ?? AppStrings.faceNotDetectedReason,
                                 style: AppTypography.bold.copyWith(
                                   fontSize: 13,
@@ -190,7 +190,7 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
                                 ),
                               ),
                               if (_error == null)
-                                Text(
+                                TText(
                                   AppStrings.faceNotDetectedHint,
                                   style: AppTypography.regular.copyWith(
                                     fontSize: 13,

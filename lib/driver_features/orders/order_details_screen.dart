@@ -7,6 +7,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'order_details_screen_parts/order_coins_banner.dart';
 part 'order_details_screen_sections.dart';
@@ -95,7 +96,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       color: context.torkk.textPrimary,
                     ),
                   ),
-                  Text(
+                  TText(
                     _parcel ? AppStrings.parcelDetails : AppStrings.rideDetails,
                     style: AppTypography.bold.copyWith(
                       fontSize: 20,
@@ -122,7 +123,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     if (_error != null)
                       Padding(
                         padding: EdgeInsets.only(bottom: context.h(12)),
-                        child: Text(
+                        child: TText(
                           _error!,
                           style: AppTypography.regular.copyWith(
                             fontSize: 12,
@@ -136,7 +137,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     SizedBox(height: context.h(14)),
                     _rateRow(context),
                     SizedBox(height: context.h(18)),
-                    Text(
+                    TText(
                       AppStrings.fairDetails,
                       style: AppTypography.bold.copyWith(
                         fontSize: 16,

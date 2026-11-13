@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared confirm dialog used for logout, delete, online/offline, SOS, and notices.
 ///
@@ -116,7 +117,7 @@ class AppConfirmCard extends StatelessWidget {
         children: [
           icon,
           SizedBox(height: context.h(18)),
-          Text(
+          TText(
             title,
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -127,7 +128,7 @@ class AppConfirmCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             subtitle,
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -216,7 +217,7 @@ class _DialogAction extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(context.r(14)),
           child: Center(
-            child: Text(
+            child: TText(
               label,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(

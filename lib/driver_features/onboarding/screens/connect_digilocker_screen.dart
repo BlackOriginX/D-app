@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ConnectDigilockerScreen extends StatefulWidget {
   final bool isLoading;
@@ -79,7 +80,7 @@ class _ConnectDigilockerScreenState extends State<ConnectDigilockerScreen> {
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
+                            child: TText(
                               AppStrings.documentsWellAccess,
                               style: AppTypography.bold.copyWith(
                                 fontSize: 11,
@@ -134,7 +135,7 @@ class _ConnectDigilockerScreenState extends State<ConnectDigilockerScreen> {
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(top: context.h(12)),
-                            child: Text(
+                            child: TText(
                               AppStrings.digilockerConsent,
                               style: AppTypography.regular.copyWith(
                                 fontSize: 13,

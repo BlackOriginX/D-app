@@ -5,6 +5,7 @@ import 'package:rider_app/driver_features/coins/widgets/coin_bottom_button.dart'
 import 'package:rider_app/driver_features/coins/widgets/coin_result.dart';
 import 'package:rider_app/driver_features/coins/widgets/coins_text.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AlreadyClaimedScreen extends StatelessWidget {
   const AlreadyClaimedScreen({
@@ -29,14 +30,14 @@ class AlreadyClaimedScreen extends StatelessWidget {
             icon: Icons.check_rounded,
             color: Color(0xFF16A34A),
           ),
-          Text(
+          TText(
             'Already Claimed Reward',
             textAlign: TextAlign.center,
             style: coinsTitle(),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(28)),
-            child: Text(
+            child: TText(
               'You have already claimed a reward for this job. Each eligible job will give you only one scratch card',
               textAlign: TextAlign.center,
               style: coinsMuted(context),

@@ -11,6 +11,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Front camera with the face-frame overlay drawn on top.
 /// A face held inside the frame is captured, then [onCaptured] runs.
@@ -242,7 +243,7 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
                       borderRadius: BorderRadius.circular(context.r(24)),
                       border: Border.all(color: const Color(0xFFE9D5FF)),
                     ),
-                    child: Text(
+                    child: TText(
                       AppStrings.faceInFrame,
                       style: AppTypography.regular.copyWith(
                         fontSize: 13,
@@ -286,7 +287,7 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
                           size: context.w(16),
                         ),
                         SizedBox(width: context.w(6)),
-                        Text(
+                        TText(
                           _detected
                               ? AppStrings.faceDetected
                               : AppStrings.noFaceDetected,
@@ -315,7 +316,7 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
       return ColoredBox(
         color: Colors.black,
         child: Center(
-          child: Text(_error!, style: const TextStyle(color: Colors.white)),
+          child: TText(_error!, style: const TextStyle(color: Colors.white)),
         ),
       );
     }

@@ -17,7 +17,7 @@ class _StatusChip extends StatelessWidget {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(context.r(20)),
       ),
-      child: Text(
+      child: TText(
         label,
         style: AppTypography.regular.copyWith(
           fontSize: 11,

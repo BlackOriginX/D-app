@@ -8,6 +8,7 @@ import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'scheduled_ride_screen_parts/map.dart';
 part 'scheduled_ride_screen_sections.dart';
@@ -98,7 +99,7 @@ class _ScheduledRideScreenState extends State<ScheduledRideScreen> {
                 size: context.w(16),
               ),
               SizedBox(width: context.w(6)),
-              Text(
+              TText(
                 'Scheduled Ride',
                 style: AppTypography.bold.copyWith(fontSize: 13, height: 1.2),
               ),
@@ -112,7 +113,7 @@ class _ScheduledRideScreenState extends State<ScheduledRideScreen> {
                   color: context.adaptiveTint(const Color(0xFFFFF7ED)),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(
+                child: TText(
                   'Tomorrow at 6:30 am',
                   style: AppTypography.bold.copyWith(
                     fontSize: 10,
@@ -124,7 +125,7 @@ class _ScheduledRideScreenState extends State<ScheduledRideScreen> {
             ],
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             'Scheduled Ride Request',
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -132,7 +133,7 @@ class _ScheduledRideScreenState extends State<ScheduledRideScreen> {
             ),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             'Sector 62, Noida  →  DLF Mall of India',
             style: AppTypography.bold.copyWith(
               fontSize: 13,
@@ -141,7 +142,7 @@ class _ScheduledRideScreenState extends State<ScheduledRideScreen> {
             ),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             '4.2 km   ·   18 min',
             style: AppTypography.regular.copyWith(
               fontSize: 12,

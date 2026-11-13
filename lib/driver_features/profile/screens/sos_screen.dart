@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -12,6 +13,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'sos_screen_sections.dart';
 
 enum _SosPage { confirm, active, contacts, reported }
@@ -53,7 +55,7 @@ class _SosScreenState extends State<SosScreen> {
   void _showError(Object error) {
     if (!mounted) return;
     final text = '$error'.replaceFirst('Exception: ', '');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TText(text)));
   }
 
   void _start() {
@@ -99,29 +101,29 @@ class _SosScreenState extends State<SosScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Emergency Contact'),
+          title: const TText('Add Emergency Contact'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: name,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: AppTranslations.t('Name')),
               ),
               TextField(
                 controller: phone,
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: 'Mobile Number'),
+                decoration: InputDecoration(labelText: AppTranslations.t('Mobile Number')),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: const TText('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Save'),
+              child: const TText('Save'),
             ),
           ],
         );
@@ -178,10 +180,10 @@ class _SosScreenState extends State<SosScreen> {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text('Activate SOS ?', style: _title()),
+          TText('Activate SOS ?', style: _title()),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(40)),
-            child: Text(
+            child: TText(
               'This will notify emergency contacts with your live location.',
               textAlign: TextAlign.center,
               style: _muted(),
@@ -209,7 +211,7 @@ class _SosScreenState extends State<SosScreen> {
                     borderRadius: BorderRadius.circular(context.r(14)),
                   ),
                 ),
-                child: Text(
+                child: TText(
                   'Cancel',
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -226,7 +228,7 @@ class _SosScreenState extends State<SosScreen> {
               Expanded(child: Divider(color: context.torkk.border)),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: context.w(10)),
-                child: Text(
+                child: TText(
                   'OR',
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

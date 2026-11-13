@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ConnectingDigilockerScreen extends StatelessWidget {
   final VoidCallback onBack;
@@ -73,7 +74,7 @@ class ConnectingDigilockerScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: context.h(24)),
-                      Text(
+                      TText(
                         AppStrings.connectingDigilockerSubtitle,
                         textAlign: TextAlign.center,
                         style: AppTypography.regular.copyWith(
@@ -235,7 +236,7 @@ class _ConnectStep extends StatelessWidget {
         SizedBox(width: context.w(12)),
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Text(
+          child: TText(
             label,
             style: done || active
                 ? AppTypography.bold.copyWith(

@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/wallet/models/wallet_txn.dart';
 import 'package:rider_app/driver_features/wallet/screens/transaction_details_screen.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class TransactionHistoryScreen extends StatefulWidget {
   const TransactionHistoryScreen({super.key, this.showEmpty = false});
@@ -111,14 +112,14 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              TText(
                 _error!,
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
                   color: context.torkk.textSecondary,
                 ),
               ),
-              TextButton(onPressed: _load, child: const Text('Retry')),
+              TextButton(onPressed: _load, child: const TText('Retry')),
             ],
           ),
         ),
@@ -158,7 +159,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        TText(
           title,
           style: AppTypography.regular.copyWith(
             fontSize: 13,
@@ -206,14 +207,14 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TText(
                                 items[i].name,
                                 style: AppTypography.regular.copyWith(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              Text(
+                              TText(
                                 '${items[i].kind}  ·  ${items[i].time}',
                                 style: AppTypography.regular.copyWith(
                                   fontSize: 12,
@@ -223,7 +224,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             ],
                           ),
                         ),
-                        Text(
+                        TText(
                           items[i].amount,
                           style: AppTypography.regular.copyWith(
                             fontSize: 14,
@@ -270,7 +271,7 @@ class _EmptyTransactions extends StatelessWidget {
                 borderRadius: BorderRadius.circular(context.r(14)),
               ),
             ),
-            child: Text(
+            child: TText(
               'Back to Home',
               style: AppTypography.bold.copyWith(
                 fontSize: 15,
@@ -328,7 +329,7 @@ class _EmptyTransactions extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'No Transactions yet',
             style: AppTypography.bold.copyWith(
               fontSize: 18,
@@ -339,7 +340,7 @@ class _EmptyTransactions extends StatelessWidget {
           SizedBox(height: context.h(6)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(36)),
-            child: Text(
+            child: TText(
               'Your transaction will appear here after you complete rides , parcels  or make any wallet activity.',
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(

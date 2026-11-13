@@ -13,7 +13,7 @@ class _OtpBoxContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final digit = Text(
+    final digit = TText(
       char,
       style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
     );

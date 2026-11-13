@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/coins/widgets/coin_async.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/coins_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CoinHistoryScreen extends StatefulWidget {
   const CoinHistoryScreen({super.key, required this.onBack});
@@ -123,7 +124,7 @@ class _CoinHistoryScreenState extends State<CoinHistoryScreen> {
                           color: _tab == i ? accent : Colors.transparent,
                           borderRadius: BorderRadius.circular(context.r(10)),
                         ),
-                        child: Text(
+                        child: TText(
                           _tabs[i],
                           style: AppTypography.regular.copyWith(
                             fontSize: 13,
@@ -148,7 +149,7 @@ class _CoinHistoryScreenState extends State<CoinHistoryScreen> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: context.h(40)),
               child: Center(
-                child: Text(
+                child: TText(
                   'No coin transactions yet',
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -186,7 +187,7 @@ class _CoinHistoryScreenState extends State<CoinHistoryScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             t.reason.isEmpty
                                 ? (t.isCredit
                                       ? 'Coins earned'
@@ -197,7 +198,7 @@ class _CoinHistoryScreenState extends State<CoinHistoryScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
+                          TText(
                             coinDate(t.createdAt),
                             style: AppTypography.regular.copyWith(
                               fontSize: 12,
@@ -207,7 +208,7 @@ class _CoinHistoryScreenState extends State<CoinHistoryScreen> {
                         ],
                       ),
                     ),
-                    Text(
+                    TText(
                       '${t.isCredit ? '+' : '-'} ${coinNumber(t.amount)}',
                       style: AppTypography.regular.copyWith(
                         fontSize: 13,

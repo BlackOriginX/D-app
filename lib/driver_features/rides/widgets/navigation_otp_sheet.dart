@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 void showRideOtpBottomSheet({
   required BuildContext context,
@@ -44,7 +45,7 @@ void showRideOtpBottomSheet({
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(
+                TText(
                   'Enter OTP',
                   style: TextStyle(
                     fontSize: 24,
@@ -53,7 +54,7 @@ void showRideOtpBottomSheet({
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
+                TText(
                   subtitle ?? 'Ask the Passenger for OTP',
                   style: TextStyle(
                     fontSize: 14,
@@ -71,7 +72,7 @@ void showRideOtpBottomSheet({
                       color: const Color(0xFF10B981).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
+                    child: TText(
                       'Test tip: passenger ride code is $rideCode',
                       style: const TextStyle(
                         fontSize: 12,
@@ -111,7 +112,7 @@ void showRideOtpBottomSheet({
                                 width: 1.0,
                               ),
                             ),
-                            child: Text(
+                            child: TText(
                               char,
                               style: TextStyle(
                                 fontSize: 24,
@@ -141,7 +142,7 @@ void showRideOtpBottomSheet({
                 ),
                 if (errorText != null) ...[
                   const SizedBox(height: 10),
-                  Text(
+                  TText(
                     errorText!,
                     style: const TextStyle(
                       color: Colors.red,
@@ -176,7 +177,7 @@ void showRideOtpBottomSheet({
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        TText(
                           'Continue',
                           style: TextStyle(
                             fontSize: 16,

@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/screens/edit_bank_details_screen.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class BankInformationScreen extends StatefulWidget {
   const BankInformationScreen({super.key});
@@ -110,7 +111,7 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       _details.bankName.isEmpty
                           ? 'Not added'
                           : _details.bankName,
@@ -120,7 +121,7 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
                         letterSpacing: -0.2,
                       ),
                     ),
-                    Text(
+                    TText(
                       _details.accountNumber.isEmpty
                           ? '-'
                           : _masked(_details.accountNumber),

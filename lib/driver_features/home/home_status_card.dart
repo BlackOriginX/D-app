@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/home/home_brand.dart';
 import 'package:rider_app/driver_features/home/home_glass_card.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HomeStatusCard extends StatelessWidget {
   const HomeStatusCard({
@@ -73,7 +74,7 @@ class HomeStatusCard extends StatelessWidget {
           SizedBox(height: context.h(3.4)),
           Padding(
             padding: EdgeInsets.only(left: context.w(36)),
-            child: Text(
+            child: TText(
               isOnline ? AppStrings.readyForRequests : AppStrings.goOnlineHint,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -128,7 +129,7 @@ class HomeStatusCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Text(
+              // TText(
               //   AppStrings.currentLocation,
               //   style: AppTypography.regular.copyWith(
               //     fontSize: 11,
@@ -136,7 +137,7 @@ class HomeStatusCard extends StatelessWidget {
               //   ),
               // ),
               if (place.isNotEmpty)
-                Text(
+                TText(
                   place,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -177,7 +178,7 @@ class HomeStatusCard extends StatelessWidget {
                   color: Colors.white,
                 ),
                 SizedBox(width: context.w(6)),
-                Text(
+                TText(
                   AppStrings.updateLocation,
                   style: AppTypography.bold.copyWith(
                     fontSize: 12,
@@ -206,7 +207,7 @@ class HomeStatusCard extends StatelessWidget {
     );
     if (context.isDarkTheme) {
       // Dark mode: one plain white line, no gradient word.
-      return Text(
+      return TText(
         isOnline ? AppStrings.youAreOnline : AppStrings.youAreOffline,
         style: style.copyWith(color: Colors.white),
       );
@@ -223,7 +224,7 @@ class HomeStatusCard extends StatelessWidget {
             child: ShaderMask(
               shaderCallback: (bounds) =>
                   homeBrandWash(female, 1).createShader(bounds),
-              child: Text(word, style: style.copyWith(color: Colors.white)),
+              child: TText(word, style: style.copyWith(color: Colors.white)),
             ),
           ),
         ],

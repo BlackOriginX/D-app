@@ -11,6 +11,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CoinsHomeScreen extends StatelessWidget {
   const CoinsHomeScreen({
@@ -92,14 +93,14 @@ class CoinsHomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           AppStrings.yourCoinBalance,
                           style: AppTypography.regular.copyWith(
                             fontSize: 13,
                             color: Colors.white70,
                           ),
                         ),
-                        Text(
+                        TText(
                           coinNumber(account.coins),
                           style: AppTypography.bold.copyWith(
                             fontSize: 28,
@@ -149,7 +150,7 @@ class CoinsHomeScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: TText(
                         AppStrings.scratchCard,
                         style: AppTypography.regular.copyWith(
                           fontSize: 16,
@@ -166,7 +167,7 @@ class CoinsHomeScreen extends StatelessWidget {
                         color: context.adaptiveTint(const Color(0xFFECFDF5)),
                         borderRadius: BorderRadius.circular(context.r(9999)),
                       ),
-                      child: Text(
+                      child: TText(
                         card?.id ?? 'No card',
                         style: AppTypography.regular.copyWith(
                           fontSize: 11,
@@ -178,7 +179,7 @@ class CoinsHomeScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: context.h(4)),
-                Text(
+                TText(
                   AppStrings.completeEligibleJobs,
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -215,7 +216,7 @@ class CoinsHomeScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                TText(
                                   card == null
                                       ? 'No scratch card yet'
                                       : card!.title.isEmpty
@@ -226,7 +227,7 @@ class CoinsHomeScreen extends StatelessWidget {
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                Text(
+                                TText(
                                   card == null
                                       ? AppStrings.completeEligibleJobs
                                       : card!.description.isEmpty

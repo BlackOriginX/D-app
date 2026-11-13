@@ -410,7 +410,7 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
       launchUrl(Uri.parse('tel:$phone'));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Customer phone not available')),
+        const SnackBar(content: TText('Customer phone not available')),
       );
     }
   }

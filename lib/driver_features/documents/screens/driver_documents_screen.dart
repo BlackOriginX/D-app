@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER DOCUMENTS SCREEN (Figma Docs) ---
 class DriverDocumentsScreen extends StatefulWidget {
@@ -54,7 +55,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       title,
                       style: TextStyle(
                         fontSize: 18,
@@ -63,7 +64,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    TText(
                       subtitle,
                       style: TextStyle(
                         fontSize: 12.5,
@@ -114,7 +115,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             ),
           ),
         ),
-        title: Text(
+        title: TText(
           'Profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -130,7 +131,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
+              child: TText(
                 'Documents',
                 style: TextStyle(
                   fontSize: 26,
@@ -143,7 +144,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
+              child: TText(
                 'Uploaded Documents',
                 style: TextStyle(
                   fontSize: 13,

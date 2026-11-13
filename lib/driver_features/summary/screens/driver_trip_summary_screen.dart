@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
@@ -12,6 +13,7 @@ import 'package:rider_app/driver_features/chat/screens/driver_customer_chat_scre
 import '../widgets/trip_summary_slider.dart';
 import '../widgets/report_customer_dialog.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_trip_summary_screen_sections.dart';
 
 class DriverTripSummaryScreen extends StatefulWidget {
@@ -141,7 +143,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to complete ride: $e'),
+            content: TText('Failed to complete ride: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -195,7 +197,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                           ),
                         );
                       },
-                      child: Text(
+                      child: TText(
                         'Need Help?',
                         style: TextStyle(
                           color: context.torkk.textPrimary,
@@ -209,7 +211,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                 const SizedBox(height: 20),
 
                 // Payment & Ask for Cash
-                Text(
+                TText(
                   'Payment',
                   style: TextStyle(
                     fontSize: 26,
@@ -218,7 +220,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                TText(
                   'Ask for Cash',
                   style: TextStyle(
                     fontSize: 14,
@@ -229,7 +231,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                 const SizedBox(height: 12),
 
                 // Giant Fare: ₹ 72.98
-                Text(
+                TText(
                   '₹ ${widget.estimatedFare.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 48,
@@ -245,7 +247,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                 const SizedBox(height: 14),
 
                 // UPI ID & Show Scanner
-                Text(
+                TText(
                   'UPI ID',
                   style: TextStyle(
                     fontSize: 20,
@@ -254,7 +256,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                TText(
                   'Show Scanner',
                   style: TextStyle(
                     fontSize: 14,
@@ -292,7 +294,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                 ),
                 const SizedBox(height: 12),
                 Center(
-                  child: Text(
+                  child: TText(
                     upiAddress,
                     style: TextStyle(
                       fontSize: 14,
@@ -370,7 +372,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                       ),
                     ],
                   ),
-                  child: const Text(
+                  child: const TText(
                     'ONLINE',
                     style: TextStyle(
                       color: Colors.white,
@@ -467,7 +469,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                               CircleAvatar(
                                 radius: 22,
                                 backgroundColor: const Color(0xFF1D4ED8),
-                                child: Text(
+                                child: TText(
                                   customerInitial,
                                   style: const TextStyle(
                                     color: Colors.white,
@@ -481,7 +483,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TText(
                                       widget.customerName,
                                       style: TextStyle(
                                         fontSize: 16,
@@ -492,7 +494,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                     const SizedBox(height: 2),
                                     Row(
                                       children: [
-                                        Text(
+                                        TText(
                                           '+4 ',
                                           style: TextStyle(
                                             fontSize: 13,
@@ -614,7 +616,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TText(
                                       'Trip Earnings',
                                       style: TextStyle(
                                         fontSize: 12,
@@ -625,7 +627,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                       ),
                                     ),
                                     if (_transactionId.isNotEmpty)
-                                      Text(
+                                      TText(
                                         'Txn: $_transactionId',
                                         style: TextStyle(
                                           fontSize: 10,
@@ -636,7 +638,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                       ),
                                   ],
                                 ),
-                                Text(
+                                TText(
                                   '₹${(_actualEarnings > 0 ? _actualEarnings : widget.estimatedFare).toStringAsFixed(2)}',
                                   style: TextStyle(
                                     fontSize: 18,
@@ -650,7 +652,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                           const SizedBox(height: 14),
 
                           // Leave a review for Junaid
-                          Text(
+                          TText(
                             'Leave a Review for $firstName',
                             style: TextStyle(
                               fontSize: 15,
@@ -659,7 +661,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TText(
                             'How was $firstName?',
                             style: TextStyle(
                               fontSize: 12,
@@ -683,7 +685,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                               maxLines: 2,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Write feedback...',
+                                hintText: AppTranslations.t('Write feedback...'),
                                 hintStyle: TextStyle(
                                   color: context.torkk.textSecondary,
                                   fontSize: 13,
@@ -740,7 +742,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: const Text(
+                          child: const TText(
                             'Submit Feedback',
                             style: TextStyle(
                               fontSize: 16,

@@ -91,7 +91,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                   size: 28,
                 ),
                 SizedBox(width: 10),
-                Text(
+                TText(
                   'Statement Saved',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -101,7 +101,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   'Earnings statement CSV has been downloaded to your device storage:',
                   style: TextStyle(
                     fontSize: 13.5,
@@ -136,7 +136,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                     XFile(file.path),
                   ], text: 'TORKK Driver Earnings Statement');
                 },
-                child: const Text('Share File'),
+                child: const TText('Share File'),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx),
@@ -147,7 +147,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
+                child: const TText(
                   'OK',
                   style: TextStyle(
                     color: Colors.white,
@@ -181,7 +181,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('$day Earnings: ₹ ${amount.toStringAsFixed(2)}'),
+              content: TText('$day Earnings: ₹ ${amount.toStringAsFixed(2)}'),
               duration: const Duration(seconds: 2),
               backgroundColor: const Color(0xFF2E1065),
             ),
@@ -193,7 +193,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
             if (hasAmount)
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),
-                child: Text(
+                child: TText(
                   '₹${amount.toInt()}',
                   style: const TextStyle(
                     color: Colors.white,
@@ -223,7 +223,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            TText(
               day,
               style: const TextStyle(
                 color: Colors.white,
@@ -258,7 +258,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         amount,
                         style: TextStyle(
                           fontSize: 18,
@@ -267,7 +267,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      Text(
+                      TText(
                         subtitle,
                         style: TextStyle(
                           fontSize: 12.5,
@@ -302,7 +302,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
         shape: BoxShape.circle,
       ),
       child: const Center(
-        child: Text(
+        child: TText(
           '₹',
           style: TextStyle(
             color: Colors.white,
@@ -346,7 +346,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
-                    child: Text(
+                    child: TText(
                       'Statement Details',
                       style: TextStyle(
                         fontSize: 18,
@@ -368,7 +368,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       amount,
                       style: TextStyle(
                         fontSize: 26,
@@ -377,7 +377,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    TText(
                       subtitle,
                       style: TextStyle(
                         fontSize: 13,
@@ -388,7 +388,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        TText(
                           'Status',
                           style: TextStyle(
                             fontSize: 13,
@@ -406,7 +406,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                             ).withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
+                          child: const TText(
                             'COMPLETED',
                             style: TextStyle(
                               color: Color(0xFF059669),
@@ -433,7 +433,7 @@ extension _DriverEarningsScreenStateSections on _DriverEarningsScreenState {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 13),
                   ),
-                  child: const Text(
+                  child: const TText(
                     'Close',
                     style: TextStyle(
                       color: Colors.white,

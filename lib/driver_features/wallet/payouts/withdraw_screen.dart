@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/wallet/payouts/payout_widgets.dart';
 import 'package:rider_app/driver_features/wallet/payouts/withdraw_result_screens.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Pick an amount (typed or with the 25/50/75/100% chips) and withdraw it.
 class WithdrawScreen extends StatefulWidget {
@@ -119,11 +120,11 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           'Available Balance',
                           style: AppTypography.bold.copyWith(fontSize: 16),
                         ),
-                        Text(
+                        TText(
                           rupees(widget.balance),
                           style: AppTypography.regular.copyWith(
                             fontSize: 13,
@@ -157,7 +158,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                   ),
                 ),
                 SizedBox(height: context.h(10)),
-                Text(
+                TText(
                   _error ?? 'Maximum Withdraw ${rupees(widget.balance)}',
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -189,7 +190,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                                   : context.torkk.border,
                             ),
                           ),
-                          child: Text(
+                          child: TText(
                             '$p%',
                             style: AppTypography.bold.copyWith(
                               fontSize: 13,

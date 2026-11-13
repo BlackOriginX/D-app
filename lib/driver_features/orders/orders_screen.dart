@@ -9,6 +9,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/orders/order_details_screen.dart';
 import 'package:rider_app/driver_features/rides/scheduled_ride_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'orders_screen_parts/order_card.dart';
 part 'orders_screen_parts/status_chip.dart';
@@ -115,7 +116,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       color: context.torkk.textPrimary,
                     ),
                   ),
-                  Text(
+                  TText(
                     AppStrings.navOrders,
                     style: AppTypography.bold.copyWith(
                       fontSize: 20,
@@ -185,7 +186,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
+                          TText(
                             _error!,
                             style: AppTypography.regular.copyWith(
                               color: context.torkk.textSecondary,
@@ -193,7 +194,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           ),
                           TextButton(
                             onPressed: _load,
-                            child: Text(AppStrings.retry),
+                            child: TText(AppStrings.retry),
                           ),
                         ],
                       ),
@@ -229,9 +230,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
       initialValue: _kind,
       onSelected: (value) => setState(() => _kind = value),
       itemBuilder: (context) => [
-        PopupMenuItem(value: 'all', child: Text(AppStrings.all)),
-        PopupMenuItem(value: 'ride', child: Text(AppStrings.ordersRide)),
-        PopupMenuItem(value: 'parcel', child: Text(AppStrings.ordersParcel)),
+        PopupMenuItem(value: 'all', child: TText(AppStrings.all)),
+        PopupMenuItem(value: 'ride', child: TText(AppStrings.ordersRide)),
+        PopupMenuItem(value: 'parcel', child: TText(AppStrings.ordersParcel)),
       ],
       child: Container(
         width: context.w(44),
@@ -338,7 +339,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               ),
             ),
             SizedBox(height: context.h(20)),
-            Text(
+            TText(
               AppStrings.ordersEmpty,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(
@@ -347,7 +348,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               ),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               hint,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -389,7 +390,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     color: _tab == tab.$1 ? accent : Colors.transparent,
                     borderRadius: BorderRadius.circular(context.r(10)),
                   ),
-                  child: Text(
+                  child: TText(
                     tab.$2,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -419,7 +420,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       widgets.add(
         Padding(
           padding: EdgeInsets.only(top: context.h(8), bottom: context.h(8)),
-          child: Text(
+          child: TText(
             entry.key,
             style: AppTypography.regular.copyWith(
               fontSize: 13,

@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/wallet/models/wallet_txn.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class TransactionDetailsScreen extends StatefulWidget {
   const TransactionDetailsScreen({super.key, required this.txn});
@@ -156,7 +157,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
               ),
               SizedBox(width: context.w(10)),
               Expanded(
-                child: Text(
+                child: TText(
                   name.isEmpty ? txn.name : name,
                   style: AppTypography.bold.copyWith(
                     fontSize: 16,
@@ -165,7 +166,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   ),
                 ),
               ),
-              Text(
+              TText(
                 _money(amountRaw),
                 style: AppTypography.bold.copyWith(
                   fontSize: 18,
@@ -176,7 +177,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             ],
           ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             kindText,
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -185,7 +186,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
           ),
           if (route.isNotEmpty) ...[
             SizedBox(height: context.h(8)),
-            Text(route, style: AppTypography.regular.copyWith(fontSize: 13)),
+            TText(route, style: AppTypography.regular.copyWith(fontSize: 13)),
           ],
           if (meta.isNotEmpty) ...[
             SizedBox(height: context.h(4)),
@@ -197,7 +198,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   color: AppColors.slate400,
                 ),
                 SizedBox(width: context.w(4)),
-                Text(
+                TText(
                   meta,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -208,7 +209,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             ),
           ],
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Transaction Details',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -280,7 +281,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   AppStrings.paymentStatus,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -288,7 +289,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   ),
                 ),
                 SizedBox(height: context.h(2)),
-                Text(
+                TText(
                   paidText,
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -315,7 +316,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
       child: Row(
         children: [
           Expanded(
-            child: Text(
+            child: TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -323,7 +324,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
               ),
             ),
           ),
-          Text(
+          TText(
             value,
             style: AppTypography.regular.copyWith(
               fontSize: 13,

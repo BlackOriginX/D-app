@@ -18,6 +18,7 @@ import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'verify_vehicle_rc_screen_parts/dashed_border_painter.dart';
 part 'verify_vehicle_rc_screen_parts/rc_upload_tile.dart';
@@ -78,7 +79,7 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
                   Icons.photo_camera_outlined,
                   color: context.legible(AppColors.primary),
                 ),
-                title: Text(
+                title: TText(
                   AppStrings.camera,
                   style: AppTypography.bold.copyWith(fontSize: 15),
                 ),
@@ -89,7 +90,7 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
                   Icons.photo_outlined,
                   color: context.legible(AppColors.primary),
                 ),
-                title: Text(
+                title: TText(
                   AppStrings.gallery,
                   style: AppTypography.bold.copyWith(fontSize: 15),
                 ),
@@ -222,7 +223,7 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
             SizedBox(height: context.h(16)),
             KycRequiredLabel(AppStrings.rcDocument),
             SizedBox(height: context.h(4)),
-            Text(
+            TText(
               AppStrings.rcDocumentHint,
               style: AppTypography.regular.copyWith(
                 fontSize: 12,
@@ -316,12 +317,12 @@ class _UploadedFile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 AppStrings.rcDocument,
                 style: AppTypography.bold.copyWith(fontSize: 13, height: 1.2),
               ),
               if (name.isNotEmpty)
-                Text(
+                TText(
                   name,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -329,7 +330,7 @@ class _UploadedFile extends StatelessWidget {
                   ),
                 ),
               if (size.isNotEmpty)
-                Text(
+                TText(
                   '$size • ${AppStrings.rcUploaded}',
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
@@ -349,7 +350,7 @@ class _UploadedFile extends StatelessWidget {
                 color: context.legible(AppColors.primary),
               ),
               SizedBox(width: context.w(4)),
-              Text(
+              TText(
                 AppStrings.replaceAction,
                 style: AppTypography.bold.copyWith(
                   fontSize: 13,

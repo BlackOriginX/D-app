@@ -12,6 +12,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/additional_details_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AddPhotosScreen extends StatefulWidget {
   const AddPhotosScreen({
@@ -66,7 +67,7 @@ class _AddPhotosScreenState extends State<AddPhotosScreen> {
           context.h(12),
         ),
         children: [
-          Text(
+          TText(
             'Add clear photos to help us understand the issue (Optional)',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -127,7 +128,7 @@ class _AddPhotosScreenState extends State<AddPhotosScreen> {
                 ),
                 SizedBox(width: context.w(8)),
                 Expanded(
-                  child: Text(
+                  child: TText(
                     'Take photos of the location , parcel or any relevant details.',
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -158,7 +159,7 @@ class _AddPhotosScreenState extends State<AddPhotosScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.photo_camera_outlined, color: profileAccent(context)),
-            Text(
+            TText(
               'Add Photo',
               style: AppTypography.regular.copyWith(
                 fontSize: 11,

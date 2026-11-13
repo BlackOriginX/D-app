@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/home/home_brand.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HomePlanCard extends StatelessWidget {
   const HomePlanCard({super.key, required this.accent, required this.female});
@@ -56,7 +57,7 @@ class HomePlanCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   AppStrings.planYourTime,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -66,7 +67,7 @@ class HomePlanCard extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-                Text(
+                TText(
                   AppStrings.planYourTimeSubtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

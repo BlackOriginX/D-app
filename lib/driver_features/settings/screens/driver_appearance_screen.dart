@@ -11,6 +11,7 @@ import 'package:rider_app/driver_features/settings/widgets/settings_choice_card.
 
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class DriverAppearanceScreen extends StatelessWidget {
   const DriverAppearanceScreen({super.key});
@@ -29,7 +30,7 @@ class DriverAppearanceScreen extends StatelessWidget {
               context.h(20),
             ),
             children: [
-              Text(
+              TText(
                 AppStrings.chooseYourAppearance,
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,

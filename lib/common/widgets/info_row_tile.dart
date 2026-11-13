@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// A reusable row displaying an icon, a label, and a value.
 ///
@@ -55,7 +56,7 @@ class InfoRowTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: labelStyle ??
                       TextStyle(
@@ -65,7 +66,7 @@ class InfoRowTile extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 2),
-                Text(
+                TText(
                   value,
                   style: valueStyle ??
                       TextStyle(

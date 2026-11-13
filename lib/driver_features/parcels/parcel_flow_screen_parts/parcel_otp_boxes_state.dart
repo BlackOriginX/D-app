@@ -89,7 +89,7 @@ class _ParcelOtpBoxesState extends State<_ParcelOtpBoxes> {
                         width: isActive ? 1.6 : 1,
                       ),
                     ),
-                    child: Text(
+                    child: TText(
                       char,
                       style: AppTypography.bold.copyWith(
                         fontSize: 20,

@@ -12,6 +12,7 @@ import 'package:rider_app/driver_features/coins/widgets/how_it_works_card.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 
 import '../../../common/constants/string_constants.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HowToEarnScreen extends StatefulWidget {
   const HowToEarnScreen({super.key, required this.onBack});
@@ -81,7 +82,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
 
   Widget _heading(BuildContext context, String text) => Padding(
     padding: EdgeInsets.only(top: context.h(18), bottom: context.h(8)),
-    child: Text(
+    child: TText(
       text,
       style: AppTypography.regular.copyWith(
         fontSize: 12,
@@ -108,7 +109,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
   Widget _reward(BuildContext context, int coins) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Text(
+      TText(
         '+$coins',
         style: AppTypography.regular.copyWith(
           fontSize: 13,
@@ -140,7 +141,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
         Row(
           children: [
             Expanded(
-              child: Text(
+              child: TText(
                 title,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -171,7 +172,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
           ),
         ),
         SizedBox(height: context.h(4)),
-        Text(
+        TText(
           '$done / $target',
           style: AppTypography.regular.copyWith(
             fontSize: 11,
@@ -196,7 +197,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         r.name,
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -205,7 +206,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
                       ),
                       if (r.description.isNotEmpty) ...[
                         SizedBox(height: context.h(2)),
-                        Text(
+                        TText(
                           r.description,
                           style: AppTypography.regular.copyWith(
                             fontSize: 11,
@@ -307,7 +308,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
               ],
             ),
           ),
-          Text(
+          TText(
             AppStrings.earnTorkkCoins,
             textAlign: TextAlign.center,
             style: coinsTitle(),
@@ -315,7 +316,7 @@ class _HowToEarnScreenState extends State<HowToEarnScreen> {
           SizedBox(height: context.h(6)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(48)),
-            child: Text(
+            child: TText(
               AppStrings.completeRidesDeliveriesToEarnCoins,
               textAlign: TextAlign.center,
               style: coinsMuted(context),

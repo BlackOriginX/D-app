@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/translations.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Google Play "Prominent Disclosure" for location access.
 ///
@@ -79,7 +80,7 @@ class LocationDisclosureScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Text(
+                      TText(
                         tr(background ? 'locDiscTitleBg' : 'locDiscTitleFg'),
                         style: TextStyle(
                           fontSize: 24,
@@ -89,7 +90,7 @@ class LocationDisclosureScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Text(
+                      TText(
                         tr(background ? 'locDiscIntroBg' : 'locDiscIntroFg'),
                         style: TextStyle(
                           fontSize: 14,
@@ -143,7 +144,7 @@ class LocationDisclosureScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: Text(
+                          child: TText(
                             tr('locDeny'),
                             style: const TextStyle(
                               fontSize: 16,
@@ -166,7 +167,7 @@ class LocationDisclosureScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: Text(
+                          child: TText(
                             tr('locAccept'),
                             style: const TextStyle(
                               fontSize: 16,
@@ -217,7 +218,7 @@ class _InfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: TextStyle(
                     fontSize: 15,
@@ -226,7 +227,7 @@ class _InfoCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                TText(
                   body,
                   style: TextStyle(
                     fontSize: 13,

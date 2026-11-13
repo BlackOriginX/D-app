@@ -27,7 +27,7 @@ class _TypeChip extends StatelessWidget {
             color: selected ? AppColors.primary : AppColors.fieldBorder,
           ),
         ),
-        child: Text(
+        child: TText(
           label,
           style: AppTypography.bold.copyWith(
             fontSize: 13,

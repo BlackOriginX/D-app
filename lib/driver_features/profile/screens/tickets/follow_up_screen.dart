@@ -7,6 +7,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/models/support_ticket.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class FollowUpScreen extends StatefulWidget {
   const FollowUpScreen({super.key, required this.ticket});
@@ -33,7 +34,7 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
     if (message.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Please add a message.')));
+      ).showSnackBar(const SnackBar(content: TText('Please add a message.')));
       return;
     }
     setState(() => _submitting = true);
@@ -42,14 +43,14 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Follow-up sent')));
+      ).showSnackBar(const SnackBar(content: TText('Follow-up sent')));
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
       setState(() => _submitting = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: Colors.red,
         ),
       );
@@ -69,7 +70,7 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
           context.h(12),
         ),
         children: [
-          Text(
+          TText(
             'Add additional information to follow up on this ticket.',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -79,7 +80,7 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
           SizedBox(height: context.h(12)),
           ticketCard(context, widget.ticket),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Add your message here',
             style: AppTypography.regular.copyWith(
               fontSize: 14,

@@ -6,6 +6,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_feedback.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_page.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PaymentFailedScreen extends StatelessWidget {
   const PaymentFailedScreen({
@@ -51,7 +52,7 @@ class PaymentFailedScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(context.r(14)),
                   ),
                 ),
-                child: Text(
+                child: TText(
                   'Change Payment Method',
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -73,13 +74,13 @@ class PaymentFailedScreen extends StatelessWidget {
             halo: Color(0xFFFEE2E2),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Payment Failed',
             textAlign: TextAlign.center,
             style: subscriptionTitle(),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             "We couldn't process your payment.\nPlease try again",
             textAlign: TextAlign.center,
             style: subscriptionMuted(context),

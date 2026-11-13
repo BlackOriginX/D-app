@@ -12,6 +12,7 @@ import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 
 import '../../../common/constants/string_constants.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ChangePinScreen extends StatefulWidget {
   const ChangePinScreen({super.key});
@@ -94,7 +95,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
           context.h(20),
         ),
         children: [
-          Text(
+          TText(
             AppStrings.currentPin,
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -111,7 +112,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             AppStrings.newPin,
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -127,7 +128,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Confirm New PIN',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -153,7 +154,7 @@ class _ChangePinScreenState extends State<ChangePinScreen> {
                 ),
                 SizedBox(width: context.w(8)),
                 Expanded(
-                  child: Text(
+                  child: TText(
                     _errorMessage!,
                     style: AppTypography.regular.copyWith(
                       color: context.legible(AppColors.error),

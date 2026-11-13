@@ -195,14 +195,14 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 'Good morning,',
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
                   color: context.torkk.textSecondary,
                 ),
               ),
-              Text(
+              TText(
                 widget.driverName,
                 style: AppTypography.bold.copyWith(
                   fontSize: 18,
@@ -252,7 +252,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                         color: Color(0xFFEF4444),
                         shape: BoxShape.circle,
                       ),
-                      child: Text(
+                      child: TText(
                         _offerLabel,
                         style: AppTypography.bold.copyWith(
                           fontSize: 13,
@@ -306,7 +306,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             'New ride request',
             style: AppTypography.bold.copyWith(
               fontSize: 18,
@@ -329,7 +329,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
               ),
               SizedBox(width: context.w(8)),
-              Text(
+              TText(
                 _vehicleLabel,
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -338,7 +338,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
               ),
               const Spacer(),
-              Text(
+              TText(
                 _fareLabel,
                 style: AppTypography.bold.copyWith(
                   fontSize: 22,
@@ -412,7 +412,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 _customerName,
                 style: AppTypography.bold.copyWith(
                   fontSize: 16,
@@ -441,7 +441,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                           color: context.torkk.textSecondary,
                         ),
                         SizedBox(width: context.w(4)),
-                        Text(
+                        TText(
                           '${PassengerGenderBubbles.totalPassengers(_ride)} passengers',
                           style: AppTypography.regular.copyWith(
                             fontSize: 11,
@@ -517,14 +517,14 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   'Pickup',
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
                     color: AppColors.slate400,
                   ),
                 ),
-                Text(
+                TText(
                   _pickupAddress,
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -533,14 +533,14 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                   ),
                 ),
                 SizedBox(height: context.h(16)),
-                Text(
+                TText(
                   'Drop',
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
                     color: AppColors.slate400,
                   ),
                 ),
-                Text(
+                TText(
                   _dropAddress,
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -560,7 +560,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        TText(
           value,
           textAlign: TextAlign.center,
           style: AppTypography.bold.copyWith(
@@ -570,7 +570,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
           ),
         ),
         SizedBox(height: context.h(2)),
-        Text(
+        TText(
           label,
           textAlign: TextAlign.center,
           style: AppTypography.regular.copyWith(
@@ -595,7 +595,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             borderRadius: BorderRadius.circular(context.r(16)),
           ),
         ),
-        child: Text(
+        child: TText(
           'Decline',
           style: AppTypography.bold.copyWith(
             fontSize: 16,
@@ -618,7 +618,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             borderRadius: BorderRadius.circular(context.r(16)),
           ),
         ),
-        child: Text(
+        child: TText(
           'Accept',
           style: AppTypography.bold.copyWith(
             fontSize: 16,
@@ -663,7 +663,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
               ),
               SizedBox(width: context.w(10)),
-              Text(
+              TText(
                 title,
                 style: AppTypography.bold.copyWith(
                   fontSize: 12,
@@ -685,7 +685,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
               color: context.adaptiveTint(const Color(0xFFEFF6FF)),
               borderRadius: BorderRadius.circular(context.r(8)),
             ),
-            child: Text(
+            child: TText(
               chip,
               style: AppTypography.bold.copyWith(
                 fontSize: 12,
@@ -791,7 +791,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             _waitLabel,
             style: AppTypography.bold.copyWith(
               fontSize: 22,
@@ -811,7 +811,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
               ),
               SizedBox(width: context.w(4)),
-              Text(
+              TText(
                 'Customer has been notified.',
                 style: AppTypography.regular.copyWith(
                   fontSize: 9,
@@ -872,12 +872,12 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               'Enter 4-digit OTP',
               style: AppTypography.bold.copyWith(fontSize: 24, height: 1.2),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               'Ask the customer for their 4-digit ride OTP.',
               style: AppTypography.regular.copyWith(
                 fontSize: 14.5,
@@ -928,7 +928,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 color: Color(0xFFEF4444),
                 size: 18,
               ),
-              label: Text(
+              label: TText(
                 'Report an Issue',
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -992,7 +992,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
               ],
             ),
           ),
-          Text(
+          TText(
             'Ride Completed !',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -1000,7 +1000,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
               letterSpacing: -0.3,
             ),
           ),
-          Text(
+          TText(
             'Great job',
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -1044,14 +1044,14 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         'You earned 200 coins',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Text(
+                      TText(
                         'Get your reward unlocked!',
                         style: TextStyle(color: Colors.white70, fontSize: 12),
                       ),
@@ -1132,7 +1132,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                         color: const Color(0xFF7C3AED),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
+                      child: TText(
                         'Torkk Rewards',
                         style: AppTypography.bold.copyWith(
                           fontSize: 12,
@@ -1141,7 +1141,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       ),
                     ),
                     SizedBox(height: context.h(8)),
-                    Text(
+                    TText(
                       'You earned\n200 Torkk Coins !',
                       textAlign: TextAlign.center,
                       style: AppTypography.bold.copyWith(
@@ -1154,11 +1154,11 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       width: context.w(120),
                       height: context.w(120),
                     ),
-                    Text(
+                    TText(
                       'Scratch & Win',
                       style: AppTypography.bold.copyWith(fontSize: 16),
                     ),
-                    Text(
+                    TText(
                       'Exciting reward await you.',
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -1173,7 +1173,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       height: context.h(44),
                       child: OutlinedButton(
                         onPressed: _close,
-                        child: const Text('Maybe Later'),
+                        child: const TText('Maybe Later'),
                       ),
                     ),
                   ],
@@ -1217,7 +1217,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
               ),
               SizedBox(height: context.h(16)),
-              Text(
+              TText(
                 title,
                 textAlign: TextAlign.center,
                 style: AppTypography.bold.copyWith(
@@ -1226,7 +1226,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
               ),
               SizedBox(height: context.h(6)),
-              Text(
+              TText(
                 body,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -1281,14 +1281,14 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       icon: const Icon(Icons.close),
                     ),
                   ),
-                  Text(
+                  TText(
                     'Cancel ride ?',
                     style: AppTypography.bold.copyWith(
                       fontSize: 18,
                       letterSpacing: -0.3,
                     ),
                   ),
-                  Text(
+                  TText(
                     'Are you sure you want to cancel the ride?',
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -1296,7 +1296,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                     ),
                   ),
                   SizedBox(height: context.h(10)),
-                  Text(
+                  TText(
                     'Cancellation Reason?',
                     style: AppTypography.bold.copyWith(fontSize: 14),
                   ),
@@ -1304,7 +1304,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
-                      title: Text(
+                      title: TText(
                         reasons[i],
                         style: AppTypography.regular.copyWith(fontSize: 14),
                       ),
@@ -1328,7 +1328,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                     height: context.h(46),
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(sheetContext),
-                      child: const Text('Keep Ride'),
+                      child: const TText('Keep Ride'),
                     ),
                   ),
                 ],
@@ -1357,7 +1357,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   _customerName,
                   style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
                 ),
@@ -1369,7 +1369,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       color: AppColors.slate400,
                     ),
                     const SizedBox(width: 4),
-                    Text(
+                    TText(
                       '$passengers passengers',
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -1408,8 +1408,8 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
   //       children: [
   //         Icon(Icons.circle, size: 8, color: color),
   //         SizedBox(width: context.w(8)),
-  //         Text('$label  ', style: AppTypography.regular.copyWith(fontSize: 11, color: AppColors.slate400)),
-  //         Expanded(child: Text(value, style: AppTypography.regular.copyWith(fontSize: 13, fontWeight: FontWeight.w600))),
+  //         TText('$label  ', style: AppTypography.regular.copyWith(fontSize: 11, color: AppColors.slate400)),
+  //         Expanded(child: TText(value, style: AppTypography.regular.copyWith(fontSize: 13, fontWeight: FontWeight.w600))),
   //       ],
   //     ),
   //   );
@@ -1425,14 +1425,14 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   '$label  ',
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
                     color: AppColors.slate400,
                   ),
                 ),
-                Text(
+                TText(
                   value,
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -1451,11 +1451,11 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        TText(
           value,
           style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
         ),
-        Text(
+        TText(
           label,
           style: AppTypography.regular.copyWith(
             fontSize: 11,
@@ -1489,12 +1489,12 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(fontSize: 13, height: 1.2),
                 ),
                 if (body.isNotEmpty)
-                  Text(
+                  TText(
                     body,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -1522,7 +1522,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
       child: Row(
         children: [
           Expanded(
-            child: Text(
+            child: TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -1530,7 +1530,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
               ),
             ),
           ),
-          Text(value, style: AppTypography.bold.copyWith(fontSize: 14)),
+          TText(value, style: AppTypography.bold.copyWith(fontSize: 14)),
         ],
       ),
     );
@@ -1559,7 +1559,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 children: [
                   _back(onBack),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       title,
                       style: AppTypography.bold.copyWith(
                         fontSize: 18,
@@ -1608,7 +1608,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            TText(
               label,
               style: AppTypography.bold.copyWith(
                 fontSize: 15,
@@ -1642,7 +1642,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
             borderRadius: BorderRadius.circular(context.r(14)),
           ),
         ),
-        child: Text(
+        child: TText(
           label,
           style: AppTypography.bold.copyWith(
             fontSize: 15,

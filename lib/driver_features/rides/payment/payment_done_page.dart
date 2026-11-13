@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_result.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Step 4: payment confirmed, with details, breakdown and the driver's earning.
 class PaymentDonePage extends StatelessWidget {
@@ -56,13 +57,13 @@ class PaymentDonePage extends StatelessWidget {
           SizedBox(height: context.h(8)),
           const PaymentBadge(check: true),
           SizedBox(height: context.h(12)),
-          Text(
+          TText(
             AppStrings.payConfirmed,
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(fontSize: 18),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             AppStrings.payConfirmedHint,
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -71,13 +72,13 @@ class PaymentDonePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             rupee2(collected),
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(fontSize: 30),
           ),
           if (r.outstanding == 0)
-            Text(
+            TText(
               AppStrings.payPaymentSuccessful,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -104,7 +105,7 @@ class PaymentDonePage extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.only(top: context.h(4)),
-                  child: Text(
+                  child: TText(
                     AppStrings.payBreakdown,
                     style: AppTypography.bold.copyWith(fontSize: 14),
                   ),
@@ -131,7 +132,7 @@ class PaymentDonePage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TText(
                   AppStrings.payYourEarning,
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -139,7 +140,7 @@ class PaymentDonePage extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
+              TText(
                 rupee(earning),
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,

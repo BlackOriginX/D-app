@@ -7,6 +7,7 @@ import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared layout for DigiLocker results that look the same:
 /// illustration, title, message, optional hint, and actions.
@@ -50,13 +51,13 @@ class OnboardingResultScreen extends StatelessWidget {
           children: [
             Image.asset(image, height: context.h(180), fit: BoxFit.contain),
             SizedBox(height: context.h(16)),
-            Text(
+            TText(
               title,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               message,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -101,7 +102,7 @@ class OnboardingOutlineButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(context.r(14)),
           border: Border.all(color: context.legible(AppColors.primary)),
         ),
-        child: Text(
+        child: TText(
           label,
           style: AppTypography.bold.copyWith(color: AppColors.primary, fontSize: 16, height: 1.2),
         ),

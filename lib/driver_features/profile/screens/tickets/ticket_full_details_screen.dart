@@ -9,6 +9,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/models/support_ticket.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/follow_up_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class TicketFullDetailsScreen extends StatelessWidget {
   const TicketFullDetailsScreen({super.key, required this.ticket});
@@ -46,7 +47,7 @@ class TicketFullDetailsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(context.r(14)),
                     ),
                   ),
-                  child: Text(
+                  child: TText(
                     'Follow up',
                     style: AppTypography.bold.copyWith(
                       fontSize: 15,
@@ -72,14 +73,14 @@ class TicketFullDetailsScreen extends StatelessWidget {
           _pair(context, 'Issue', ticket.issue, bold: true),
           _pair(context, 'Category', ticket.category, bold: true),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             'Description',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
               color: context.torkk.textSecondary,
             ),
           ),
-          Text(
+          TText(
             ticket.description,
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -87,7 +88,7 @@ class TicketFullDetailsScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(12)),
-          Text(
+          TText(
             'Attachments',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -138,7 +139,7 @@ class TicketFullDetailsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(context.r(10)),
                     border: Border.all(color: context.torkk.border),
                   ),
-                  child: Text(
+                  child: TText(
                     '+${ticket.photos.length - 2}',
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,
@@ -164,7 +165,7 @@ class TicketFullDetailsScreen extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
+            child: TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -172,7 +173,7 @@ class TicketFullDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
-          Text(
+          TText(
             value,
             style: AppTypography.regular.copyWith(
               fontSize: 13,

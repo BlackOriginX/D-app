@@ -7,6 +7,7 @@ import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/driver_features/documents/screens/driver_documents_screen.dart';
 import 'package:rider_app/driver_features/documents/screens/driver_subscription_pass_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_profile_screen_sections.dart';
 
 class DriverProfileScreen extends StatefulWidget {
@@ -95,7 +96,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Profile photo updated!'),
+            content: TText('Profile photo updated!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -105,7 +106,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to upload photo: $e'),
+            content: TText('Failed to upload photo: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -144,7 +145,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   ),
                 ),
               ),
-        title: Text(
+        title: TText(
           'Profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -209,7 +210,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   ),
                   const SizedBox(height: 16),
                   // Driver Name (e.g. Piyush Kumar from prefs/API)
-                  Text(
+                  TText(
                     _name.isNotEmpty ? _name : 'Ankita',
                     style: TextStyle(
                       fontSize: 24,
@@ -279,7 +280,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           side: const BorderSide(color: Colors.red, width: 1),
                         ),
                       ),
-                      child: const Text(
+                      child: const TText(
                         'Log Out',
                         style: TextStyle(
                           fontSize: 15,

@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SubscriptionPage extends StatelessWidget {
   const SubscriptionPage({
@@ -81,7 +82,7 @@ class SubscriptionButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(context.r(14)),
             ),
           ),
-          child: Text(
+          child: TText(
             label,
             style: AppTypography.bold.copyWith(
               fontSize: 15,

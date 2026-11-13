@@ -8,6 +8,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SetPinScreen extends StatefulWidget {
   const SetPinScreen({super.key});
@@ -62,7 +63,7 @@ class _SetPinScreenState extends State<SetPinScreen> {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             AppStrings.secureYourAccount,
             style: AppTypography.bold.copyWith(
               fontSize: 18,
@@ -73,7 +74,7 @@ class _SetPinScreenState extends State<SetPinScreen> {
           SizedBox(height: context.h(6)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(48)),
-            child: Text(
+            child: TText(
               AppStrings.createPinSubtitle,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -172,7 +173,7 @@ class _SetPinScreenState extends State<SetPinScreen> {
                     color: context.torkk.textPrimary,
                     size: context.w(22),
                   )
-                : Text(
+                : TText(
                     label,
                     style: AppTypography.regular.copyWith(
                       fontSize: 22,

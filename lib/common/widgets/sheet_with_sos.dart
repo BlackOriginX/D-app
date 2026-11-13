@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/screens/sos_screen.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// The red SOS circle. Opens the SOS screen.
 class SosCircleButton extends StatelessWidget {
@@ -29,7 +30,7 @@ class SosCircleButton extends StatelessWidget {
             ),
           ],
         ),
-        child: Text(
+        child: TText(
           'SOS',
           style: AppTypography.bold.copyWith(
             fontSize: 13,

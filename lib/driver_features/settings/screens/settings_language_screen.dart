@@ -6,6 +6,7 @@ import 'package:rider_app/common/utils/translations.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/settings/widgets/settings_choice_card.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SettingsLanguageScreen extends StatelessWidget {
   const SettingsLanguageScreen({super.key});
@@ -25,7 +26,7 @@ class SettingsLanguageScreen extends StatelessWidget {
               context.h(20),
             ),
             children: [
-              Text(
+              TText(
                 'Select your preferred language',
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
@@ -70,7 +71,7 @@ class _LangMark extends StatelessWidget {
         color: context.adaptiveTint(const Color(0xFFF5F3FF)),
         borderRadius: BorderRadius.circular(context.r(10)),
       ),
-      child: Text(
+      child: TText(
         label,
         style: AppTypography.bold.copyWith(
           fontSize: 13,

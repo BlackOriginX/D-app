@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Blue hint used at the bottom of onboarding steps.
 class OnboardingInfoBanner extends StatelessWidget {
@@ -35,7 +36,7 @@ class OnboardingInfoBanner extends StatelessWidget {
             SizedBox(width: context.w(10)),
           ],
           Expanded(
-            child: Text(
+            child: TText(
               message,
               style: AppTypography.regular.copyWith(
                 fontSize: 11,

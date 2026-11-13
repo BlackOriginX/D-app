@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 const _kycAnswer =
     'KYC helps verify your identity and required documents before you can start driving with Torkk. It ensures a safe and secure platform for all drivers and users, and is required as per regulatory guidelines.';
@@ -105,7 +106,7 @@ class _FaqScreenState extends State<FaqScreen> {
               ),
               child: Column(
                 children: [
-                  Text(
+                  TText(
                     AppStrings.answerHelpful,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -145,7 +146,7 @@ class _FaqScreenState extends State<FaqScreen> {
           context.h(20),
         ),
         children: [
-          Text(
+          TText(
             AppStrings.faqSubtitle,
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -223,7 +224,7 @@ class _FaqScreenState extends State<FaqScreen> {
         ),
       ),
       icon: Icon(icon, size: context.w(16)),
-      label: Text(
+      label: TText(
         label,
         style: AppTypography.bold.copyWith(
           fontSize: 14,
@@ -257,7 +258,7 @@ class _FaqScreenState extends State<FaqScreen> {
             Icon(icon, size: context.w(18), color: context.torkk.textPrimary),
             SizedBox(width: context.w(10)),
             Expanded(
-              child: Text(
+              child: TText(
                 title,
                 style: AppTypography.regular.copyWith(
                   fontSize: 14,
@@ -293,7 +294,7 @@ class _FaqScreenState extends State<FaqScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: TText(
                     item.question,
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -312,7 +313,7 @@ class _FaqScreenState extends State<FaqScreen> {
             ),
             if (open) ...[
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 item.answer,
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,

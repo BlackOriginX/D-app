@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Two overlapping circles: blue = male passengers, pink = female passengers.
 /// A circle is hidden when its count is 0.
@@ -92,7 +93,7 @@ class PassengerGenderBubbles extends StatelessWidget {
                   color: bubbles[i].$2,
                   shape: BoxShape.circle,
                 ),
-                child: Text(
+                child: TText(
                   '${bubbles[i].$1}',
                   style: AppTypography.bold.copyWith(
                     fontSize: size * 0.5,

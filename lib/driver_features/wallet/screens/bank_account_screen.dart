@@ -11,6 +11,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/screens/edit_bank_details_screen.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class BankAccountScreen extends StatefulWidget {
   const BankAccountScreen({super.key});
@@ -69,7 +70,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                 context.h(20),
               ),
               children: [
-                Text(
+                TText(
                   'Primary Bank Account',
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -114,7 +115,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               _details.bankName.isEmpty
                                   ? 'Not added'
                                   : _details.bankName,
@@ -124,7 +125,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                                 letterSpacing: -0.2,
                               ),
                             ),
-                            Text(
+                            TText(
                               _details.accountNumber.isEmpty
                                   ? '-'
                                   : _masked(_details.accountNumber),
@@ -135,7 +136,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                             ),
                             if (_details.ifscCode.isNotEmpty ||
                                 _details.branchName.isNotEmpty)
-                              Text(
+                              TText(
                                 [
                                   _details.ifscCode,
                                   _details.branchName,
@@ -160,7 +161,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                       color: const Color(0xFF16A34A),
                     ),
                     SizedBox(width: context.w(6)),
-                    Text(
+                    TText(
                       'Your Bank details are safe and secure with us',
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -240,7 +241,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             'Your payout account',
                             style: AppTypography.bold.copyWith(
                               fontSize: 14,
@@ -248,7 +249,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
                             ),
                           ),
                           SizedBox(height: context.h(2)),
-                          Text(
+                          TText(
                             'Your earnings are sent to the account shown above.',
                             style: AppTypography.regular.copyWith(
                               fontSize: 12,
@@ -305,7 +306,7 @@ class _BankAccountScreenState extends State<BankAccountScreen> {
         children: [
           Icon(icon, size: context.w(14), color: c),
           SizedBox(width: context.w(4)),
-          Text(
+          TText(
             label,
             style: AppTypography.regular.copyWith(
               fontSize: 11,

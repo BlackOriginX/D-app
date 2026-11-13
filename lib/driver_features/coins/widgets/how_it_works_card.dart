@@ -5,6 +5,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HowItWorksCard extends StatelessWidget {
   const HowItWorksCard({super.key, this.showTitle = true});
@@ -40,7 +41,7 @@ class HowItWorksCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showTitle) ...[
-          Text(
+          TText(
             AppStrings.howItWorks,
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -80,7 +81,7 @@ class HowItWorksCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               steps[i].$4,
                               style: AppTypography.regular.copyWith(
                                 fontSize: 12,
@@ -88,7 +89,7 @@ class HowItWorksCard extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: context.h(2)),
-                            Text(
+                            TText(
                               steps[i].$5,
                               style: AppTypography.regular.copyWith(
                                 fontSize: 11,

@@ -5,6 +5,7 @@ import 'package:rider_app/driver_features/coins/widgets/coin_result.dart';
 import 'package:rider_app/driver_features/coins/widgets/coins_text.dart';
 import 'package:rider_app/driver_features/coins/widgets/how_it_works_card.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NoScratchCardScreen extends StatelessWidget {
   const NoScratchCardScreen({super.key, required this.onBack});
@@ -28,14 +29,14 @@ class NoScratchCardScreen extends StatelessWidget {
             icon: Icons.close_rounded,
             color: Color(0xFFEF4444),
           ),
-          Text(
+          TText(
             'No Scratch Card Available',
             textAlign: TextAlign.center,
             style: coinsTitle(),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(16)),
-            child: Text(
+            child: TText(
               "You'll get a scratch card after completing an eligible job. One eligible job gives you one scratch card as per reward rules.",
               textAlign: TextAlign.center,
               style: coinsMuted(context),

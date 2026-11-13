@@ -15,6 +15,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import '../../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/app_switch.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PrivacySecurityScreen extends StatefulWidget {
   const PrivacySecurityScreen({super.key});
@@ -275,11 +276,11 @@ class _PrivacySwitch extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
                 ),
-                Text(
+                TText(
                   subtitle,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -404,7 +405,7 @@ class _LockResultDialogState extends State<_LockResultDialog>
                   SizedBox(height: context.h(16)),
                   Opacity(
                     opacity: t.clamp(0.0, 1.0),
-                    child: Text(
+                    child: TText(
                       widget.label,
                       style: AppTypography.bold.copyWith(
                         fontSize: 15,

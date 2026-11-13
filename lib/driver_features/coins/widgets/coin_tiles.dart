@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CoinMoneyCard extends StatelessWidget {
   const CoinMoneyCard({
@@ -28,7 +29,7 @@ class CoinMoneyCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             label,
             style: AppTypography.regular.copyWith(
               fontSize: 11,
@@ -36,7 +37,7 @@ class CoinMoneyCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             value,
             style: AppTypography.bold.copyWith(
               fontSize: 16,
@@ -94,7 +95,7 @@ class CoinLinkRow extends StatelessWidget {
             ),
             SizedBox(width: context.w(10)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 14,
@@ -153,14 +154,14 @@ class CoinInfoTile extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 title,
                 style: AppTypography.regular.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Text(
+              TText(
                 subtitle,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,

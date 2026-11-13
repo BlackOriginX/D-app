@@ -47,7 +47,7 @@ class _BankStep extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -60,7 +60,7 @@ class _BankStep extends StatelessWidget {
                   ),
                 ),
                 if (note != null)
-                  Text(
+                  TText(
                     note!,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,

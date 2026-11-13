@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ScratchCardScreen extends StatelessWidget {
   const ScratchCardScreen({
@@ -57,7 +58,7 @@ class ScratchCardScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: context.h(14)),
-              Text(
+              TText(
                 'Scratch the card to see your reward',
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(

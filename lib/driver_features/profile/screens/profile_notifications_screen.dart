@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/profile/screens/notification_preferenc
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/service/notifications_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ProfileNotificationsScreen extends StatefulWidget {
   const ProfileNotificationsScreen({super.key});
@@ -124,13 +125,13 @@ class _ProfileNotificationsScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(_error!, textAlign: TextAlign.center),
+              TText(_error!, textAlign: TextAlign.center),
               TextButton(
                 onPressed: () {
                   setState(() => _loading = true);
                   _refresh();
                 },
-                child: const Text('Retry'),
+                child: const TText('Retry'),
               ),
             ],
           ),
@@ -184,7 +185,7 @@ class _ProfileNotificationsScreenState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               'Notification Preferences',
                               style: AppTypography.bold.copyWith(
                                 color: context.torkk.textPrimary,
@@ -193,7 +194,7 @@ class _ProfileNotificationsScreenState
                                 letterSpacing: -0.2,
                               ),
                             ),
-                            Text(
+                            TText(
                               'Choose what you want to be notified about',
                               style: AppTypography.regular.copyWith(
                                 fontSize: 12,
@@ -214,7 +215,7 @@ class _ProfileNotificationsScreenState
               ),
             ),
             SizedBox(height: context.h(18)),
-            Text(
+            TText(
               'Recent Notifications',
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -294,7 +295,7 @@ class _EmptyNotifications extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'You have no new notifications.',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -422,7 +423,7 @@ class _NoticeCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     item.title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -430,7 +431,7 @@ class _NoticeCard extends StatelessWidget {
                       letterSpacing: -0.2,
                     ),
                   ),
-                  Text(
+                  TText(
                     item.subtitle,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -440,7 +441,7 @@ class _NoticeCard extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
+            TText(
               item.time,
               style: AppTypography.regular.copyWith(
                 fontSize: 11,

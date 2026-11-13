@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 Color profileAccent(BuildContext context) =>
     Theme.of(context).colorScheme.primary;
@@ -65,7 +66,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       title,
                       style: AppTypography.bold.copyWith(
                         fontSize: 20,
@@ -87,7 +88,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 child: SizedBox(
                   width: context.w(281),
-                  child: Text(
+                  child: TText(
                     subtitle!,
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,
@@ -179,7 +180,7 @@ class ProfileMenuItem extends StatelessWidget {
               ),
             SizedBox(width: context.w(14)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -235,7 +236,7 @@ class ProfileValueRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
@@ -244,7 +245,7 @@ class ProfileValueRow extends StatelessWidget {
                 ),
                 SizedBox(height: context.h(4)),
                 if (value.isNotEmpty)
-                  Text(
+                  TText(
                     value,
                     style: AppTypography.bold.copyWith(
                       fontSize: 12,
@@ -310,7 +311,7 @@ class ProfileAccentButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              TText(
                 label,
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,

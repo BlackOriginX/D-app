@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Step 2b: the rider paid only part by UPI; how was the rest handled?
 class PaymentAdjustPage extends StatelessWidget {
@@ -61,12 +62,12 @@ class PaymentAdjustPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TText(
                   AppStrings.payRemainingAmount,
                   style: AppTypography.regular.copyWith(fontSize: 14),
                 ),
               ),
-              Text(
+              TText(
                 rupee(remaining),
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -82,7 +83,7 @@ class PaymentAdjustPage extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.only(top: context.h(4)),
-                  child: Text(
+                  child: TText(
                     AppStrings.payAdjustment,
                     style: AppTypography.bold.copyWith(fontSize: 14),
                   ),
@@ -90,7 +91,7 @@ class PaymentAdjustPage extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
+                child: TText(
                   AppStrings.payAdjustmentHint,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

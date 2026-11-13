@@ -39,7 +39,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
                 ),
               ),
               SizedBox(width: context.w(10)),
-              Text(
+              TText(
                 _orderCode(trip),
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -52,7 +52,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             ],
           ),
           SizedBox(height: context.h(10)),
-          Text(
+          TText(
             _parcel
                 ? '${trip['item_category'] ?? trip['parcel_type'] ?? ''} • ${trip['item_weight'] ?? ''}'
                 : '${trip['vehicle_type'] ?? AppStrings.ordersRide}${trip['passenger_count'] != null ? ' • ${trip['passenger_count']} Seater' : ''}',
@@ -62,7 +62,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             ),
           ),
           SizedBox(height: context.h(10)),
-          Text(
+          TText(
             _timeLabel(trip),
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -70,7 +70,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             ),
           ),
           SizedBox(height: context.h(2)),
-          Text(
+          TText(
             '${trip['pickup_address'] ?? ''}  →  ${trip['drop_address'] ?? ''}',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -86,7 +86,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
                 color: AppColors.slate400,
               ),
               SizedBox(width: context.w(4)),
-              Text(
+              TText(
                 '${trip['distance_km'] ?? 0} km  •  ${trip['duration_mins'] ?? 0} mins',
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -117,7 +117,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 (trip['customer_name'] ?? '').toString(),
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -134,7 +134,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
                       color: AppColors.slate400,
                     ),
                     SizedBox(width: context.w(4)),
-                    Text(
+                    TText(
                       '${trip['passengers'] ?? trip['passenger_count'] ?? 1} ${AppStrings.passengers}',
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -197,7 +197,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   AppStrings.rateReceiver,
                   style: AppTypography.bold.copyWith(
                     fontSize: 14,
@@ -205,7 +205,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
                     letterSpacing: -0.2,
                   ),
                 ),
-                Text(
+                TText(
                   AppStrings.rateReceiverHint,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -260,7 +260,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
+                    child: TText(
                       row.$1,
                       style: AppTypography.regular.copyWith(
                         fontSize: 13,
@@ -268,7 +268,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
                       ),
                     ),
                   ),
-                  Text(
+                  TText(
                     row.$2,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -286,7 +286,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: TText(
                     AppStrings.totalFair,
                     style: AppTypography.bold.copyWith(
                       fontSize: 15,
@@ -295,7 +295,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
                     ),
                   ),
                 ),
-                Text(
+                TText(
                   '₹${_money(trip['total_fare'], 0)}',
                   style: AppTypography.bold.copyWith(
                     fontSize: 18,
@@ -325,7 +325,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             AppStrings.paymentStatus,
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -333,7 +333,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             ),
           ),
           SizedBox(height: context.h(2)),
-          Text(
+          TText(
             (trip['payment_label'] ?? AppStrings.paidCash).toString(),
             style: AppTypography.bold.copyWith(
               fontSize: 15,
@@ -356,7 +356,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(context.r(8)),
       ),
-      child: Text(
+      child: TText(
         label,
         style: AppTypography.regular.copyWith(
           fontSize: 11,
@@ -396,7 +396,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
         children: [
           Icon(icon, size: context.w(12), color: color),
           SizedBox(width: context.w(2)),
-          Text(
+          TText(
             count,
             style: AppTypography.regular.copyWith(
               fontSize: 11,

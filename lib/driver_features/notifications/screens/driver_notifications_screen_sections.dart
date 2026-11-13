@@ -50,7 +50,7 @@ extension _DriverNotificationsScreenStateSections
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
+                      child: TText(
                         item['title'] ?? 'Notification',
                         style: const TextStyle(
                           fontSize: 16,
@@ -61,7 +61,7 @@ extension _DriverNotificationsScreenStateSections
                   ],
                 ),
                 const SizedBox(height: 14),
-                Text(
+                TText(
                   item['description'] ?? item['title'] ?? '',
                   style: TextStyle(
                     fontSize: 14,
@@ -82,7 +82,7 @@ extension _DriverNotificationsScreenStateSections
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
-                    child: const Text(
+                    child: const TText(
                       'OK',
                       style: TextStyle(
                         color: Colors.white,
@@ -138,7 +138,7 @@ extension _DriverNotificationsScreenStateSections
                     color: const Color(0xFF1E3A8A).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Text(
+                  child: const TText(
                     '₹',
                     style: TextStyle(
                       fontSize: 22,
@@ -151,7 +151,7 @@ extension _DriverNotificationsScreenStateSections
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       'UPI ID Set Up',
                       style: TextStyle(
                         fontSize: 18,
@@ -159,7 +159,7 @@ extension _DriverNotificationsScreenStateSections
                         color: context.torkk.textPrimary,
                       ),
                     ),
-                    Text(
+                    TText(
                       'Receive instant daily ride payouts',
                       style: TextStyle(
                         fontSize: 12,
@@ -174,7 +174,7 @@ extension _DriverNotificationsScreenStateSections
             TextField(
               controller: upiCtrl,
               decoration: InputDecoration(
-                hintText: 'e.g. mobile@upi or username@okaxis',
+                hintText: AppTranslations.t('e.g. mobile@upi or username@okaxis'),
                 filled: true,
                 fillColor: context.torkk.surfaceMuted,
                 border: OutlineInputBorder(
@@ -214,7 +214,7 @@ extension _DriverNotificationsScreenStateSections
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('UPI ID updated successfully!'),
+                        content: TText('UPI ID updated successfully!'),
                         backgroundColor: Color(0xFF10B981),
                       ),
                     );
@@ -228,7 +228,7 @@ extension _DriverNotificationsScreenStateSections
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
+                child: const TText(
                   'Save UPI ID',
                   style: TextStyle(
                     color: Colors.white,
@@ -252,7 +252,7 @@ extension _DriverNotificationsScreenStateSections
       case 'blue_rupee':
       case 'rupee':
         bg = const Color(0xFF163E93); // Deep blue from image
-        iconWidget = const Text(
+        iconWidget = const TText(
           '₹',
           style: TextStyle(
             color: Colors.white,
@@ -294,7 +294,7 @@ extension _DriverNotificationsScreenStateSections
       case 'green':
       case 'earnings':
         bg = const Color(0xFF22C55E); // Green from image
-        iconWidget = const Text(
+        iconWidget = const TText(
           '₹',
           style: TextStyle(
             color: Colors.white,

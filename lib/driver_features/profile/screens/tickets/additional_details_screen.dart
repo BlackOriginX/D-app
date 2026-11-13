@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/issue_submitted_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AdditionalDetailsScreen extends StatefulWidget {
   const AdditionalDetailsScreen({
@@ -49,7 +50,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
     final note = _selected == null ? '' : _notes[_selected!];
     if (_note.text.trim().isEmpty && note.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a note or add details.')),
+        const SnackBar(content: TText('Please select a note or add details.')),
       );
       return;
     }
@@ -80,7 +81,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: Colors.red,
         ),
       );
@@ -107,7 +108,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
           context.h(12),
         ),
         children: [
-          Text(
+          TText(
             'Add any additional information to help us resolve the issue.',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -115,7 +116,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
             ),
           ),
           SizedBox(height: context.h(14)),
-          Text(
+          TText(
             'Quick notes (optional)',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -140,7 +141,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: TText(
                         _notes[i],
                         style: AppTypography.regular.copyWith(fontSize: 14),
                       ),
@@ -158,7 +159,7 @@ class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
               ),
             ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             'Add more details (optional)',
             style: AppTypography.regular.copyWith(
               fontSize: 14,

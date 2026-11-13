@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/subscription/widgets/payment_method_ti
 import 'package:rider_app/driver_features/subscription/widgets/subscription_page.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_plan_card.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SubscriptionPaymentScreen extends StatelessWidget {
   const SubscriptionPaymentScreen({
@@ -42,7 +43,7 @@ class SubscriptionPaymentScreen extends StatelessWidget {
                 color: const Color(0xFF16A34A),
               ),
               SizedBox(width: context.w(10)),
-              Text(
+              TText(
                 'Your Bank details are safe and secure with us',
                 style: AppTypography.regular.copyWith(
                   fontSize: 11,
@@ -67,7 +68,7 @@ class SubscriptionPaymentScreen extends StatelessWidget {
           SubscriptionPlanCard(
             name: plan.name.replaceAll(' - ', '- '),
             subtitle: plan.validity,
-            trailing: Text(
+            trailing: TText(
               '₹ ${plan.price}',
               style: AppTypography.bold.copyWith(
                 fontSize: 18,
@@ -77,7 +78,7 @@ class SubscriptionPaymentScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(22)),
-          Text(
+          TText(
             'Select Payment Method',
             style: AppTypography.regular.copyWith(
               fontSize: 12,

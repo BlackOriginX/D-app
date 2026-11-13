@@ -7,6 +7,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class IdentityVerifiedScreen extends StatelessWidget {
   final VoidCallback onContinue;
@@ -33,12 +34,12 @@ class IdentityVerifiedScreen extends StatelessWidget {
                 height: context.w(96),
               ),
               SizedBox(height: context.h(16)),
-              Text(
+              TText(
                 AppStrings.identityVerified,
                 style: AppTypography.bold.copyWith(fontSize: 22, height: 1.2),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 AppStrings.identityVerifiedSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -56,7 +57,7 @@ class IdentityVerifiedScreen extends StatelessWidget {
                   ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.documentsSecurelyVerified,
                       style: AppTypography.regular.copyWith(
                         fontSize: 13,

@@ -6,6 +6,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/subscription/models/subscription_plan.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PaymentMethodTile extends StatelessWidget {
   const PaymentMethodTile({
@@ -74,14 +75,14 @@ class PaymentMethodTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text(subtitle, style: subscriptionMuted(context)),
+                  TText(subtitle, style: subscriptionMuted(context)),
                 ],
               ),
             ),

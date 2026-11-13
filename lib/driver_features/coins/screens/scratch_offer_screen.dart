@@ -9,6 +9,7 @@ import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/coins/widgets/how_it_works_card.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ScratchOfferScreen extends StatelessWidget {
   const ScratchOfferScreen({
@@ -58,7 +59,7 @@ class ScratchOfferScreen extends StatelessWidget {
                   height: context.w(140),
                 ),
                 SizedBox(height: context.h(12)),
-                Text(
+                TText(
                   (card?.title ?? '').isEmpty ? 'Scratch Card' : card!.title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 16,
@@ -67,7 +68,7 @@ class ScratchOfferScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: context.h(4)),
-                Text(
+                TText(
                   (card?.description ?? '').isEmpty
                       ? 'Win up to 500 coins, discounts'
                       : card!.description,

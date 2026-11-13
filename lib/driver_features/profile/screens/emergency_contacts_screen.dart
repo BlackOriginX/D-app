@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/settings/screens/driver_emergency_contact_screen.dart';
 import 'package:rider_app/service/emergency_contacts_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Lists the driver's saved emergency contacts with a one-tap call button.
 class EmergencyContactsScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(e.toString().replaceFirst('Exception: ', '')),
+        content: TText(e.toString().replaceFirst('Exception: ', '')),
         backgroundColor: Colors.red,
       ),
     );
@@ -113,7 +114,7 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
         onRetry: _load,
         child: _contacts.isEmpty
             ? Center(
-                child: Text(
+                child: TText(
                   'No emergency contacts added yet',
                   style: AppTypography.regular.copyWith(
                     fontSize: 14,
@@ -201,9 +202,9 @@ class _ContactCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: AppTypography.bold.copyWith(fontSize: 14)),
+                TText(name, style: AppTypography.bold.copyWith(fontSize: 14)),
                 SizedBox(height: context.h(2)),
-                Text(
+                TText(
                   subtitle,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

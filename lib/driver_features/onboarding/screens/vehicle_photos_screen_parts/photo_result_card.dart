@@ -37,14 +37,14 @@ class _PhotoResultCard extends StatelessWidget {
               ),
               SizedBox(width: context.w(4)),
               Expanded(
-                child: Text(
+                child: TText(
                   label,
                   style: AppTypography.bold.copyWith(fontSize: 11, height: 1.2),
                 ),
               ),
             ],
           ),
-          Text(
+          TText(
             failed
                 ? AppStrings.verificationFailedLabel
                 : AppStrings.kycVerified,
@@ -81,7 +81,7 @@ class _PhotoResultCard extends StatelessWidget {
                     color: context.legible(AppColors.primary),
                   ),
                   SizedBox(width: context.w(4)),
-                  Text(
+                  TText(
                     AppStrings.retake,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,

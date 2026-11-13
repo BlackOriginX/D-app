@@ -6,6 +6,7 @@ import 'package:rider_app/common/widgets/status_result.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_plan_card.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PaymentSuccessScreen extends StatelessWidget {
   const PaymentSuccessScreen({
@@ -52,7 +53,7 @@ class PaymentSuccessScreen extends StatelessWidget {
       child: SubscriptionPlanCard(
         name: 'CAB EV- Weekly',
         subtitle: 'Valid for 7 days',
-        trailing: Text(
+        trailing: TText(
           '₹ 499',
           style: AppTypography.bold.copyWith(
             fontSize: 16,

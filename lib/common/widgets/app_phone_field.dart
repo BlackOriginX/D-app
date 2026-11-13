@@ -5,6 +5,7 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Indian mobile field with a fixed +91 prefix.
 class AppPhoneField extends StatelessWidget {
@@ -37,7 +38,7 @@ class AppPhoneField extends StatelessWidget {
             borderRadius: radius,
           ),
           alignment: Alignment.center,
-          child: Text(
+          child: TText(
             effCountryCode,
             style: TextStyle(
               fontSize: context.sp(16),

@@ -8,6 +8,7 @@ import 'package:rider_app/driver_features/profile/models/support_ticket.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_details_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class TicketsScreen extends StatefulWidget {
   const TicketsScreen({super.key});
@@ -107,7 +108,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                                 : context.adaptiveTint(Color(0xFFF1F5F9)),
                             borderRadius: BorderRadius.circular(context.r(10)),
                           ),
-                          child: Text(
+                          child: TText(
                             tabs[i],
                             style: AppTypography.regular.copyWith(
                               fontSize: 13,
@@ -127,7 +128,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: context.h(60)),
                   child: Center(
-                    child: Text(
+                    child: TText(
                       'No tickets found',
                       style: AppTypography.regular.copyWith(
                         fontSize: 14,

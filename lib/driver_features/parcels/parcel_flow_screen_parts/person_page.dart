@@ -35,7 +35,7 @@ class _PersonPage extends StatelessWidget {
                       color: context.torkk.textPrimary,
                     ),
                   ),
-                  Text(
+                  TText(
                     sender ? 'Sender Details' : 'Receiver Details',
                     style: AppTypography.bold.copyWith(
                       fontSize: 18,
@@ -74,14 +74,14 @@ class _PersonPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TText(
                                 role,
                                 style: AppTypography.regular.copyWith(
                                   fontSize: 12,
                                   color: context.torkk.textSecondary,
                                 ),
                               ),
-                              Text(
+                              TText(
                                 name,
                                 style: AppTypography.bold.copyWith(
                                   fontSize: 15,
@@ -103,7 +103,7 @@ class _PersonPage extends StatelessWidget {
                             ),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Text(
+                          child: TText(
                             'Verified User',
                             style: AppTypography.regular.copyWith(
                               fontSize: 11,
@@ -116,7 +116,7 @@ class _PersonPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     'Contact Information',
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -140,7 +140,7 @@ class _PersonPage extends StatelessWidget {
                     'Chat with Receiver',
                   ),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     addressTitle,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -164,7 +164,7 @@ class _PersonPage extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               address,
                               style: AppTypography.bold.copyWith(
                                 color: context.torkk.textPrimary,
@@ -172,7 +172,7 @@ class _PersonPage extends StatelessWidget {
                                 height: 1.2,
                               ),
                             ),
-                            Text(
+                            TText(
                               'Noida',
                               style: AppTypography.regular.copyWith(
                                 fontSize: 12,
@@ -213,14 +213,14 @@ class _PersonPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 11,
                   color: AppColors.slate400,
                 ),
               ),
-              Text(
+              TText(
                 value,
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,

@@ -7,6 +7,7 @@ import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/driver_features/profile/screens/driver_profile_screen.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_earnings_screen_sections.dart';
 
 // --- DRIVER EARNINGS SCREEN ---
@@ -163,7 +164,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                       ),
                     ),
                   ),
-                  Text(
+                  TText(
                     'Earnings',
                     style: TextStyle(
                       fontSize: 22,
@@ -269,7 +270,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  TText(
                     'Statements',
                     style: TextStyle(
                       fontSize: 22,
@@ -308,7 +309,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                                   color: Color(0xFF94A3B8),
                                 ),
                                 SizedBox(height: 12),
-                                Text(
+                                TText(
                                   'No statements or transactions found',
                                   style: TextStyle(
                                     fontSize: 15,
@@ -317,7 +318,7 @@ class _DriverEarningsScreenState extends State<DriverEarningsScreen> {
                                   ),
                                 ),
                                 SizedBox(height: 4),
-                                Text(
+                                TText(
                                   'Completed ride earnings will appear here.',
                                   style: TextStyle(
                                     fontSize: 12,

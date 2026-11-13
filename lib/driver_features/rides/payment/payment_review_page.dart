@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_result.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Step 3: review what was collected before confirming.
 class PaymentReviewPage extends StatelessWidget {
@@ -50,7 +51,7 @@ class PaymentReviewPage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: context.h(8)),
               child: Center(
-                child: Text(
+                child: TText(
                   AppStrings.payPaymentSuccessful,
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -93,7 +94,7 @@ class PaymentReviewPage extends StatelessWidget {
           ),
           if (r.outstanding > 0) ...[
             PaymentSectionTitle(AppStrings.payRemainingAmount),
-            Text(
+            TText(
               rupee(r.outstanding),
               style: AppTypography.bold.copyWith(
                 fontSize: 16,
@@ -101,7 +102,7 @@ class PaymentReviewPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               AppStrings.payCarriedNote,
               style: AppTypography.regular.copyWith(
                 fontSize: 12,

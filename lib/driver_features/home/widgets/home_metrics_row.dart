@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Reusable row containing Incentives card and Driver Rating card.
 class HomeMetricsRow extends StatelessWidget {
@@ -55,7 +56,7 @@ class HomeMetricsRow extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
+                  TText(
                     'Incentives',
                     style: TextStyle(
                       color: subtextColor,
@@ -64,7 +65,7 @@ class HomeMetricsRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
+                  TText(
                     '₹ ${incentives.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: textColor,
@@ -100,7 +101,7 @@ class HomeMetricsRow extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text(
+                TText(
                   'Rating',
                   style: TextStyle(
                     color: subtextColor,
@@ -112,7 +113,7 @@ class HomeMetricsRow extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    TText(
                       driverRating.toStringAsFixed(1),
                       style: TextStyle(
                         color: textColor,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NotifyButton extends StatelessWidget {
   final String label;
@@ -36,7 +37,7 @@ class NotifyButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              TText(
                 label,
                 style: const TextStyle(
                   fontSize: 16,

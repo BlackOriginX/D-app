@@ -9,6 +9,7 @@ import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon_screen.dart';
 import 'package:rider_app/service/location_availability_service.dart';
 import 'package:rider_app/service/location_permission_flow.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 OnboardingSession get _session => OnboardingSession.instance;
 
@@ -84,7 +85,7 @@ void openFromReview(BuildContext context, String path) {
 }
 
 void showOnboardingSnack(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TText(message)));
 }
 
 void openAiChat(BuildContext context) {

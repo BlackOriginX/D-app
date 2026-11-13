@@ -4,6 +4,7 @@ import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared header for onboarding steps.
 ///
@@ -53,7 +54,7 @@ class OnboardingStepScaffold extends StatelessWidget {
                   onPressed: onBack,
                 ),
                 Expanded(
-                  child: Text(
+                  child: TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 20,
@@ -79,7 +80,7 @@ class OnboardingStepScaffold extends StatelessWidget {
               ),
               child: SizedBox(
                 width: context.w(281),
-                child: Text(
+                child: TText(
                   subtitle!,
                   style: AppTypography.regular.copyWith(
                     fontSize: 14,

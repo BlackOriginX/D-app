@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/instagram_link.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AboutTorkkScreen extends StatelessWidget {
   const AboutTorkkScreen({super.key});
@@ -35,7 +36,7 @@ class AboutTorkkScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Smarter rides for',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -46,7 +47,7 @@ class AboutTorkkScreen extends StatelessWidget {
           ),
           const _GradientLine('a better tomorrow.'),
           SizedBox(height: context.h(12)),
-          Text(
+          TText(
             'Torkk is a modern rihalo platform built to make everyday travel simple, safe and reliable. We connect you with trusted drivers, so you can move freely, wherever life takes you.',
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -56,7 +57,7 @@ class AboutTorkkScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(22)),
-          Text(
+          TText(
             'Our Mission',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -70,7 +71,7 @@ class AboutTorkkScreen extends StatelessWidget {
                 "We're on a mission to build a cleaner, safer and more connected world — one ride at a time.",
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Area of Operation',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -122,7 +123,7 @@ class _GradientLine extends StatelessWidget {
       shaderCallback: (bounds) => const LinearGradient(
         colors: [Color(0xFF7C3AED), Color(0xFFEC4899)],
       ).createShader(bounds),
-      child: Text(
+      child: TText(
         text,
         textAlign: TextAlign.center,
         style: AppTypography.bold.copyWith(
@@ -154,12 +155,12 @@ class _InfoCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             title,
             style: AppTypography.bold.copyWith(fontSize: 13, height: 1.35),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             body,
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -202,11 +203,11 @@ class _FactCard extends StatelessWidget {
           ),
         ),
         SizedBox(height: context.h(8)),
-        Text(
+        TText(
           value,
           style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
         ),
-        Text(
+        TText(
           label,
           style: AppTypography.regular.copyWith(
             fontSize: 11,

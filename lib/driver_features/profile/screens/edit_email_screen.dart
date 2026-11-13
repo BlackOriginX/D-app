@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
@@ -7,6 +8,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shows the current email and lets the driver set a new one.
 /// Pops with the new email on success.
@@ -51,7 +53,7 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
       await DriverApiService.updateEmail(email);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email updated successfully')),
+        const SnackBar(content: TText('Email updated successfully')),
       );
       Navigator.of(context).pop(email);
     } catch (e) {
@@ -59,7 +61,7 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: Colors.red,
         ),
       );
@@ -81,7 +83,7 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               'New email',
               style: AppTypography.regular.copyWith(
                 fontSize: 12,
@@ -100,7 +102,7 @@ class _EditEmailScreenState extends State<EditEmailScreen> {
                 if (_error != null) setState(() => _error = null);
               },
               decoration: InputDecoration(
-                hintText: 'Enter new email address',
+                hintText: AppTranslations.t('Enter new email address'),
                 errorText: _error,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(context.r(12)),

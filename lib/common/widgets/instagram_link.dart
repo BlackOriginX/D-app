@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// "Get updates on Instagram" row: Instagram logo + blue text, opens the
 /// @torkkapp profile on tap. Shared by About Torkk and the Coming Soon screen.
@@ -26,7 +27,7 @@ class InstagramLink extends StatelessWidget {
           children: [
             _InstagramLogo(size: context.w(22)),
             SizedBox(width: context.w(8)),
-            Text(
+            TText(
               "Get updates on Instagram",
               style: AppTypography.caption(
                 color: Colors.blue,

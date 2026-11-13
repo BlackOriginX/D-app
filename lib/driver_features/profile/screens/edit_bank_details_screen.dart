@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Bank details the driver can edit. Keys match the API payload.
 class BankDetails {
@@ -121,7 +122,7 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
       debugPrint('BANK_SCREEN_01 | saved response=$response');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bank details saved successfully')),
+        const SnackBar(content: TText('Bank details saved successfully')),
       );
       Navigator.of(context).pop(details);
     } catch (e) {
@@ -130,7 +131,7 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: Colors.red,
         ),
       );
@@ -168,7 +169,7 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             label,
             style: AppTypography.regular.copyWith(
               fontSize: 12,

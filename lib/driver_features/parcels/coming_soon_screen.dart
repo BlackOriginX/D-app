@@ -8,6 +8,7 @@ import 'package:rider_app/driver_features/parcels/coming_soon/feature_page.dart'
 import 'package:rider_app/driver_features/parcels/coming_soon/launch_page.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/neighbourhood_page.dart';
 import 'package:rider_app/service/location_availability_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Neighbourhood launch screen shown when the backend says service is unavailable.
 /// The other frames in the design are additional pages in the same screen.
@@ -71,11 +72,11 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
       setState(() => _notified = true);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      ).showSnackBar(SnackBar(content: TText(message)));
     } catch (e) {
       if (!mounted) return;
       final text = '$e'.replaceFirst('Exception: ', '');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TText(text)));
     }
   }
 

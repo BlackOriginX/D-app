@@ -7,6 +7,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/issue_problem_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class IssueCategoryScreen extends StatefulWidget {
   const IssueCategoryScreen({super.key, this.rideId});
@@ -78,7 +79,7 @@ class _IssueCategoryScreenState extends State<IssueCategoryScreen> {
             context.h(20),
           ),
           children: [
-            Text(
+            TText(
               'Choose the category that best match your issue',
               style: AppTypography.regular.copyWith(
                 fontSize: 13,

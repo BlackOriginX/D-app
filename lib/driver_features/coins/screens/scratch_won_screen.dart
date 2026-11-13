@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ScratchWonScreen extends StatelessWidget {
   const ScratchWonScreen({
@@ -88,7 +89,7 @@ class ScratchWonScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Text(
+                  TText(
                     'You won',
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(
@@ -98,7 +99,7 @@ class ScratchWonScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     '$coins Coins',
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(
@@ -110,7 +111,7 @@ class ScratchWonScreen extends StatelessWidget {
                   SizedBox(height: context.h(8)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: context.w(48)),
-                    child: Text(
+                    child: TText(
                       'Great job ! Tap Claim to add this reward to your account.',
                       textAlign: TextAlign.center,
                       style: AppTypography.regular.copyWith(

@@ -54,13 +54,13 @@ extension _VehiclePhotosScreenStateSections on _VehiclePhotosScreenState {
               ),
             ),
             SizedBox(height: context.h(12)),
-            Text(
+            TText(
               title,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(fontSize: 18, height: 1.2),
             ),
             SizedBox(height: context.h(6)),
-            Text(
+            TText(
               subtitle,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(

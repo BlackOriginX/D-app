@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER PERFORMANCE SCREEN ---
 class DriverPerformanceScreen extends StatefulWidget {
@@ -108,7 +109,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
                 children: [
                   Icon(icon, color: color, size: 22),
                   const SizedBox(width: 10),
-                  Text(
+                  TText(
                     label,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -117,7 +118,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
                     ),
                   ),
                   const Spacer(),
-                  Text(
+                  TText(
                     value,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
@@ -151,7 +152,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
       floatingActionButton: const AiChatButton(size: 48),
       backgroundColor: context.torkk.surfaceMuted,
       appBar: AppBar(
-        title: const Text(
+        title: const TText(
           'Performance Metrics',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -210,7 +211,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  TText(
                                     (_performanceScore * _animation.value)
                                         .toStringAsFixed(0),
                                     style: TextStyle(
@@ -219,7 +220,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
                                       color: primaryColor,
                                     ),
                                   ),
-                                  Text(
+                                  TText(
                                     'Overall Score',
                                     style: TextStyle(
                                       fontSize: 10,
@@ -234,7 +235,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Text(
+                      TText(
                         'Excellent Standing',
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
@@ -243,7 +244,7 @@ class _DriverPerformanceScreenState extends State<DriverPerformanceScreen>
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      TText(
                         'Keep up the high service standards to earn extra bonuses!',
                         textAlign: TextAlign.center,
                         style: TextStyle(

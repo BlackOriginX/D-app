@@ -11,6 +11,7 @@ import 'package:rider_app/driver_features/onboarding/widgets/kyc_form_widgets.da
 import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Profile details after KYC. Male uses blue, Female switches the accent to pink.
 class DriverDetailsScreen extends StatefulWidget {
@@ -125,7 +126,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
           backgroundColor: context.torkk.background,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
-          title: Text(
+          title: TText(
             AppStrings.driversDetails,
             style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
           ),
@@ -144,7 +145,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                   Center(child: _photo()),
                   SizedBox(height: context.h(8)),
                   Center(
-                    child: Text(
+                    child: TText(
                       AppStrings.uploadClearPhoto,
                       style: AppTypography.regular.copyWith(
                         fontSize: 13,
@@ -178,7 +179,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                   SizedBox(height: context.h(8)),
                   _dobField(),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     AppStrings.emailOptional,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -192,7 +193,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                   ),
                   if (_showError) ...[
                     SizedBox(height: context.h(12)),
-                    Text(
+                    TText(
                       AppStrings.driverDetailsRequired,
                       style: AppTypography.regular.copyWith(
                         fontSize: 13,
@@ -292,7 +293,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
               color: selected ? _accent : AppColors.fieldBorder,
             ),
           ),
-          child: Text(
+          child: TText(
             label,
             style: AppTypography.bold.copyWith(
               fontSize: 14,
@@ -318,7 +319,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
         child: Row(
           children: [
             Expanded(
-              child: Text(
+              child: TText(
                 widget.dobController.text,
                 style: AppTypography.regular.copyWith(
                   fontSize: 14,

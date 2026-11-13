@@ -18,7 +18,7 @@ class _SuccessLine extends StatelessWidget {
           ),
           SizedBox(width: context.w(10)),
           Expanded(
-            child: Text(
+            child: TText(
               text,
               style: AppTypography.regular.copyWith(
                 fontSize: 14,

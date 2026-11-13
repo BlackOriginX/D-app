@@ -4,6 +4,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SettingsChoiceCard extends StatelessWidget {
   const SettingsChoiceCard({
@@ -48,7 +49,7 @@ class SettingsChoiceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: AppTypography.regular.copyWith(
                       fontSize: 15,
@@ -57,7 +58,7 @@ class SettingsChoiceCard extends StatelessWidget {
                     ),
                   ),
                   if (subtitle != null)
-                    Text(
+                    TText(
                       subtitle!,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,

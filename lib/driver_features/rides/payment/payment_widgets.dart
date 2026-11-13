@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/rides/payment/static_qr_painter.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 const paymentRed = Color(0xFFDC2626);
 const paymentGreen = Color(0xFF16A34A);
@@ -52,7 +53,7 @@ class PaymentScaffold extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       title,
                       textAlign: TextAlign.center,
                       style: AppTypography.bold.copyWith(fontSize: 16),
@@ -97,15 +98,15 @@ class PaymentAmountHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(label, style: AppTypography.regular.copyWith(fontSize: 15)),
+        TText(label, style: AppTypography.regular.copyWith(fontSize: 15)),
         SizedBox(height: context.h(6)),
-        Text(
+        TText(
           rupee2(amount),
           style: AppTypography.bold.copyWith(fontSize: 32, height: 1.1),
         ),
         if (sub != null) ...[
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             sub!,
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -162,7 +163,7 @@ class PaymentQrBlock extends StatelessWidget {
             imageUrl != null ||
             (!loading && error == null)) ...[
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             '${AppStrings.payPaymentId}:  $paymentId',
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -182,7 +183,7 @@ class PaymentQrBlock extends StatelessWidget {
           children: [
             const CircularProgressIndicator(strokeWidth: 2),
             SizedBox(height: context.h(10)),
-            Text(
+            TText(
               AppStrings.payQrLoading,
               style: AppTypography.regular.copyWith(
                 fontSize: 12,
@@ -198,7 +199,7 @@ class PaymentQrBlock extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            TText(
               AppStrings.payQrFailed,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(
@@ -207,7 +208,7 @@ class PaymentQrBlock extends StatelessWidget {
               ),
             ),
             SizedBox(height: context.h(4)),
-            Text(
+            TText(
               error!,
               textAlign: TextAlign.center,
               maxLines: 3,
@@ -218,7 +219,7 @@ class PaymentQrBlock extends StatelessWidget {
               ),
             ),
             if (onRetry != null)
-              TextButton(onPressed: onRetry, child: Text(AppStrings.retry)),
+              TextButton(onPressed: onRetry, child: TText(AppStrings.retry)),
           ],
         ),
       );
@@ -241,7 +242,7 @@ class PaymentQrBlock extends StatelessWidget {
           ? child
           : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
       errorBuilder: (_, _, _) => Center(
-        child: TextButton(onPressed: onRetry, child: Text(AppStrings.retry)),
+        child: TextButton(onPressed: onRetry, child: TText(AppStrings.retry)),
       ),
     );
   }
@@ -295,8 +296,8 @@ class PaymentRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: context.h(6)),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: labelStyle)),
-          Text(
+          Expanded(child: TText(label, style: labelStyle)),
+          TText(
             value,
             style: (bold ? AppTypography.bold : AppTypography.regular).copyWith(
               fontSize: 14,
@@ -318,7 +319,7 @@ class PaymentSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: context.h(16), bottom: context.h(8)),
-      child: Text(text, style: AppTypography.bold.copyWith(fontSize: 13)),
+      child: TText(text, style: AppTypography.bold.copyWith(fontSize: 13)),
     );
   }
 }
@@ -352,7 +353,7 @@ class PaymentChoice extends StatelessWidget {
             ),
             SizedBox(width: context.w(10)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(fontSize: 13.5),
               ),

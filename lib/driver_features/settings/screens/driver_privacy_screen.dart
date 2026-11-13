@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- PRIVACY SCREEN (Figma Settings -> Privacy) ---
 class DriverPrivacyScreen extends StatelessWidget {
@@ -22,7 +24,7 @@ class DriverPrivacyScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                TText(
                   title,
                   style: TextStyle(
                     fontSize: 18,
@@ -46,31 +48,31 @@ class DriverPrivacyScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Change Password'),
+        title: const TText('Change Password'),
         content: TextField(
           controller: passCtrl,
           obscureText: true,
           decoration: InputDecoration(
-            hintText: 'Enter new password',
+            hintText: AppTranslations.t('Enter new password'),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const TText('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Password updated successfully!'),
+                  content: TText('Password updated successfully!'),
                   backgroundColor: Color(0xFF1D4ED8),
                 ),
               );
             },
-            child: const Text('Save'),
+            child: const TText('Save'),
           ),
         ],
       ),
@@ -83,33 +85,33 @@ class DriverPrivacyScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Set Security PIN'),
+        title: const TText('Set Security PIN'),
         content: TextField(
           controller: pinCtrl,
           keyboardType: TextInputType.number,
           maxLength: 4,
           obscureText: true,
           decoration: InputDecoration(
-            hintText: 'Enter 4-digit PIN',
+            hintText: AppTranslations.t('Enter 4-digit PIN'),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const TText('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Security PIN set successfully!'),
+                  content: TText('Security PIN set successfully!'),
                   backgroundColor: Color(0xFF1D4ED8),
                 ),
               );
             },
-            child: const Text('Save PIN'),
+            child: const TText('Save PIN'),
           ),
         ],
       ),
@@ -151,7 +153,7 @@ class DriverPrivacyScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(
+        title: TText(
           'Settings',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -166,7 +168,7 @@ class DriverPrivacyScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 'Privacy',
                 style: TextStyle(
                   fontSize: 26,

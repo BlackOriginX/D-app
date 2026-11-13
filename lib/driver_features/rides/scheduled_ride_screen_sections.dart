@@ -51,7 +51,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         'Scheduled ride request',
                         style: AppTypography.bold.copyWith(
                           fontSize: 16,
@@ -60,7 +60,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                           letterSpacing: -0.2,
                         ),
                       ),
-                      Text(
+                      TText(
                         'Tomorrow at 6:30 am',
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -70,7 +70,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                     ],
                   ),
                 ),
-                Text(
+                TText(
                   '₹240',
                   style: AppTypography.bold.copyWith(
                     fontSize: 22,
@@ -90,7 +90,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                   size: context.w(18),
                 ),
                 SizedBox(width: context.w(8)),
-                Text(
+                TText(
                   'CAB',
                   style: AppTypography.bold.copyWith(
                     fontSize: 14,
@@ -197,7 +197,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                       ],
                     ),
                   ),
-                  Text(
+                  TText(
                     'Be Ready for Pickup',
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(
@@ -207,7 +207,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                     ),
                   ),
                   SizedBox(height: context.h(8)),
-                  Text(
+                  TText(
                     'This is a scheduled ride. Please start navigating a few minutes before the pickup timings.',
                     textAlign: TextAlign.center,
                     style: AppTypography.regular.copyWith(
@@ -266,7 +266,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                       borderRadius: BorderRadius.circular(context.r(14)),
                     ),
                   ),
-                  child: Text(
+                  child: TText(
                     'Back to Ride',
                     style: AppTypography.bold.copyWith(
                       fontSize: 15,
@@ -353,7 +353,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                           ),
                         ),
                         SizedBox(width: context.w(8)),
-                        Text(
+                        TText(
                           'Active Ride',
                           style: AppTypography.bold.copyWith(
                             fontSize: 16,
@@ -460,7 +460,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                     onPressed: () => _go(_Step.trip),
                     icon: const Icon(Icons.arrow_back_ios_new, size: 18),
                   ),
-                  Text(
+                  TText(
                     'Ride Details',
                     style: AppTypography.bold.copyWith(
                       fontSize: 20,
@@ -498,7 +498,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                               size: context.w(16),
                             ),
                             SizedBox(width: context.w(6)),
-                            Text(
+                            TText(
                               '#ORD98232',
                               style: AppTypography.bold.copyWith(
                                 fontSize: 13,
@@ -517,7 +517,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                                 ),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Text(
+                              child: TText(
                                 'Scheduled in 1 hour',
                                 style: AppTypography.bold.copyWith(
                                   fontSize: 11,
@@ -529,7 +529,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                           ],
                         ),
                         SizedBox(height: context.h(10)),
-                        Text(
+                        TText(
                           'Ride  •  4 Seater',
                           style: AppTypography.regular.copyWith(
                             fontSize: 13,
@@ -537,7 +537,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                           ),
                         ),
                         SizedBox(height: context.h(6)),
-                        Text(
+                        TText(
                           'Sector 62, Noida   →   DLF Mall of India',
                           style: AppTypography.bold.copyWith(
                             fontSize: 14,
@@ -546,7 +546,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                           ),
                         ),
                         SizedBox(height: context.h(4)),
-                        Text(
+                        TText(
                           '4.2 km,  18 mins',
                           style: AppTypography.regular.copyWith(
                             fontSize: 12,
@@ -582,14 +582,14 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               'Rate Receiver',
                               style: AppTypography.bold.copyWith(
                                 fontSize: 14,
                                 height: 1.2,
                               ),
                             ),
-                            Text(
+                            TText(
                               'Help us maintain a safe and reliable service',
                               style: AppTypography.regular.copyWith(
                                 fontSize: 11,
@@ -633,7 +633,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             'You earned 200 coins',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
@@ -641,7 +641,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                               fontSize: 14,
                             ),
                           ),
-                          Text(
+                          TText(
                             'Get your reward unlocked!',
                             style: TextStyle(
                               color: Colors.white70,
@@ -686,7 +686,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       'Current Location',
                       style: AppTypography.regular.copyWith(
                         fontSize: 11,
@@ -694,7 +694,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                         height: 1,
                       ),
                     ),
-                    Text(
+                    TText(
                       'Noida, UP',
                       style: AppTypography.bold.copyWith(
                         fontSize: 13,
@@ -719,7 +719,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
           ),
           child: Row(
             children: [
-              Text(
+              TText(
                 'Update',
                 style: AppTypography.bold.copyWith(
                   fontSize: 13,
@@ -760,7 +760,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 name,
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -770,7 +770,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
               ),
               Row(
                 children: [
-                  Text(
+                  TText(
                     passengers,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,
@@ -814,7 +814,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
         children: [
           Icon(icon, color: Colors.white, size: 10),
           const SizedBox(width: 2),
-          Text(
+          TText(
             count,
             style: AppTypography.bold.copyWith(
               fontSize: 9,
@@ -870,7 +870,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 11,
@@ -878,7 +878,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                 color: AppColors.slate400,
               ),
             ),
-            Text(
+            TText(
               value,
               style: AppTypography.bold.copyWith(
                 fontSize: 14,
@@ -917,7 +917,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        TText(
           value,
           style: AppTypography.bold.copyWith(
             fontSize: 15,
@@ -925,7 +925,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
             letterSpacing: -0.2,
           ),
         ),
-        Text(
+        TText(
           label,
           style: AppTypography.regular.copyWith(
             fontSize: 12,
@@ -960,7 +960,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 11,
@@ -968,7 +968,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                 color: AppColors.slate400,
               ),
             ),
-            Text(
+            TText(
               value,
               style: AppTypography.bold.copyWith(
                 fontSize: 14,
@@ -998,7 +998,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
             borderRadius: BorderRadius.circular(context.r(14)),
           ),
         ),
-        child: Text(
+        child: TText(
           label,
           style: AppTypography.bold.copyWith(
             fontSize: 14,
@@ -1034,7 +1034,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
                 size: 16,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
-        label: Text(
+        label: TText(
           label,
           style: AppTypography.bold.copyWith(
             fontSize: 14,

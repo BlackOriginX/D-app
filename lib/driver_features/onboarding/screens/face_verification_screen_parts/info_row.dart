@@ -35,7 +35,7 @@ class _InfoRow extends StatelessWidget {
           ),
           SizedBox(width: context.w(12)),
           Expanded(
-            child: Text(
+            child: TText(
               text,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

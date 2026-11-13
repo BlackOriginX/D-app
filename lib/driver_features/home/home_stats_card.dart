@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/home/home_glass_card.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HomeStatsCard extends StatelessWidget {
   const HomeStatsCard({
@@ -51,7 +52,7 @@ class HomeStatsCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         AppStrings.todayEarnings,
                         style: AppTypography.regular.copyWith(
                           fontSize: 11,
@@ -59,7 +60,7 @@ class HomeStatsCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: context.h(4)),
-                      Text(
+                      TText(
                         _rupees(todayEarnings),
                         style: AppTypography.bold.copyWith(
                           fontSize: 26,
@@ -68,7 +69,7 @@ class HomeStatsCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: context.h(4)),
-                      Text(
+                      TText(
                         completedJobs == 1 ? '1 ride' : '$completedJobs rides',
                         style: AppTypography.regular.copyWith(
                           fontSize: 14,
@@ -122,7 +123,7 @@ class HomeStatsCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         AppStrings.todayCompletedJobs,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -132,7 +133,7 @@ class HomeStatsCard extends StatelessWidget {
                           color: context.torkk.textSecondary,
                         ),
                       ),
-                      Text(
+                      TText(
                         '$completedJobs',
                         style: AppTypography.bold.copyWith(
                           fontSize: 16,

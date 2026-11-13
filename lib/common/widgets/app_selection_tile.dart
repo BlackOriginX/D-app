@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Radio-style option card used for language and similar single-choice lists.
 class AppSelectionTile extends StatelessWidget {
@@ -49,7 +50,7 @@ class AppSelectionTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: TextStyle(
                       fontSize: context.sp(16),
@@ -58,7 +59,7 @@ class AppSelectionTile extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     subtitle,
                     style: TextStyle(
                       fontSize: context.sp(13),

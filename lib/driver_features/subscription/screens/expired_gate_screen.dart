@@ -6,6 +6,7 @@ import 'package:rider_app/driver_features/subscription/widgets/subscription_page
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 
 import '../../../common/constants/string_constants.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ExpiredGateScreen extends StatelessWidget {
   const ExpiredGateScreen({
@@ -33,9 +34,9 @@ class ExpiredGateScreen extends StatelessWidget {
             halo: Color(0xFFFEE2E2),
           ),
           SizedBox(height: context.h(36)),
-          Text(AppStrings.planExpiredTitle, style: subscriptionTitle()),
+          TText(AppStrings.planExpiredTitle, style: subscriptionTitle()),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             AppStrings.planExpiredSubtitle,
             textAlign: TextAlign.center,
             style: subscriptionMuted(context),

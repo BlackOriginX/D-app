@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/service/driver_api_service.dart';
@@ -7,6 +8,7 @@ import 'package:rider_app/driver_features/profile/screens/driver_profile_screen.
 import 'package:rider_app/driver_features/wallet/wallet_screen.dart';
 import 'package:rider_app/driver_features/earnings/screens/driver_earnings_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_notifications_screen_sections.dart';
 
 // --- DRIVER NOTIFICATIONS SCREEN ---
@@ -144,7 +146,7 @@ class _DriverNotificationsScreenState extends State<DriverNotificationsScreen> {
                 )),
           borderRadius: BorderRadius.circular(24),
         ),
-        child: Text(
+        child: TText(
           label,
           style: TextStyle(
             color: isSelected
@@ -198,7 +200,7 @@ class _DriverNotificationsScreenState extends State<DriverNotificationsScreen> {
                       ),
                     ),
                   ),
-                  Text(
+                  TText(
                     'Inbox',
                     style: TextStyle(
                       fontSize: 22,
@@ -279,7 +281,7 @@ class _DriverNotificationsScreenState extends State<DriverNotificationsScreen> {
             // SECTION HEADER: "New"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(
+              child: TText(
                 'New',
                 style: TextStyle(
                   fontSize: 22,
@@ -306,7 +308,7 @@ class _DriverNotificationsScreenState extends State<DriverNotificationsScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Text(
+                          TText(
                             'No notifications for "$_selectedFilter"',
                             style: TextStyle(
                               fontSize: 15,
@@ -347,7 +349,7 @@ class _DriverNotificationsScreenState extends State<DriverNotificationsScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
+                                          TText(
                                             item['title'] ?? '',
                                             style: TextStyle(
                                               fontSize: 15.5,
@@ -356,7 +358,7 @@ class _DriverNotificationsScreenState extends State<DriverNotificationsScreen> {
                                             ),
                                           ),
                                           const SizedBox(height: 4),
-                                          Text(
+                                          TText(
                                             item['time'] ?? '',
                                             style: TextStyle(
                                               fontSize: 12,

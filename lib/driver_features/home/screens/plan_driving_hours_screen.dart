@@ -6,6 +6,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Lets the driver pick the time slot they prefer to go online in.
 /// Pops with the selected slot title on Save.
@@ -102,11 +103,11 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(dialogContext.r(20)),
           ),
-          title: Text(
+          title: TText(
             'Schedule saved',
             style: AppTypography.bold.copyWith(fontSize: 18),
           ),
-          content: Text(
+          content: TText(
             '${slot.title} (${slot.time}) has been saved as your driving hours.',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -149,7 +150,7 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
       if (!mounted) return;
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+        SnackBar(content: TText(e.toString().replaceFirst('Exception: ', ''))),
       );
     }
   }
@@ -232,7 +233,7 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     slot.title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 15,
@@ -241,7 +242,7 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
                     ),
                   ),
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     slot.time,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,

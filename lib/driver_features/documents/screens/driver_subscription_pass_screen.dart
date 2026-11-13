@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER SUBSCRIPTION PASS SCREEN (Coming Soon) ---
 class DriverSubscriptionPassScreen extends StatelessWidget {
@@ -72,7 +73,7 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    Text(
+                    TText(
                       'Coming Soon',
                       style: TextStyle(
                         fontSize: 26,
@@ -82,7 +83,7 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    TText(
                       'This feature is coming in next update',
                       style: TextStyle(
                         fontSize: 16,

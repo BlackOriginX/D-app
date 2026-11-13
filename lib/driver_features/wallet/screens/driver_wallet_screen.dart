@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER WALLET SCREEN ---
 class DriverWalletScreen extends StatefulWidget {
@@ -67,7 +68,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
               ),
             ),
             SizedBox(width: 12),
-            Text('Generating Earnings Statement...'),
+            TText('Generating Earnings Statement...'),
           ],
         ),
         duration: Duration(seconds: 2),
@@ -77,7 +78,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Earnings Statement downloaded successfully! (PDF)'),
+          content: TText('Earnings Statement downloaded successfully! (PDF)'),
           backgroundColor: Colors.green,
         ),
       );
@@ -95,7 +96,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             label,
             style: TextStyle(
               fontSize: 12,
@@ -104,7 +105,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
+          TText(
             amount,
             style: TextStyle(
               fontSize: 18,
@@ -130,7 +131,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
       floatingActionButton: const AiChatButton(size: 48),
       backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text(
+        title: TText(
           'Wallet & Earnings',
           style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
         ),
@@ -170,7 +171,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          const TText(
                             'TOTAL EARNINGS',
                             style: TextStyle(
                               fontSize: 13,
@@ -180,7 +181,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          Text(
+                          TText(
                             '₹${_totalEarnings.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 38,
@@ -195,7 +196,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                     const SizedBox(height: 24),
 
                     // Earnings Breakdown grid (Daily, Weekly, Monthly)
-                    Text(
+                    TText(
                       'EARNINGS BREAKDOWN',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -258,7 +259,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                                         color: primaryColor,
                                       ),
                                       const SizedBox(width: 4),
-                                      Text(
+                                      TText(
                                         'STATEMENT',
                                         style: TextStyle(
                                           fontSize: 11,
@@ -269,7 +270,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 6),
-                                  Text(
+                                  TText(
                                     'Download PDF',
                                     style: TextStyle(
                                       fontSize: 14,
@@ -287,7 +288,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                     const SizedBox(height: 28),
 
                     // Ride-wise Earnings
-                    Text(
+                    TText(
                       'RIDE-WISE EARNINGS',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -307,7 +308,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                               border: Border.all(color: context.torkk.border),
                             ),
                             child: Center(
-                              child: Text(
+                              child: TText(
                                 'No completed rides recorded yet.',
                                 style: TextStyle(
                                   color: context.themed(
@@ -352,18 +353,18 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                                       size: 20,
                                     ),
                                   ),
-                                  title: Text(
+                                  title: TText(
                                     'Ride #${trip['id']} - ${trip['customer_name'] ?? 'Customer'}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
                                     ),
                                   ),
-                                  subtitle: Text(
+                                  subtitle: TText(
                                     date,
                                     style: const TextStyle(fontSize: 11),
                                   ),
-                                  trailing: Text(
+                                  trailing: TText(
                                     '₹${(trip['earnings'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,

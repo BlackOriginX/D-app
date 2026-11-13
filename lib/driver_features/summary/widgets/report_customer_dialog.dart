@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:rider_app/service/api_client.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 void showReportCustomerDialog({
   required BuildContext context,
@@ -43,7 +45,7 @@ void showReportCustomerDialog({
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           'Report Issue',
                           style: TextStyle(
                             fontSize: 18,
@@ -52,7 +54,7 @@ void showReportCustomerDialog({
                           ),
                         ),
                         SizedBox(height: 2),
-                        Text(
+                        TText(
                           'Passenger misconduct or dispute',
                           style: TextStyle(
                             fontSize: 12,
@@ -81,7 +83,7 @@ void showReportCustomerDialog({
                 ],
               ),
               const SizedBox(height: 16),
-              Text(
+              TText(
                 'Please describe the issue with this passenger (e.g. misconduct, unpaid fare dispute, safety concern):',
                 style: TextStyle(
                   fontSize: 13,
@@ -98,7 +100,7 @@ void showReportCustomerDialog({
                   color: context.torkk.textPrimary,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Provide details about the incident...',
+                  hintText: AppTranslations.t('Provide details about the incident...'),
                   hintStyle: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF94A3B8),
@@ -140,7 +142,7 @@ void showReportCustomerDialog({
                         ),
                         foregroundColor: context.legible(Color(0xFF475569)),
                       ),
-                      child: const Text(
+                      child: const TText(
                         'Cancel',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -171,7 +173,7 @@ void showReportCustomerDialog({
                           Navigator.pop(dialogContext);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Report filed successfully.'),
+                              content: TText('Report filed successfully.'),
                               backgroundColor: Color(0xFF10B981),
                             ),
                           );
@@ -193,7 +195,7 @@ void showReportCustomerDialog({
                           color: Colors.white,
                           size: 16,
                         ),
-                        label: const Text(
+                        label: const TText(
                           'Submit Report',
                           style: TextStyle(
                             color: Colors.white,

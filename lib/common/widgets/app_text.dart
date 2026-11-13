@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AppHeading extends StatelessWidget {
   const AppHeading(this.text, {super.key});
@@ -11,7 +12,7 @@ class AppHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return TText(
       text,
       style: TextStyle(
         fontSize: context.sp(28),
@@ -31,7 +32,7 @@ class AppSubtitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return TText(
       text,
       style: TextStyle(
         color: context.torkk.textSecondary,
@@ -54,7 +55,7 @@ class AppCaption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return TText(
       text,
       textAlign: textAlign,
       style: TextStyle(

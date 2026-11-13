@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PersonalInformationScreen extends StatelessWidget {
   const PersonalInformationScreen({super.key});
@@ -149,14 +150,14 @@ class _VehicleHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 AppStrings.carModel,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
                   color: context.torkk.textSecondary,
                 ),
               ),
-              Text(
+              TText(
                 'Cab . 4 Seater',
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -281,7 +282,7 @@ class _KycCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.regular.copyWith(
                     fontSize: 14,
@@ -289,7 +290,7 @@ class _KycCard extends StatelessWidget {
                     color: context.torkk.textPrimary,
                   ),
                 ),
-                Text(
+                TText(
                   status,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -355,14 +356,14 @@ class BankInformationScreen extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       AppStrings.bankName,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
                         color: context.torkk.textSecondary,
                       ),
                     ),
-                    Text(
+                    TText(
                       'HDFC Bank',
                       style: AppTypography.bold.copyWith(
                         fontSize: 14,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/driver_features/profile/screens/driver_profile_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CustomDriverDrawer extends StatelessWidget {
   final String profilePhotoUrl;
@@ -74,7 +75,7 @@ class CustomDriverDrawer extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Text(
+                      TText(
                         'MENU',
                         style: TextStyle(
                           fontSize: 24,
@@ -151,7 +152,7 @@ class CustomDriverDrawer extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TText(
                                 driverName,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -164,7 +165,7 @@ class CustomDriverDrawer extends StatelessWidget {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Text(
+                                  TText(
                                     driverRating.toStringAsFixed(1),
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -187,7 +188,7 @@ class CustomDriverDrawer extends StatelessWidget {
                                 ],
                               ),
                               const SizedBox(height: 6),
-                              Text(
+                              TText(
                                 'DOB: $driverDob',
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -211,7 +212,7 @@ class CustomDriverDrawer extends StatelessWidget {
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     children: [
-                      Text(
+                      TText(
                         'Documents',
                         style: TextStyle(
                           fontSize: 22,
@@ -220,7 +221,7 @@ class CustomDriverDrawer extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      TText(
                         'Uploaded Documents',
                         style: TextStyle(
                           fontSize: 12,
@@ -318,7 +319,7 @@ class CustomDriverDrawer extends StatelessWidget {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
+                                content: TText(
                                   'Performance Metrics coming soon!',
                                 ),
                               ),
@@ -333,7 +334,7 @@ class CustomDriverDrawer extends StatelessWidget {
                           onClose();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Rewards coming soon!'),
+                              content: TText('Rewards coming soon!'),
                             ),
                           );
                         },
@@ -349,7 +350,7 @@ class CustomDriverDrawer extends StatelessWidget {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Trip Activity coming soon!'),
+                                content: TText('Trip Activity coming soon!'),
                               ),
                             );
                           }
@@ -365,7 +366,7 @@ class CustomDriverDrawer extends StatelessWidget {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Help & Support coming soon!'),
+                                content: TText('Help & Support coming soon!'),
                               ),
                             );
                           }
@@ -413,7 +414,7 @@ class CustomDriverDrawer extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: TextStyle(
                     fontSize: 16,
@@ -422,7 +423,7 @@ class CustomDriverDrawer extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
+                TText(
                   subtitle,
                   style: TextStyle(
                     fontSize: 11,
@@ -458,7 +459,7 @@ class CustomDriverDrawer extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            TText(
               title,
               style: TextStyle(
                 fontSize: 16,

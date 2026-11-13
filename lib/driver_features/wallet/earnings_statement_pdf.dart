@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Builds the earnings statement PDF and saves it to the device's Downloads
 /// folder (Android 10+ needs no permission). Where that isn't possible (iOS,
@@ -67,7 +68,7 @@ Future<void> downloadEarningsStatementPdf(
         mimeType: MimeType.pdf,
       );
       messenger.showSnackBar(
-        const SnackBar(content: Text('Statement saved to Downloads')),
+        const SnackBar(content: TText('Statement saved to Downloads')),
       );
     } catch (e) {
       debugPrint('Saving to Downloads failed ($e), opening share sheet');
@@ -84,7 +85,7 @@ Future<void> downloadEarningsStatementPdf(
     debugPrint('Error generating statement PDF: $e');
     messenger.showSnackBar(
       const SnackBar(
-        content: Text('Could not generate the statement'),
+        content: TText('Could not generate the statement'),
         backgroundColor: Colors.red,
       ),
     );

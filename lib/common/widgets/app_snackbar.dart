@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 enum AppSnackBarType { success, error, info }
 
@@ -147,7 +148,7 @@ class AppSnackBarBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 13,
@@ -156,7 +157,7 @@ class AppSnackBarBanner extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: context.h(4)),
-                Text(
+                TText(
                   message,
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,

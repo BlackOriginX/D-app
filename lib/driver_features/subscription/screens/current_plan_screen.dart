@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/subscription/widgets/subscription_feed
 import 'package:rider_app/driver_features/subscription/widgets/subscription_page.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_plan_card.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CurrentPlanScreen extends StatelessWidget {
   const CurrentPlanScreen({
@@ -36,7 +37,7 @@ class CurrentPlanScreen extends StatelessWidget {
           context.h(20),
         ),
         children: [
-          Text('Current Plan', style: subscriptionMuted(context)),
+          TText('Current Plan', style: subscriptionMuted(context)),
           SizedBox(height: context.h(8)),
           SubscriptionPlanCard(
             name: 'CAB EV- Weekly',

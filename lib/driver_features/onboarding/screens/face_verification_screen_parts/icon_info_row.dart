@@ -34,7 +34,7 @@ class _IconInfoRow extends StatelessWidget {
           ),
           SizedBox(width: context.w(12)),
           Expanded(
-            child: Text(
+            child: TText(
               text,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,

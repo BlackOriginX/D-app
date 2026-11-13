@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class LanguageSelectStep extends StatefulWidget {
   final String selectedLanguage;
@@ -52,11 +53,11 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppStrings.chooseLanguage, style: AppTypography.bold),
+            TText(AppStrings.chooseLanguage, style: AppTypography.bold),
             SizedBox(height: context.h(10.25)),
             SizedBox(
               width: context.w(280),
-              child: Text(
+              child: TText(
                 AppStrings.chooseLanguageSubtitle,
                 style: AppTypography.regular.copyWith(
                   color: context.torkk.textSecondary,
@@ -95,7 +96,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
                   ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.selectLanguageError,
                       style: AppTypography.regular.copyWith(
                         color: context.legible(AppColors.error),
@@ -113,7 +114,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
             ),
             SizedBox(height: context.h(14)),
             Center(
-              child: Text(
+              child: TText(
                 AppStrings.languageChangedLater,
                 style: AppTypography.regular.copyWith(
                   color: context.torkk.textSecondary,
@@ -159,7 +160,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
                 color: context.torkk.surfaceMuted,
                 borderRadius: BorderRadius.circular(context.r(10)),
               ),
-              child: Text(
+              child: TText(
                 badge,
                 style: AppTypography.bold.copyWith(fontSize: 16),
               ),
@@ -169,7 +170,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 16,
@@ -177,7 +178,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
                     ),
                   ),
                   if (subtitle != null)
-                    Text(
+                    TText(
                       subtitle,
                       style: AppTypography.regular.copyWith(
                         color: context.torkk.textSecondary,

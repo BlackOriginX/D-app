@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
@@ -82,12 +83,12 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           children: [
             ListTile(
               leading: const Icon(Icons.photo_camera_outlined),
-              title: const Text('Take a photo'),
+              title: const TText('Take a photo'),
               onTap: () => Navigator.of(sheetContext).pop(ImageSource.camera),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from gallery'),
+              title: const TText('Choose from gallery'),
               onTap: () => Navigator.of(sheetContext).pop(ImageSource.gallery),
             ),
           ],
@@ -100,7 +101,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: TText(message),
         backgroundColor: error ? Colors.red : null,
       ),
     );
@@ -250,7 +251,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           ],
         ),
         SizedBox(height: context.h(8)),
-        Text(
+        TText(
           _name.isEmpty ? 'Driver Partner' : _name,
           textAlign: TextAlign.center,
           style: AppTypography.bold.copyWith(

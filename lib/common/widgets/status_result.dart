@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared result layout.
 ///
@@ -55,7 +56,7 @@ class StatusResult extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(context.w(20), 0, context.w(20), context.h(16)),
                 children: [
                   _hero(context),
-                  Text(
+                  TText(
                     title,
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(fontSize: 20, height: 1.25),
@@ -63,7 +64,7 @@ class StatusResult extends StatelessWidget {
                   SizedBox(height: context.h(8)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: context.w(20)),
-                    child: Text(
+                    child: TText(
                       subtitle,
                       textAlign: TextAlign.center,
                       style: AppTypography.regular.copyWith(

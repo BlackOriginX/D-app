@@ -21,7 +21,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
     if (message == null) return const SizedBox.shrink();
     return Padding(
       padding: EdgeInsets.only(top: context.h(6)),
-      child: Text(
+      child: TText(
         message,
         style: AppTypography.regular.copyWith(
           fontSize: 12,
@@ -65,7 +65,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                     size: context.w(16),
                   ),
                   SizedBox(width: context.w(8)),
-                  Text(
+                  TText(
                     AppStrings.informationSecure,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -123,7 +123,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                             strokeWidth: 2,
                           ),
                         )
-                      : Text(
+                      : TText(
                           AppStrings.findIfsc,
                           style: AppTypography.bold.copyWith(
                             fontSize: 12,
@@ -209,12 +209,12 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
               ),
             ),
             SizedBox(height: context.h(16)),
-            Text(
+            TText(
               AppStrings.verifyingBank,
               style: AppTypography.bold.copyWith(fontSize: 18, height: 1.2),
             ),
             SizedBox(height: context.h(6)),
-            Text(
+            TText(
               AppStrings.verifyingBankSubtitle,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -279,13 +279,13 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
               ),
               SizedBox(height: context.h(12)),
               Center(
-                child: Text(
+                child: TText(
                   AppStrings.bankDetailsVerified,
                   style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
                 ),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 AppStrings.bankDetailsVerifiedSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -294,7 +294,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                 ),
               ),
               SizedBox(height: context.h(20)),
-              Text(
+              TText(
                 AppStrings.bankAccountDetails,
                 style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
               ),
@@ -346,7 +346,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                     ),
                     SizedBox(width: context.w(8)),
                     Expanded(
-                      child: Text(
+                      child: TText(
                         AppStrings.bankReadyHint,
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -395,12 +395,12 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                 height: context.w(96),
               ),
               SizedBox(height: context.h(16)),
-              Text(
+              TText(
                 AppStrings.bankVerificationFailed,
                 style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 AppStrings.bankVerificationFailedSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -420,7 +420,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       AppStrings.reason,
                       style: AppTypography.bold.copyWith(
                         color: context.torkk.textPrimary,

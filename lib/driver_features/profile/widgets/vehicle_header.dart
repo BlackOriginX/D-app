@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class VehicleHeader extends StatelessWidget {
   const VehicleHeader({super.key, this.title = ''});
@@ -33,14 +34,14 @@ class VehicleHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 AppStrings.carModel,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
                   color: context.torkk.textSecondary,
                 ),
               ),
-              Text(
+              TText(
                 title.isEmpty ? '-' : title,
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,

@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/models/support_ticket.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_details_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class IssueSubmittedScreen extends StatelessWidget {
   const IssueSubmittedScreen({super.key, required this.ticket});
@@ -45,7 +46,7 @@ class IssueSubmittedScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Issue Submitted',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -54,7 +55,7 @@ class IssueSubmittedScreen extends StatelessWidget {
               letterSpacing: -0.3,
             ),
           ),
-          Text(
+          TText(
             'Your request has been submitted successfully',
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -74,7 +75,7 @@ class IssueSubmittedScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: TText(
                         'Ticket ID',
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -82,7 +83,7 @@ class IssueSubmittedScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
+                    TText(
                       ticket.ticketNumber,
                       style: AppTypography.bold.copyWith(
                         fontSize: 14,
@@ -113,7 +114,7 @@ class IssueSubmittedScreen extends StatelessWidget {
             children: [
               Icon(Icons.info, size: 16, color: profileAccent(context)),
               SizedBox(width: context.w(6)),
-              Text(
+              TText(
                 "We'll notify you once there is an update.",
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -133,7 +134,7 @@ class IssueSubmittedScreen extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
+            child: TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -141,7 +142,7 @@ class IssueSubmittedScreen extends StatelessWidget {
               ),
             ),
           ),
-          Text(
+          TText(
             value,
             style: AppTypography.regular.copyWith(
               fontSize: 13,

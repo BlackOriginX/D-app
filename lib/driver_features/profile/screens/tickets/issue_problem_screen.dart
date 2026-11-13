@@ -7,6 +7,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/add_photos_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class IssueProblemScreen extends StatefulWidget {
   const IssueProblemScreen({
@@ -73,7 +74,7 @@ class _IssueProblemScreenState extends State<IssueProblemScreen> {
             context.h(20),
           ),
           children: [
-            Text(
+            TText(
               'Choose the issue you are facing',
               style: AppTypography.regular.copyWith(
                 fontSize: 13,

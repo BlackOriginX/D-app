@@ -5,6 +5,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 enum KycItemStatus { verified, pending, notStarted }
 
@@ -64,7 +65,7 @@ class KycStatusRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -75,7 +76,7 @@ class KycStatusRow extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     statusLabel,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

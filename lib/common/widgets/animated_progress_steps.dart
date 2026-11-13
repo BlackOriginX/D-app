@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ProgressStep {
   const ProgressStep({required this.title, this.subtitle});
@@ -131,7 +132,7 @@ class _ProgressStepRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   step.title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 13,
@@ -142,7 +143,7 @@ class _ProgressStepRow extends StatelessWidget {
                 ),
                 if (step.subtitle != null) ...[
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     step.subtitle!,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,

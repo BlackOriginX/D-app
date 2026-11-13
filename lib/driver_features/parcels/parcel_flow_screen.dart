@@ -1,4 +1,5 @@
 import 'package:rider_app/common/widgets/sheet_with_sos.dart';
+import 'package:rider_app/common/utils/translations.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:rider_app/driver_features/profile/screens/tickets_screen.dart';
 
 import '../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'parcel_flow_screen_parts/dashed_border_painter.dart';
 part 'parcel_flow_screen_parts/parcel_otp_boxes.dart';
@@ -164,7 +166,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
             ),
           ),
           SizedBox(height: context.h(18)),
-          Text(
+          TText(
             'Check Parcel Condition',
             style: AppTypography.bold.copyWith(
               fontSize: 14,
@@ -189,7 +191,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: TText(
                         labels[i],
                         style: AppTypography.regular.copyWith(fontSize: 14),
                       ),
@@ -206,7 +208,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
               ),
             ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             'Take parcel photo ( if required )',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -236,7 +238,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
                           size: context.w(22),
                         ),
                         SizedBox(height: context.h(6)),
-                        Text(
+                        TText(
                           _photoPath == null ? 'Add Photo' : 'Added',
                           style: AppTypography.regular.copyWith(
                             fontSize: 12,
@@ -306,7 +308,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
                   borderRadius: BorderRadius.circular(context.r(14)),
                 ),
               ),
-              child: const Text('Skip'),
+              child: const TText('Skip'),
             ),
           ),
         ],
@@ -325,13 +327,13 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
             ),
           ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             'Rahul',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(fontSize: 16),
           ),
           SizedBox(height: context.h(12)),
-          Text(
+          TText(
             'How was your Ride?',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -382,7 +384,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
                           : context.adaptiveTint(Color(0xFFF8FAFC)),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
+                    child: TText(
                       tag,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -412,7 +414,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
                   color: context.torkk.textPrimary,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Add a comment (Optional)',
+                  hintText: AppTranslations.t('Add a comment (Optional)'),
                   hintStyle: AppTypography.regular.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
@@ -435,7 +437,7 @@ class _ParcelFlowScreenState extends State<ParcelFlowScreen> {
           SizedBox(height: context.h(6)),
           Align(
             alignment: Alignment.centerRight,
-            child: Text(
+            child: TText(
               '${_comment.text.length}/200',
               style: AppTypography.regular.copyWith(
                 fontSize: 11,

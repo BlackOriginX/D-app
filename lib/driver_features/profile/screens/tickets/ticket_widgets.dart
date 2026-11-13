@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/models/support_ticket.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 Widget ticketCard(
   BuildContext context,
@@ -41,7 +43,7 @@ Widget ticketCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   ticket.ticketNumber,
                   style: AppTypography.bold.copyWith(
                     fontSize: 14,
@@ -49,14 +51,14 @@ Widget ticketCard(
                     letterSpacing: -0.2,
                   ),
                 ),
-                Text(
+                TText(
                   ticket.title,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
                     color: context.torkk.textSecondary,
                   ),
                 ),
-                Text(
+                TText(
                   ticket.date,
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
@@ -75,7 +77,7 @@ Widget ticketCard(
               color: ticket.chipColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(context.r(8)),
             ),
-            child: Text(
+            child: TText(
               ticket.chip,
               style: AppTypography.regular.copyWith(
                 fontSize: 11,
@@ -149,7 +151,7 @@ Widget ticketTimeline(BuildContext context, TicketStatus status) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       steps[i].$1,
                       style: AppTypography.regular.copyWith(
                         fontSize: 14,
@@ -157,7 +159,7 @@ Widget ticketTimeline(BuildContext context, TicketStatus status) {
                       ),
                     ),
                     if (steps[i].$2.isNotEmpty)
-                      Text(
+                      TText(
                         steps[i].$2,
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -186,7 +188,7 @@ Widget ticketMetaCard(BuildContext context, SupportTicket ticket) {
         Row(
           children: [
             Expanded(
-              child: Text(
+              child: TText(
                 'Issue',
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
@@ -194,7 +196,7 @@ Widget ticketMetaCard(BuildContext context, SupportTicket ticket) {
                 ),
               ),
             ),
-            Text(
+            TText(
               ticket.issue,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -207,7 +209,7 @@ Widget ticketMetaCard(BuildContext context, SupportTicket ticket) {
         Row(
           children: [
             Expanded(
-              child: Text(
+              child: TText(
                 'Category',
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
@@ -215,7 +217,7 @@ Widget ticketMetaCard(BuildContext context, SupportTicket ticket) {
                 ),
               ),
             ),
-            Text(
+            TText(
               ticket.category,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,
@@ -264,7 +266,7 @@ Widget ticketChoice(
             ),
             SizedBox(width: context.w(10)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 14,
@@ -295,7 +297,7 @@ Widget ticketCommentBox(
     maxLines: 4,
     onChanged: (_) => onChanged(),
     decoration: InputDecoration(
-      hintText: 'Add a comment',
+      hintText: AppTranslations.t('Add a comment'),
       hintStyle: AppTypography.regular.copyWith(
         fontSize: 14,
         color: AppColors.slate400,
@@ -330,7 +332,7 @@ Widget ticketAsyncBody(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            TText(
               error,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -339,7 +341,7 @@ Widget ticketAsyncBody(
               ),
             ),
             SizedBox(height: context.h(12)),
-            OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
+            OutlinedButton(onPressed: onRetry, child: const TText('Retry')),
           ],
         ),
       ),
@@ -372,7 +374,7 @@ Widget ticketFilled(
             borderRadius: BorderRadius.circular(context.r(14)),
           ),
         ),
-        child: Text(
+        child: TText(
           loading ? '...' : label,
           style: AppTypography.bold.copyWith(
             fontSize: 15,

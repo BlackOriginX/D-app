@@ -43,10 +43,10 @@ extension _SosScreenStateSections on _SosScreenState {
           const Spacer(),
           _sosOrb(context),
           SizedBox(height: context.h(18)),
-          Text('SOS Activated', style: _title()),
+          TText('SOS Activated', style: _title()),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(36)),
-            child: Text(
+            child: TText(
               'Your emergency contacts have been notified with your live location and job details',
               textAlign: TextAlign.center,
               style: _muted(),
@@ -62,7 +62,7 @@ extension _SosScreenStateSections on _SosScreenState {
             ),
             child: Column(
               children: [
-                Text(
+                TText(
                   clock,
                   style: AppTypography.bold.copyWith(
                     fontSize: 22,
@@ -83,7 +83,7 @@ extension _SosScreenStateSections on _SosScreenState {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text(
+                    TText(
                       'Help is on the way',
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -146,14 +146,14 @@ extension _SosScreenStateSections on _SosScreenState {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         contact.name,
                         style: AppTypography.regular.copyWith(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Text(
+                      TText(
                         contact.phone,
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -208,10 +208,10 @@ extension _SosScreenStateSections on _SosScreenState {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text('Issue Reported', style: _title()),
+          TText('Issue Reported', style: _title()),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(36)),
-            child: Text(
+            child: TText(
               'Your emergency alert has been stopped. Your contacts have been notified',
               textAlign: TextAlign.center,
               style: _muted(),
@@ -282,7 +282,7 @@ extension _SosScreenStateSections on _SosScreenState {
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
-          child: Text(
+          child: TText(
             'SOS',
             style: AppTypography.bold.copyWith(
               fontSize: 18,
@@ -320,7 +320,7 @@ extension _SosScreenStateSections on _SosScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.regular.copyWith(
                     fontSize: 14,
@@ -328,7 +328,7 @@ extension _SosScreenStateSections on _SosScreenState {
                   ),
                 ),
                 if (body != null)
-                  Text(
+                  TText(
                     body,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -380,7 +380,7 @@ extension _SosScreenStateSections on _SosScreenState {
               child: Icon(icon, color: color, size: context.w(24)),
             ),
             SizedBox(height: context.h(6)),
-            Text(
+            TText(
               label,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(fontSize: 12, height: 1.25),
@@ -418,7 +418,7 @@ extension _SosScreenStateSections on _SosScreenState {
                 Icon(icon, color: Colors.white, size: context.w(18)),
                 SizedBox(width: context.w(6)),
               ],
-              Text(
+              TText(
                 label,
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -452,7 +452,7 @@ extension _SosScreenStateSections on _SosScreenState {
               borderRadius: BorderRadius.circular(context.r(14)),
             ),
           ),
-          child: Text(
+          child: TText(
             label,
             style: AppTypography.bold.copyWith(
               fontSize: 15,

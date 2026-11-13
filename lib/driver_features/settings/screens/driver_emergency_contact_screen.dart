@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/service/emergency_contacts_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Form to add one emergency contact. Pops with `true` once saved.
 class DriverEmergencyContactScreen extends StatefulWidget {
@@ -49,14 +50,14 @@ class _DriverEmergencyContactScreenState
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Emergency contact added')));
+      ).showSnackBar(const SnackBar(content: TText('Emergency contact added')));
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: Colors.red,
         ),
       );
@@ -78,7 +79,7 @@ class _DriverEmergencyContactScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             label,
             style: AppTypography.regular.copyWith(
               fontSize: 12,

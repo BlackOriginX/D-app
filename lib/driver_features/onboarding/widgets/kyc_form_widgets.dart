@@ -7,6 +7,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class KycRequiredLabel extends StatelessWidget {
   const KycRequiredLabel(this.text, {super.key});
@@ -75,7 +76,7 @@ class KycUploadTile extends StatelessWidget {
                   width: double.infinity,
                   color: Colors.black54,
                   padding: EdgeInsets.symmetric(vertical: context.h(4)),
-                  child: Text(
+                  child: TText(
                     label,
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(
@@ -94,7 +95,7 @@ class KycUploadTile extends StatelessWidget {
                     size: context.w(26),
                   ),
                   SizedBox(height: context.h(8)),
-                  Text(
+                  TText(
                     label,
                     style: AppTypography.bold.copyWith(
                       fontSize: 13,
@@ -102,7 +103,7 @@ class KycUploadTile extends StatelessWidget {
                       color: context.legible(AppColors.primary),
                     ),
                   ),
-                  Text(
+                  TText(
                     uploaded ? AppStrings.kycVerified : AppStrings.tapToUpload,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,
@@ -181,7 +182,7 @@ class KycPreviewCard extends StatelessWidget {
                         color: context.legible(AppColors.primary),
                       ),
                       SizedBox(width: context.w(4)),
-                      Text(
+                      TText(
                         AppStrings.retake,
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -236,7 +237,7 @@ class KycPendingBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 13,
@@ -246,7 +247,7 @@ class KycPendingBanner extends StatelessWidget {
                 ),
                 if (subtitle != null) ...[
                   SizedBox(height: context.h(2)),
-                  Text(
+                  TText(
                     subtitle!,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -293,14 +294,14 @@ class KycDetailRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
                     color: context.torkk.textSecondary,
                   ),
                 ),
-                Text(
+                TText(
                   value,
                   style: AppTypography.bold.copyWith(fontSize: 13, height: 1.3),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class Chip extends StatelessWidget {
   final IconData icon;
@@ -39,7 +40,7 @@ class Chip extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Text(
+          TText(
             label,
             style: TextStyle(
               fontWeight: FontWeight.w700,

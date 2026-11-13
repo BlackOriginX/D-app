@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/torkk_colors.dart';
 import 'bouncing_widget.dart';
 import '../utils/screen_utils.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Full-width pill button used on onboarding and other primary actions.
 class AppPrimaryButton extends StatelessWidget {
@@ -42,7 +43,7 @@ class AppPrimaryButton extends StatelessWidget {
                 color: labelColor,
               ),
             )
-          : Text(
+          : TText(
               label,
               style: TextStyle(
                 color: labelColor,

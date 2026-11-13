@@ -7,7 +7,7 @@ extension _DriverProfileScreenStateSections on _DriverProfileScreenState {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
+          TText(
             title,
             style: TextStyle(
               fontSize: 16,
@@ -15,7 +15,7 @@ extension _DriverProfileScreenStateSections on _DriverProfileScreenState {
               color: context.torkk.textPrimary,
             ),
           ),
-          Text(
+          TText(
             value,
             style: TextStyle(
               fontSize: 16,
@@ -44,7 +44,7 @@ extension _DriverProfileScreenStateSections on _DriverProfileScreenState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            TText(
               title,
               style: TextStyle(
                 fontSize: 16,
@@ -125,7 +125,7 @@ extension _DriverProfileScreenStateSections on _DriverProfileScreenState {
                       size: 20,
                     ),
                     const SizedBox(height: 1),
-                    Text(
+                    TText(
                       item['label'] as String,
                       style: const TextStyle(
                         color: Colors.white,

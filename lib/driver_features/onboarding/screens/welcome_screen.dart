@@ -9,6 +9,7 @@ import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/onboarding_header_image.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class WelcomeScreen extends StatefulWidget {
   final TextEditingController phoneController;
@@ -97,12 +98,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           AppStrings.welcome,
                           style: AppTypography.bold.copyWith(fontSize: 24),
                         ),
                         SizedBox(height: context.h(10)),
-                        Text(
+                        TText(
                           AppStrings.welcomeSubtitle,
                           style: AppTypography.regular.copyWith(
                             color: context.torkk.textSecondary,
@@ -134,7 +135,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  Text(
+                                  TText(
                                     AppStrings.countryCodeIndia,
                                     style: AppTypography.regular,
                                   ),
@@ -172,7 +173,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ),
                               SizedBox(width: context.w(8)),
                               Expanded(
-                                child: Text(
+                                child: TText(
                                   AppStrings.enterMobileError,
                                   style: AppTypography.regular.copyWith(
                                     color: context.legible(AppColors.error),

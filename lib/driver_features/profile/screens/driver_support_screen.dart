@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- HELP TAB: CHAT SUPPORT SCREEN (Figma Help) ---
 class DriverSupportScreen extends StatefulWidget {
@@ -109,7 +111,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: const Center(
-                      child: Text(
+                      child: TText(
                         'TORKK',
                         style: TextStyle(
                           color: Colors.white,
@@ -122,7 +124,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                   ),
                   const SizedBox(width: 14),
                   const Expanded(
-                    child: Text(
+                    child: TText(
                       'Chat Support',
                       style: TextStyle(
                         color: Colors.white,
@@ -170,7 +172,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Text(
+                            TText(
                               'How can we help you?',
                               style: TextStyle(
                                 fontSize: 18,
@@ -179,7 +181,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            Text(
+                            TText(
                               'Type a message below to start chatting with TORKK Support.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -230,7 +232,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                                 bottomRight: Radius.circular(isUser ? 4 : 18),
                               ),
                             ),
-                            child: Text(
+                            child: TText(
                               msg['text'] ?? '',
                               style: TextStyle(
                                 color: isUser
@@ -308,7 +310,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                               decoration: InputDecoration(
                                 filled: false,
                                 fillColor: Colors.transparent,
-                                hintText: 'Send new message',
+                                hintText: AppTranslations.t('Send new message'),
                                 hintStyle: TextStyle(
                                   color: context.themed(
                                     light: const Color(0xFF4B5563),

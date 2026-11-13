@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Full-screen splash. Stays up for [duration], then calls [onFinished].
 ///
@@ -104,12 +105,12 @@ class _AppSplashScreenState extends State<AppSplashScreen> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Earn Fair ', style: tagline.copyWith(color: _ink)),
+                  TText('Earn Fair ', style: tagline.copyWith(color: _ink)),
                   ShaderMask(
                     shaderCallback: (rect) => const LinearGradient(
                       colors: [_purple, _indigo],
                     ).createShader(rect),
-                    child: Text(
+                    child: TText(
                       '. Drive Safe',
                       style: tagline.copyWith(color: Colors.white),
                     ),
@@ -133,7 +134,7 @@ class _AppSplashScreenState extends State<AppSplashScreen> {
                 ),
               ),
               const SizedBox(height: 14),
-              Text(
+              TText(
                 'Getting things ready...',
                 style: AppTypography.regular.copyWith(
                   fontSize: 15,

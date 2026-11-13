@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,6 +8,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets_screen.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class _ChatMessage {
   const _ChatMessage({
@@ -307,7 +309,7 @@ class _DriverLiveChatScreenState extends State<DriverLiveChatScreen> {
                 Expanded(
                   child: Row(
                     children: [
-                      Text(
+                      TText(
                         'Lui',
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -334,7 +336,7 @@ class _DriverLiveChatScreenState extends State<DriverLiveChatScreen> {
                       builder: (_) => const TicketsScreen(),
                     ),
                   ),
-                  child: Text(
+                  child: TText(
                     AppStrings.myTickets,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
@@ -392,7 +394,7 @@ class _DriverLiveChatScreenState extends State<DriverLiveChatScreen> {
           ),
         ],
       ),
-      child: Text(
+      child: TText(
         msg.text,
         style: TextStyle(
           color: isUser ? Colors.white : t.textPrimary,
@@ -431,7 +433,7 @@ class _DriverLiveChatScreenState extends State<DriverLiveChatScreen> {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: t.border),
             ),
-            child: Text(
+            child: TText(
               'Lui is typing...',
               style: TextStyle(
                 color: t.textSecondary,
@@ -483,7 +485,7 @@ class _DriverLiveChatScreenState extends State<DriverLiveChatScreen> {
                     onSubmitted: (_) => _sendMessage(),
                     style: TextStyle(color: t.textPrimary, fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: 'Ask Lui anything...',
+                      hintText: AppTranslations.t('Ask Lui anything...'),
                       hintStyle: TextStyle(color: t.textSecondary),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(

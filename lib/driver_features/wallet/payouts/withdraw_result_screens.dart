@@ -7,6 +7,7 @@ import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/driver_features/wallet/payouts/payout_mock.dart';
 import 'package:rider_app/driver_features/wallet/payouts/payout_widgets.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 const _green = Color(0xFF16A34A);
 const _orange = Color(0xFFF08A24);
@@ -109,7 +110,7 @@ class WithdrawSuccessScreen extends StatelessWidget {
                           'Your payment of $amount was completed successful',
                     ),
                     SizedBox(height: context.h(24)),
-                    Text(
+                    TText(
                       'Withdraw Details',
                       style: AppTypography.bold.copyWith(fontSize: 14),
                     ),
@@ -128,7 +129,7 @@ class WithdrawSuccessScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             'Payment Status',
                             style: AppTypography.regular.copyWith(
                               fontSize: 12,
@@ -136,7 +137,7 @@ class WithdrawSuccessScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: context.h(2)),
-                          Text(
+                          TText(
                             'Money Debited.',
                             style: AppTypography.bold.copyWith(fontSize: 14),
                           ),
@@ -207,7 +208,7 @@ class _DetailsCard extends StatelessWidget {
                   color: _green.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(context.r(20)),
                 ),
-                child: Text(
+                child: TText(
                   'Completed',
                   style: AppTypography.bold.copyWith(
                     fontSize: 12,
@@ -225,7 +226,7 @@ class _DetailsCard extends StatelessWidget {
                 children: [
                   _label(context, label),
                   Flexible(
-                    child: Text(
+                    child: TText(
                       value,
                       textAlign: TextAlign.end,
                       style: AppTypography.regular.copyWith(
@@ -242,7 +243,7 @@ class _DetailsCard extends StatelessWidget {
     );
   }
 
-  Widget _label(BuildContext context, String text) => Text(
+  Widget _label(BuildContext context, String text) => TText(
     text,
     style: AppTypography.regular.copyWith(
       fontSize: 14,

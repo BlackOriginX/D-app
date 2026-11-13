@@ -8,6 +8,7 @@ import 'package:rider_app/driver_features/parcels/coming_soon/gradient_line.dart
 import 'package:rider_app/driver_features/parcels/coming_soon/hero_image.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/notify_button.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/service_chips.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NeighbourhoodPage extends StatelessWidget {
   final bool notified;
@@ -27,7 +28,7 @@ class NeighbourhoodPage extends StatelessWidget {
       children: [
         const SizedBox(height: 16),
         const GradientLine('Coming Soon'),
-        Text(
+        TText(
           'to your',
           textAlign: TextAlign.center,
           style: Inter(
@@ -39,7 +40,7 @@ class NeighbourhoodPage extends StatelessWidget {
         ),
         const GradientLine('Neighbourhood'),
         const SizedBox(height: 12),
-        Text(
+        TText(
           "We're expanding soon. Be the first to\nknow when Torkk arrives on your area.",
           textAlign: TextAlign.center,
           style: Inter(

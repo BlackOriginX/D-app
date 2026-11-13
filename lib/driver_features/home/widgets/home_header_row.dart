@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rider_app/common/widgets/bouncing_widget.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Top header row of the driver dashboard containing:
 /// - Notification Bell button
@@ -86,7 +87,7 @@ class HomeHeaderRow extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(
+            child: TText(
               isOnline ? 'ONLINE' : 'OFFLINE',
               style: const TextStyle(
                 color: Colors.white,

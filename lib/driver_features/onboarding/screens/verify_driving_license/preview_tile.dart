@@ -34,7 +34,7 @@ class _PreviewTile extends StatelessWidget {
             size: context.w(16),
             color: context.legible(AppColors.primary),
           ),
-          label: Text(
+          label: TText(
             AppStrings.retake,
             style: AppTypography.regular.copyWith(
               color: context.legible(AppColors.primary),

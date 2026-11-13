@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SelectVehicleScreen extends StatefulWidget {
   final String selectedVehicle;
@@ -92,7 +93,7 @@ class _SelectVehicleScreenState extends State<SelectVehicleScreen> {
         backgroundColor: context.torkk.background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: TText(
           AppStrings.selectVehicleCategory,
           style: AppTypography.bold.copyWith(fontSize: 20, height: 1.15),
         ),
@@ -113,7 +114,7 @@ class _SelectVehicleScreenState extends State<SelectVehicleScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               AppStrings.chooseVehicleType,
               style: AppTypography.bold.copyWith(
                 color: context.torkk.textPrimary,
@@ -152,7 +153,7 @@ class _SelectVehicleScreenState extends State<SelectVehicleScreen> {
                   ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.selectVehicleError,
                       style: AppTypography.regular.copyWith(
                         color: context.legible(AppColors.error),
@@ -247,12 +248,12 @@ class _VehicleCard extends StatelessWidget {
                 ),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 vehicle.label,
                 style: AppTypography.bold.copyWith(fontSize: 15, height: 1.2),
               ),
               SizedBox(height: context.h(2)),
-              Text(
+              TText(
                 vehicle.subtitle,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,

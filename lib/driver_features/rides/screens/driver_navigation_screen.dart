@@ -22,6 +22,7 @@ import 'package:rider_app/driver_features/summary/screens/driver_trip_summary_sc
 import 'package:rider_app/common/constants/map_styles.dart';
 import '../widgets/widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 export '../widgets/widgets.dart';
 part 'driver_navigation_screen_sections.dart';
 
@@ -260,7 +261,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No active ride found'),
+            content: TText('No active ride found'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -403,7 +404,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error loading trip: $e'),
+            content: TText('Error loading trip: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -724,7 +725,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Customer picked up! Heading to drop location.'),
+            content: TText('Customer picked up! Heading to drop location.'),
             backgroundColor: Colors.green,
           ),
         );
@@ -735,7 +736,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
       if (mounted) {
         setState(() => _isProcessing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$e'), backgroundColor: Colors.red),
+          SnackBar(content: TText('$e'), backgroundColor: Colors.red),
         );
       }
     }
@@ -996,7 +997,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     ),
                                   ],
                                 ),
-                                child: const Text(
+                                child: const TText(
                                   'ONLINE',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -1126,7 +1127,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text(
+                                const TText(
                                   'Open Maps',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -1199,7 +1200,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                   ],
                                 ),
                                 child: const Center(
-                                  child: Text(
+                                  child: TText(
                                     'SOS',
                                     style: TextStyle(
                                       color: Colors.white,
@@ -1272,7 +1273,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     ),
                                     Column(
                                       children: [
-                                        Text(
+                                        TText(
                                           _dynamicEtaText,
                                           style: TextStyle(
                                             fontSize: 16,
@@ -1281,7 +1282,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        Text(
+                                        TText(
                                           _dynamicInstructionText,
                                           style: TextStyle(
                                             fontSize: 12,
@@ -1345,7 +1346,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: Text(
+                                  child: TText(
                                     _formattedWaitingTime,
                                     style: TextStyle(
                                       fontSize: 13,

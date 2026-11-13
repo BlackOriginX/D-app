@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ReviewDetailsScreen extends StatelessWidget {
   const ReviewDetailsScreen({
@@ -89,7 +90,7 @@ class ReviewDetailsScreen extends StatelessWidget {
           backgroundColor: context.torkk.background,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
-          title: Text(
+          title: TText(
             AppStrings.reviewYourDetails,
             style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
           ),
@@ -267,7 +268,7 @@ class ReviewDetailsScreen extends StatelessWidget {
                 _mark(context, done),
                 SizedBox(width: context.w(8)),
                 Expanded(
-                  child: Text(
+                  child: TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 15,
@@ -335,7 +336,7 @@ class ReviewDetailsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -343,7 +344,7 @@ class ReviewDetailsScreen extends StatelessWidget {
                     color: context.torkk.textSecondary,
                   ),
                 ),
-                Text(
+                TText(
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

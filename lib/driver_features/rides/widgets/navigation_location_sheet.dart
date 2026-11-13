@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 void showLocationDetailBottomSheet({
   required BuildContext context,
@@ -48,7 +49,7 @@ void showLocationDetailBottomSheet({
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text(
+                TText(
                   title,
                   style: TextStyle(
                     fontSize: 18,
@@ -67,7 +68,7 @@ void showLocationDetailBottomSheet({
                       color: color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
+                    child: TText(
                       distanceText,
                       style: TextStyle(
                         fontSize: 13,
@@ -79,7 +80,7 @@ void showLocationDetailBottomSheet({
               ],
             ),
             const SizedBox(height: 16),
-            const Text(
+            const TText(
               'FULL ADDRESS DETAILS',
               style: TextStyle(
                 fontSize: 11,
@@ -123,7 +124,7 @@ void showLocationDetailBottomSheet({
                         }
                       },
                       icon: const Icon(Icons.navigation_rounded, size: 20),
-                      label: const Text(
+                      label: const TText(
                         'Navigate in Maps',
                         style: TextStyle(
                           fontSize: 15,

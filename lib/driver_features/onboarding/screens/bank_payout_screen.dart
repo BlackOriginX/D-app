@@ -16,6 +16,7 @@ import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/onboarding/kyc_documents_api.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'bank_payout_screen_parts/bank_step.dart';
 part 'bank_payout_screen_parts/reason.dart';
@@ -151,7 +152,7 @@ class _BankPayoutScreenState extends State<BankPayoutScreen> {
   void _snack(String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(SnackBar(content: TText(message)));
   }
 
   /// "Save & Verify": checks the form, then POSTs the bank details.

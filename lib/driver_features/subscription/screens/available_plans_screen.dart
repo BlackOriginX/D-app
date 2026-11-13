@@ -8,6 +8,7 @@ import 'package:rider_app/driver_features/subscription/models/subscription_plan.
 import 'package:rider_app/driver_features/subscription/widgets/subscription_page.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AvailablePlansScreen extends StatelessWidget {
   const AvailablePlansScreen({
@@ -41,7 +42,7 @@ class AvailablePlansScreen extends StatelessWidget {
           context.h(12),
         ),
         children: [
-          Text(
+          TText(
             'Available Plans',
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -58,7 +59,7 @@ class AvailablePlansScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   'All Plans Include',
                   style: AppTypography.bold.copyWith(
                     fontSize: 12,
@@ -79,7 +80,7 @@ class AvailablePlansScreen extends StatelessWidget {
                         ),
                         SizedBox(width: context.w(10)),
                         Expanded(
-                          child: Text(
+                          child: TText(
                             benefit,
                             style: subscriptionMuted(context),
                           ),
@@ -110,7 +111,7 @@ class AvailablePlansScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: TText(
                         subscriptionPlans[i].name,
                         style: AppTypography.regular.copyWith(
                           fontSize: 14,
@@ -118,7 +119,7 @@ class AvailablePlansScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
+                    TText(
                       '₹ ${subscriptionPlans[i].price}',
                       style: AppTypography.bold.copyWith(
                         fontSize: 14,
@@ -126,7 +127,7 @@ class AvailablePlansScreen extends StatelessWidget {
                         letterSpacing: -0.2,
                       ),
                     ),
-                    Text(
+                    TText(
                       ' / ${subscriptionPlans[i].unit}',
                       style: subscriptionMuted(context),
                     ),

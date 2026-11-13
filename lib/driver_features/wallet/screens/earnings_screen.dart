@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/wallet/earnings_statement_pdf.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class EarningsScreen extends StatefulWidget {
   const EarningsScreen({super.key});
@@ -194,7 +195,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                     context.r(10),
                                   ),
                                 ),
-                                child: Text(
+                                child: TText(
                                   ranges[i],
                                   style: AppTypography.regular.copyWith(
                                     fontSize: 13,
@@ -221,7 +222,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         size: context.w(22),
                       ),
                       Expanded(
-                        child: Text(
+                        child: TText(
                           _periodLabel,
                           textAlign: TextAlign.center,
                           style: AppTypography.regular.copyWith(
@@ -250,14 +251,14 @@ class _EarningsScreenState extends State<EarningsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TText(
                                 _headlineLabel,
                                 style: AppTypography.regular.copyWith(
                                   fontSize: 12,
                                   color: context.torkk.textSecondary,
                                 ),
                               ),
-                              Text(
+                              TText(
                                 rupees(_headline),
                                 style: AppTypography.bold.copyWith(
                                   fontSize: 22,
@@ -321,7 +322,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           rows[i].title,
                           style: AppTypography.regular.copyWith(
                             fontSize: 14,
@@ -329,7 +330,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                           ),
                         ),
                         if (rows[i].subtitle.isNotEmpty)
-                          Text(
+                          TText(
                             rows[i].subtitle,
                             style: AppTypography.regular.copyWith(
                               fontSize: 12,
@@ -339,7 +340,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                       ],
                     ),
                   ),
-                  Text(
+                  TText(
                     rows[i].amount,
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,

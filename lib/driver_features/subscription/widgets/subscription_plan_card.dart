@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SubscriptionPlanCard extends StatelessWidget {
   const SubscriptionPlanCard({
@@ -46,7 +47,7 @@ class SubscriptionPlanCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       name,
                       style: AppTypography.bold.copyWith(
                         fontSize: 12,
@@ -54,7 +55,7 @@ class SubscriptionPlanCard extends StatelessWidget {
                         letterSpacing: -0.2,
                       ),
                     ),
-                    Text(
+                    TText(
                       subtitle,
                       style: AppTypography.regular.copyWith(
                         fontSize: 11,
@@ -94,13 +95,13 @@ class SubscriptionAmountBlock extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text('Plan Amount', style: subscriptionMuted(context)),
+              child: TText('Plan Amount', style: subscriptionMuted(context)),
             ),
           ],
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: Text(
+          child: TText(
             '₹$amount',
             style: AppTypography.bold.copyWith(
               fontSize: 16,
@@ -136,8 +137,8 @@ class SubscriptionDateColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: subscriptionMuted(context)),
-        Text(
+        TText(label, style: subscriptionMuted(context)),
+        TText(
           value,
           style: AppTypography.regular.copyWith(
             fontSize: 13,
@@ -161,8 +162,8 @@ class SubscriptionInfoRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(
         children: [
-          Text(label, style: subscriptionMuted(context)),
-          Text(
+          TText(label, style: subscriptionMuted(context)),
+          TText(
             value,
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -194,7 +195,7 @@ class SubscriptionStatusChip extends StatelessWidget {
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
+      child: TText(
         label,
         style: AppTypography.regular.copyWith(
           fontSize: 12,

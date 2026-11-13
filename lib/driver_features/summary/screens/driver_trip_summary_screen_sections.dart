@@ -8,7 +8,7 @@ extension _DriverTripSummaryScreenStateSections
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Trip completed and feedback submitted!'),
+        content: TText('Trip completed and feedback submitted!'),
         backgroundColor: Color(0xFF10B981),
       ),
     );

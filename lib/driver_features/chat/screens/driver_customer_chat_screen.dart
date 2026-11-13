@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/service/driver_chat_websocket_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER-CUSTOMER IN-APP CHAT SCREEN ---
 class DriverCustomerChatScreen extends StatefulWidget {
@@ -107,7 +109,7 @@ class _DriverCustomerChatScreenState extends State<DriverCustomerChatScreen> {
               ),
               child: CircleAvatar(
                 backgroundColor: Colors.white24,
-                child: Text(
+                child: TText(
                   initial,
                   style: const TextStyle(
                     color: Colors.white,
@@ -118,7 +120,7 @@ class _DriverCustomerChatScreenState extends State<DriverCustomerChatScreen> {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
+            TText(
               widget.customerName.isNotEmpty ? widget.customerName : 'Customer',
               style: const TextStyle(
                 color: Colors.white,
@@ -171,7 +173,7 @@ class _DriverCustomerChatScreenState extends State<DriverCustomerChatScreen> {
                             : const Radius.circular(20),
                       ),
                     ),
-                    child: Text(
+                    child: TText(
                       msg['text'] ?? '',
                       style: TextStyle(
                         color: isDriver
@@ -209,7 +211,7 @@ class _DriverCustomerChatScreenState extends State<DriverCustomerChatScreen> {
                                 color: context.torkk.textPrimary,
                               ),
                               decoration: InputDecoration(
-                                hintText: 'Send new message',
+                                hintText: AppTranslations.t('Send new message'),
                                 hintStyle: TextStyle(
                                   color: context.torkk.textSecondary,
                                   fontSize: 14,

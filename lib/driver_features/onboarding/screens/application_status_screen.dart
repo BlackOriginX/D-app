@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/status_result.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'application_status_screen_parts/action_clipboard.dart';
 part 'application_status_screen_parts/clipboard_painter.dart';
@@ -74,7 +75,7 @@ class ApplicationStatusScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
+          TText(
             AppStrings.currentStatus,
             style: AppTypography.bold.copyWith(fontSize: 12, height: 1.3),
           ),
@@ -185,12 +186,12 @@ class ApplicationStatusScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(fontSize: 12, height: 1.3),
                 ),
                 SizedBox(height: context.h(2)),
-                Text(
+                TText(
                   body,
                   style: AppTypography.regular.copyWith(
                     fontSize: 10,
@@ -216,7 +217,7 @@ class ApplicationStatusScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        TText(
           AppStrings.reason,
           style: AppTypography.bold.copyWith(fontSize: 14, height: 1.3),
         ),
@@ -243,7 +244,7 @@ class ApplicationStatusScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -251,7 +252,7 @@ class ApplicationStatusScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(2)),
-                  Text(
+                  TText(
                     body,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -343,7 +344,7 @@ class ApplicationStatusScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     step.title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 13,
@@ -352,7 +353,7 @@ class ApplicationStatusScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(2)),
-                  Text(
+                  TText(
                     step.subtitle,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,

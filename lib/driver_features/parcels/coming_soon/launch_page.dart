@@ -4,6 +4,7 @@ import 'package:rider_app/driver_features/parcels/coming_soon/fill.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/gradient_line.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/hero_image.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/notify_button.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class LaunchPage extends StatelessWidget {
   final VoidCallback onNotify;
@@ -30,7 +31,7 @@ class LaunchPage extends StatelessWidget {
           onPressed: onNotify,
         ),
         const SizedBox(height: 10),
-        Text(
+        TText(
           'Be the first to know when it is live.',
           style: Inter(
             color: const Color(0xFF8B909C),

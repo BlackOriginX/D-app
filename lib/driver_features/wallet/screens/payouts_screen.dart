@@ -10,6 +10,7 @@ import 'package:rider_app/driver_features/wallet/payouts/withdraw_screen.dart';
 import 'package:rider_app/driver_features/wallet/screens/bank_account_screen.dart';
 import 'package:rider_app/driver_features/wallet/screens/transaction_history_screen.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Payouts home: balance, withdraw, quick links and recent payout history.
 /// Figures come from [PayoutMock] until the payout APIs are ready.
@@ -103,7 +104,7 @@ class PayoutsScreen extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TText(
                   'Payout Transaction History',
                   style: AppTypography.bold.copyWith(
                     fontSize: 16,
@@ -114,7 +115,7 @@ class PayoutsScreen extends StatelessWidget {
               GestureDetector(
                 onTap: () => _history(context),
                 behavior: HitTestBehavior.opaque,
-                child: Text(
+                child: TText(
                   'view all',
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -125,7 +126,7 @@ class PayoutsScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: context.h(14)),
-          Text(
+          TText(
             'Today , 12 June',
             style: AppTypography.bold.copyWith(fontSize: 14),
           ),
@@ -182,7 +183,7 @@ class _BalanceCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              TText(
                 'Available Balance',
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -204,7 +205,7 @@ class _BalanceCard extends StatelessWidget {
               ),
             ],
           ),
-          Text(
+          TText(
             rupees(PayoutMock.availableBalance, decimals: 0),
             style: AppTypography.bold.copyWith(
               fontSize: 30,
@@ -213,7 +214,7 @@ class _BalanceCard extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          Text(
+          TText(
             'Available to withdraw',
             style: AppTypography.regular.copyWith(
               fontSize: 11,
@@ -234,7 +235,7 @@ class _BalanceCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    TText(
                       'Withdraw Money',
                       style: AppTypography.bold.copyWith(
                         fontSize: 14,
@@ -289,7 +290,7 @@ class _StatCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -308,7 +309,7 @@ class _StatCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: context.h(6)),
-          Text(value, style: AppTypography.bold.copyWith(fontSize: 14)),
+          TText(value, style: AppTypography.bold.copyWith(fontSize: 14)),
         ],
       ),
     );
@@ -342,7 +343,7 @@ class _Action extends StatelessWidget {
               child: Icon(icon, color: color, size: context.w(26)),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               label,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(fontSize: 12, height: 1.2),
@@ -386,11 +387,11 @@ class _EntryRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   entry.title,
                   style: AppTypography.bold.copyWith(fontSize: 14),
                 ),
-                Text(
+                TText(
                   entry.time,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -400,7 +401,7 @@ class _EntryRow extends StatelessWidget {
               ],
             ),
           ),
-          Text(
+          TText(
             '- ${rupees(entry.amount)}',
             style: AppTypography.bold.copyWith(
               fontSize: 14,

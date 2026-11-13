@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -32,7 +33,7 @@ class CustomButton extends StatelessWidget {
               width: 20,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(text),
+          : TText(text),
     );
   }
 }

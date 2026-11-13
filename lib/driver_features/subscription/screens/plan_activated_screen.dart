@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/subscription/widgets/subscription_page
 import 'package:rider_app/driver_features/subscription/widgets/subscription_plan_card.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PlanActivatedScreen extends StatelessWidget {
   const PlanActivatedScreen({
@@ -42,13 +43,13 @@ class PlanActivatedScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Plan Activated',
             textAlign: TextAlign.center,
             style: subscriptionTitle(),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             'Your CAB EV Plan is now active. You can start accepting rides and parcels',
             textAlign: TextAlign.center,
             style: subscriptionMuted(context),
@@ -57,7 +58,7 @@ class PlanActivatedScreen extends StatelessWidget {
           SubscriptionPlanCard(
             name: plan.name.replaceAll(' - ', '- '),
             subtitle: plan.validity,
-            trailing: Text(
+            trailing: TText(
               '₹ ${plan.price}',
               style: AppTypography.bold.copyWith(
                 fontSize: 16,
@@ -67,7 +68,7 @@ class PlanActivatedScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(16)),
-          Text(
+          TText(
             'Plan Benefits',
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -95,7 +96,7 @@ class PlanActivatedScreen extends StatelessWidget {
                         ),
                         SizedBox(width: context.w(8)),
                         Expanded(
-                          child: Text(
+                          child: TText(
                             benefit,
                             style: subscriptionMuted(context),
                           ),

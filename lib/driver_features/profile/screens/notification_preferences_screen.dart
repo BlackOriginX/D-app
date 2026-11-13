@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/app_switch.dart';
 import 'package:rider_app/service/notifications_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NotificationPreferencesScreen extends StatefulWidget {
   const NotificationPreferencesScreen({super.key});
@@ -74,7 +75,7 @@ class _NotificationPreferencesScreenState
         _prefs = previous;
         _saving = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TText('$e')));
     }
   }
 
@@ -93,8 +94,8 @@ class _NotificationPreferencesScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(_error!, textAlign: TextAlign.center),
-              TextButton(onPressed: _load, child: const Text('Retry')),
+              TText(_error!, textAlign: TextAlign.center),
+              TextButton(onPressed: _load, child: const TText('Retry')),
             ],
           ),
         ),
@@ -192,7 +193,7 @@ class _PreferenceTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 14,
@@ -200,7 +201,7 @@ class _PreferenceTile extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-                Text(
+                TText(
                   subtitle,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

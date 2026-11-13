@@ -8,6 +8,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/app_snackbar.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'verify_otp_screen_parts/otp_box_content.dart';
 part 'verify_otp_screen_parts/otp_boxes.dart';
@@ -128,7 +129,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             ),
             onPressed: widget.onBack,
           ),
-          title: Text(
+          title: TText(
             AppStrings.otpVerification,
             style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
           ),
@@ -157,7 +158,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             AppStrings.verifyYourNumber,
                             style: AppTypography.bold.copyWith(
                               fontSize: 24,
@@ -165,7 +166,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             ),
                           ),
                           SizedBox(height: context.h(8)),
-                          Text(
+                          TText(
                             '${AppStrings.otpSentPrefix}$_maskedPhone',
                             style: AppTypography.regular.copyWith(
                               color: context.torkk.textSecondary,
@@ -211,7 +212,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                   ),
                                   SizedBox(width: context.w(8)),
                                   Expanded(
-                                    child: Text(
+                                    child: TText(
                                       AppStrings.incorrectOtp,
                                       style: AppTypography.regular.copyWith(
                                         color: context.legible(AppColors.error),
@@ -225,7 +226,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             if (widget.otpCountdown > 0) ...[
                               SizedBox(height: context.h(20)),
                               Center(
-                                child: Text(
+                                child: TText(
                                   '${AppStrings.resendOtpIn}$_countdownLabel',
                                   style: AppTypography.regular.copyWith(
                                     color: context.torkk.textSecondary,
@@ -255,7 +256,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  Text(
+                                  TText(
                                     AppStrings.didntReceiveCode,
                                     style: AppTypography.regular.copyWith(
                                       color: context.torkk.textSecondary,
@@ -267,7 +268,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                                     onTap: widget.otpCountdown == 0
                                         ? widget.onResendOtp
                                         : null,
-                                    child: Text(
+                                    child: TText(
                                       AppStrings.resendOtp,
                                       style: AppTypography.bold.copyWith(
                                         color: AppColors.primary,
@@ -291,7 +292,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                             Center(
                               child: GestureDetector(
                                 onTap: widget.onChangeNumber,
-                                child: Text(
+                                child: TText(
                                   AppStrings.changeMobileNumber,
                                   style: AppTypography.regular.copyWith(
                                     color: context.themed(

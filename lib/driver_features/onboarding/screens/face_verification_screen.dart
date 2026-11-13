@@ -15,6 +15,7 @@ import 'package:rider_app/driver_features/onboarding/widgets/live_face_camera.da
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'face_verification_screen_parts/check_row.dart';
 part 'face_verification_screen_parts/icon_info_row.dart';
@@ -105,12 +106,12 @@ class _FaceVerificationScreenState extends State<FaceVerificationScreen> {
               fit: BoxFit.contain,
             ),
             SizedBox(height: context.h(20)),
-            Text(
+            TText(
               AppStrings.verifyYourIdentity,
               style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
             ),
             SizedBox(height: context.h(6)),
-            Text(
+            TText(
               AppStrings.verifyIdentitySubtitle,
               style: AppTypography.regular.copyWith(
                 fontSize: 12,
@@ -154,12 +155,12 @@ class _FaceVerificationScreenState extends State<FaceVerificationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               AppStrings.beforeYouStart,
               style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
             ),
             SizedBox(height: context.h(4)),
-            Text(
+            TText(
               AppStrings.beforeYouStartSubtitle,
               style: AppTypography.regular.copyWith(
                 fontSize: 14,

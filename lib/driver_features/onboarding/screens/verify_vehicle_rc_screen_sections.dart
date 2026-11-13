@@ -29,7 +29,7 @@ extension _VerifyVehicleRcScreenStateSections on _VerifyVehicleRcScreenState {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               AppStrings.preview,
               style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
             ),
@@ -145,7 +145,7 @@ extension _VerifyVehicleRcScreenStateSections on _VerifyVehicleRcScreenState {
                   ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.rcExtractedHint,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,

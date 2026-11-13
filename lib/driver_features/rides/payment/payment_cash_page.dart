@@ -7,6 +7,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 enum PaymentSettle { wallet, cashReturned, upi }
 
@@ -100,7 +101,7 @@ class PaymentCashPage extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
+            child: TText(
               AppStrings.payCashReceived,
               style: AppTypography.regular.copyWith(
                 fontSize: 14,
@@ -154,7 +155,7 @@ class PaymentCashPage extends StatelessWidget {
       ),
       Padding(
         padding: EdgeInsets.only(top: context.h(8)),
-        child: Text(
+        child: TText(
           AppStrings.payChangeWalletNote,
           style: AppTypography.regular.copyWith(
             fontSize: 12,
@@ -168,16 +169,16 @@ class PaymentCashPage extends StatelessWidget {
   List<Widget> _carry(BuildContext context, double short) {
     return [
       PaymentSectionTitle(AppStrings.payRemainingAmount),
-      Text(
+      TText(
         rupee(short),
         style: AppTypography.bold.copyWith(fontSize: 16, color: paymentRed),
       ),
       SizedBox(height: context.h(10)),
-      Text(
+      TText(
         AppStrings.payCarryTitle,
         style: AppTypography.bold.copyWith(fontSize: 13),
       ),
-      Text(
+      TText(
         AppStrings.payCarryHint,
         style: AppTypography.regular.copyWith(
           fontSize: 12,
@@ -199,7 +200,7 @@ class PaymentCashPage extends StatelessWidget {
             ),
             SizedBox(width: context.w(8)),
             Expanded(
-              child: Text(
+              child: TText(
                 AppStrings.payRiderAgrees(rupee(short)),
                 style: AppTypography.regular.copyWith(fontSize: 13),
               ),

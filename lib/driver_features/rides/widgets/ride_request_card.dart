@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'timed_accept_ride_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'ride_request_card_sections.dart';
 
 /// Individual ride request card displayed in the online search view list.
@@ -128,7 +129,7 @@ class RideRequestCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Flexible(
-                      child: Text(
+                      child: TText(
                         displayName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -158,7 +159,7 @@ class RideRequestCard extends StatelessWidget {
                             color: context.legible(Color(0xFFD97706)),
                           ),
                           const SizedBox(width: 2),
-                          Text(
+                          TText(
                             customerRating,
                             style: TextStyle(
                               fontSize: 12,
@@ -184,7 +185,7 @@ class RideRequestCard extends StatelessWidget {
           // Row 2: Dynamic Fare & Bonus
           Row(
             children: [
-              Text(
+              TText(
                 '₹ ${estFare.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: 24,
@@ -195,7 +196,7 @@ class RideRequestCard extends StatelessWidget {
               ),
               if (bonusVal != null && bonusVal > 0) ...[
                 const SizedBox(width: 8),
-                Text(
+                TText(
                   '+ ₹ ${bonusVal.round()}',
                   style: const TextStyle(
                     fontSize: 14,
@@ -209,7 +210,7 @@ class RideRequestCard extends StatelessWidget {
           if (isParcel && ride['item_category'] != null)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
+              child: TText(
                 'Category: ${ride['item_category']}',
                 style: TextStyle(
                   fontSize: 13,
@@ -254,7 +255,7 @@ class RideRequestCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       pDist.toLowerCase().contains('km')
                           ? pDist
                           : (pDist.isNotEmpty ? '$pDist Km' : ''),
@@ -265,7 +266,7 @@ class RideRequestCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    TText(
                       pAddr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -276,7 +277,7 @@ class RideRequestCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(
+                    TText(
                       dDist.toLowerCase().contains('km')
                           ? dDist
                           : (dDist.isNotEmpty ? '$dDist Km' : ''),
@@ -287,7 +288,7 @@ class RideRequestCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    TText(
                       dAddr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

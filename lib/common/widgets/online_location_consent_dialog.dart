@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:rider_app/service/location_consent_service.dart';
 import 'package:rider_app/service/location_permission_flow.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Go Online: prominent disclosure + OS location permission (foreground, then
 /// background as a separate step). Returns true when the driver may go online.
@@ -70,7 +71,7 @@ Future<bool> requestOnlineLocationPermission(BuildContext context) async {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Location permission is required to go online.'),
+          content: TText('Location permission is required to go online.'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -115,7 +116,7 @@ Future<bool?> _showLocationActionDialog({
               child: Icon(icon, color: iconColor, size: 32),
             ),
             const SizedBox(height: 18),
-            Text(
+            TText(
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -125,7 +126,7 @@ Future<bool?> _showLocationActionDialog({
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            TText(
               message,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -162,7 +163,7 @@ Future<bool?> _showLocationActionDialog({
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: Text(
+                    child: TText(
                       confirmText,
                       style: const TextStyle(
                         color: Colors.white,
@@ -187,7 +188,7 @@ Future<bool?> _showLocationActionDialog({
                     ),
                     foregroundColor: context.torkk.textBody,
                   ),
-                  child: Text(
+                  child: TText(
                     cancelText,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -216,7 +217,7 @@ Future<bool?> _showLocationActionDialog({
                           ),
                           foregroundColor: context.torkk.textBody,
                         ),
-                        child: Text(
+                        child: TText(
                           cancelText,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -254,7 +255,7 @@ Future<bool?> _showLocationActionDialog({
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: Text(
+                          child: TText(
                             confirmText,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

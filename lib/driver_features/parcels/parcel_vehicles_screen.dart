@@ -6,6 +6,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Bike and auto can take parcels. Cars cannot.
 bool parcelAllowedForVehicle(String vehicleType) {
@@ -48,7 +49,7 @@ class ParcelVehiclesScreen extends StatelessWidget {
                       color: context.torkk.textPrimary,
                     ),
                   ),
-                  Text(
+                  TText(
                     AppStrings.navParcel,
                     style: AppTypography.bold.copyWith(
                       fontSize: 18,
@@ -70,7 +71,7 @@ class ParcelVehiclesScreen extends StatelessWidget {
                 children: [
                   const _ParcelBadge(),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     AppStrings.parcelDelivery,
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(
@@ -80,7 +81,7 @@ class ParcelVehiclesScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(6)),
-                  Text(
+                  TText(
                     AppStrings.earnByDeliveringParcels,
                     textAlign: TextAlign.center,
                     style: AppTypography.regular.copyWith(
@@ -90,7 +91,7 @@ class ParcelVehiclesScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(22)),
-                  Text(
+                  TText(
                     AppStrings.yourVehicles,
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -143,7 +144,7 @@ class ParcelVehiclesScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(context.r(14)),
                     ),
                   ),
-                  child: Text(
+                  child: TText(
                     AppStrings.startReceivingParcelRequests,
                     style: AppTypography.bold.copyWith(
                       fontSize: 16,
@@ -224,7 +225,7 @@ class _VehicleTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
@@ -235,7 +236,7 @@ class _VehicleTile extends StatelessWidget {
                         : AppColors.slate400,
                   ),
                 ),
-                Text(
+                TText(
                   subtitle,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

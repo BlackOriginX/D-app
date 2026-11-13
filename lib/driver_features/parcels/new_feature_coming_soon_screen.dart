@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/parcels/coming_soon/coming_soon_text.d
 import 'package:rider_app/driver_features/parcels/coming_soon/feature_card.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/gradient_line.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/notify_button.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// "New Feature – Coming Soon" screen shown for features that are not live yet
 /// (parcel, subscription, ...). The older neighbourhood-launch flow stays in
@@ -87,7 +88,7 @@ class _NewFeatureComingSoonScreenState
                               fit: BoxFit.contain,
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            TText(
                               'New Feature',
                               textAlign: TextAlign.center,
                               style: Inter(
@@ -101,7 +102,7 @@ class _NewFeatureComingSoonScreenState
                             ),
                             const GradientLine('Coming Soon', size: 30),
                             const SizedBox(height: 8),
-                            Text(
+                            TText(
                               "We're working on something exciting to\nbring a better experience.",
                               textAlign: TextAlign.center,
                               style: Inter(
@@ -125,7 +126,7 @@ class _NewFeatureComingSoonScreenState
                               onPressed: _notified ? null : _notify,
                             ),
                             const SizedBox(height: 10),
-                            Text(
+                            TText(
                               'Be the first to know when it is live.',
                               style: Inter(
                                 fontSize: 13,

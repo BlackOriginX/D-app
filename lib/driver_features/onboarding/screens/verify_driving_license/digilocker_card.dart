@@ -42,7 +42,7 @@ class _DigilockerCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     AppStrings.verifyWithDigilocker,
                     style: AppTypography.bold.copyWith(
                       color: context.torkk.textPrimary,
@@ -51,7 +51,7 @@ class _DigilockerCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     AppStrings.verifyWithDigilockerSubtitle,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,

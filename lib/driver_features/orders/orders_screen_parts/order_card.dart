@@ -46,7 +46,7 @@ class _OrderCard extends StatelessWidget {
                 ),
               ),
               SizedBox(width: context.w(12)),
-              Text(
+              TText(
                 _orderCode(trip),
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -77,7 +77,7 @@ class _OrderCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
+                      TText(
                         '₹${fare.round()}',
                         style: AppTypography.bold.copyWith(
                           fontSize: 16,
@@ -85,7 +85,7 @@ class _OrderCard extends StatelessWidget {
                           letterSpacing: -0.3,
                         ),
                       ),
-                      Text(
+                      TText(
                         AppStrings.ordersOnline,
                         style: AppTypography.regular.copyWith(
                           fontSize: 12,
@@ -101,7 +101,7 @@ class _OrderCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: context.h(10)),
             child: Divider(height: 1, color: context.torkk.border),
           ),
-          Text(
+          TText(
             _timeLabel(trip),
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -109,7 +109,7 @@ class _OrderCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             _route(trip),
             style: AppTypography.regular.copyWith(
               fontSize: 14,
@@ -134,7 +134,7 @@ class _OrderCard extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             AppStrings.parcelType,
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -142,7 +142,7 @@ class _OrderCard extends StatelessWidget {
               color: context.torkk.textSecondary,
             ),
           ),
-          Text(
+          TText(
             '$type • $weight',
             style: AppTypography.bold.copyWith(
               fontSize: 14,
@@ -153,7 +153,7 @@ class _OrderCard extends StatelessWidget {
         ],
       );
     }
-    return Text(
+    return TText(
       _subtitle(trip, false),
       style: AppTypography.regular.copyWith(
         fontSize: 13,

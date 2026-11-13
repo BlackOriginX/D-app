@@ -6,6 +6,7 @@ import 'package:rider_app/common/routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_history_screen_sections.dart';
 
 bool _photoStartsWithHttp(String path) => path.startsWith('http');
@@ -97,7 +98,7 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen> {
                       ),
                     ),
                   ),
-                  Text(
+                  TText(
                     'All Trips',
                     style: TextStyle(
                       fontSize: 22,
@@ -154,7 +155,7 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen> {
             // SECTION HEADER: "All Trips and Activities"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Text(
+              child: TText(
                 'All Trips and Activities',
                 style: TextStyle(
                   fontSize: 22,
@@ -180,7 +181,7 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen> {
                             color: Color(0xFF94A3B8),
                           ),
                           const SizedBox(height: 12),
-                          Text(
+                          TText(
                             'No trips completed yet',
                             style: TextStyle(
                               fontSize: 16,
@@ -189,7 +190,7 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
+                          const TText(
                             'Your completed ride history will appear here.',
                             style: TextStyle(
                               fontSize: 13,

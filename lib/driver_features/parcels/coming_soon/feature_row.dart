@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class FeatureRow extends StatelessWidget {
   final IconData icon;
@@ -31,7 +32,7 @@ class FeatureRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
+            child: TText(
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w700,

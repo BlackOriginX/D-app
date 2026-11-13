@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/coins/widgets/coins_text.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Centered spinner shown while a coins API call is running.
 class CoinLoading extends StatelessWidget {
@@ -30,7 +31,7 @@ class CoinError extends StatelessWidget {
     ),
     child: Column(
       children: [
-        Text(message, textAlign: TextAlign.center, style: coinsMuted(context)),
+        TText(message, textAlign: TextAlign.center, style: coinsMuted(context)),
         SizedBox(height: context.h(14)),
         UnifiedButton(label: 'Try Again', onPressed: onRetry),
       ],

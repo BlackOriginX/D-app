@@ -5,6 +5,7 @@ import '../constants/app_colors.dart';
 import '../theme/app_typography.dart';
 import '../utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/utils/translations.dart';
 
 /// Rounded filled field. Pass [hintText] and [controller] from the screen.
 class AppTextField extends StatelessWidget {
@@ -64,7 +65,7 @@ class AppTextField extends StatelessWidget {
         obscuringCharacter: obscuringCharacter,
         style: AppTypography.regular,
         decoration: InputDecoration(
-          hintText: hintText,
+          hintText: hintText == null ? null : AppTranslations.t(hintText!),
           hintStyle: AppTypography.regular.copyWith(color: AppColors.slate400),
           filled: true,
           fillColor: context.torkk.surfaceMuted,

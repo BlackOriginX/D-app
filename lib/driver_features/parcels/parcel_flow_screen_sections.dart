@@ -63,7 +63,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                     color: Color(0xFFEF4444),
                     shape: BoxShape.circle,
                   ),
-                  child: Text(
+                  child: TText(
                     clock,
                     style: AppTypography.bold.copyWith(
                       fontSize: 12,
@@ -164,14 +164,14 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 'Good morning,',
                 style: AppTypography.regular.copyWith(
                   fontSize: 13,
                   color: context.torkk.textSecondary,
                 ),
               ),
-              Text(
+              TText(
                 'Rahul Sharma',
                 style: AppTypography.bold.copyWith(
                   fontSize: 18,
@@ -259,7 +259,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: TText(
                     AppStrings.parcelRequest,
                     style: AppTypography.bold.copyWith(
                       fontSize: 18,
@@ -268,7 +268,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                     ),
                   ),
                 ),
-                Text(
+                TText(
                   '₹240',
                   style: AppTypography.bold.copyWith(
                     fontSize: 22,
@@ -315,7 +315,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      TText(
                         AppStrings.parcelType,
                         style: AppTypography.regular.copyWith(
                           fontSize: 11,
@@ -323,7 +323,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                           letterSpacing: 0.4,
                         ),
                       ),
-                      Text(
+                      TText(
                         'Documents • 1 kg (Small)',
                         style: AppTypography.bold.copyWith(
                           fontSize: 14,
@@ -396,7 +396,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                           borderRadius: BorderRadius.circular(context.r(16)),
                         ),
                       ),
-                      child: Text(
+                      child: TText(
                         AppStrings.decline,
                         style: AppTypography.bold.copyWith(
                           fontSize: 16,
@@ -419,7 +419,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                           borderRadius: BorderRadius.circular(context.r(16)),
                         ),
                       ),
-                      child: Text(
+                      child: TText(
                         AppStrings.accept,
                         style: AppTypography.bold.copyWith(
                           fontSize: 16,
@@ -480,7 +480,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     AppStrings.pickup,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -488,7 +488,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       color: AppColors.slate400,
                     ),
                   ),
-                  Text(
+                  TText(
                     'Sector 18, Noida',
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -497,7 +497,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                     ),
                   ),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     AppStrings.drop,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -505,7 +505,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       color: AppColors.slate400,
                     ),
                   ),
-                  Text(
+                  TText(
                     'DLF Mall of India',
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -526,7 +526,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        TText(
           value,
           textAlign: TextAlign.center,
           style: AppTypography.bold.copyWith(
@@ -536,7 +536,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
           ),
         ),
         SizedBox(height: context.h(2)),
-        Text(
+        TText(
           label,
           textAlign: TextAlign.center,
           style: AppTypography.regular.copyWith(
@@ -620,7 +620,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                         ),
                       ),
                       SizedBox(width: context.w(10)),
-                      Text(
+                      TText(
                         title,
                         style: AppTypography.bold.copyWith(
                           fontSize: 12,
@@ -642,7 +642,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       color: context.adaptiveTint(const Color(0xFFEFF6FF)),
                       borderRadius: BorderRadius.circular(context.r(8)),
                     ),
-                    child: Text(
+                    child: TText(
                       chip,
                       style: AppTypography.bold.copyWith(
                         fontSize: 12,
@@ -679,7 +679,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             role,
                             style: AppTypography.regular.copyWith(
                               fontSize: 11,
@@ -687,7 +687,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                               color: AppColors.slate400,
                             ),
                           ),
-                          Text(
+                          TText(
                             person,
                             style: AppTypography.bold.copyWith(
                               fontSize: 14,
@@ -763,7 +763,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
             SizedBox(width: context.w(8)),
-            Text(
+            TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 11,
@@ -776,7 +776,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
         ),
         Padding(
           padding: EdgeInsets.only(left: context.w(16)),
-          child: Text(
+          child: TText(
             value,
             style: AppTypography.bold.copyWith(
               fontSize: 15,
@@ -819,7 +819,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
         children: [
           Center(child: _scanFrame(context)),
           SizedBox(height: context.h(22)),
-          Text(
+          TText(
             'Verify Parcel at Pickup',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -829,7 +829,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             ),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             'Check the parcel and confirm\nbefore starting delivery.',
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -859,7 +859,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         'Sender',
                         style: AppTypography.regular.copyWith(
                           fontSize: 11,
@@ -868,7 +868,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                         ),
                       ),
                       SizedBox(height: context.h(2)),
-                      Text(
+                      TText(
                         'Rahul Mehta',
                         style: AppTypography.bold.copyWith(
                           fontSize: 14,
@@ -986,7 +986,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 'Pickup',
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -994,7 +994,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   color: AppColors.slate400,
                 ),
               ),
-              Text(
+              TText(
                 'Sector 18, Noida',
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -1003,7 +1003,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 ),
               ),
               SizedBox(height: context.h(14)),
-              Text(
+              TText(
                 'Drop',
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -1011,7 +1011,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   color: AppColors.slate400,
                 ),
               ),
-              Text(
+              TText(
                 'DLF Mall of India',
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -1041,12 +1041,12 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               'Enter 4-digit OTP',
               style: AppTypography.bold.copyWith(fontSize: 24, height: 1.2),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               sender
                   ? 'Ask the Sender for their 4-digit OTP.'
                   : 'Ask the Receiver for their 4-digit OTP.',
@@ -1087,7 +1087,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
           context.h(12),
         ),
         children: [
-          Text(
+          TText(
             'Capture proof to complete delivery.',
             style: AppTypography.regular.copyWith(
               fontSize: 13,
@@ -1118,7 +1118,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                             size: 18,
                             color: Theme.of(context).colorScheme.primary,
                           ),
-                          label: Text(
+                          label: TText(
                             'Retake',
                             style: AppTypography.bold.copyWith(
                               fontSize: 14,
@@ -1190,7 +1190,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       'Receiver',
                       style: AppTypography.regular.copyWith(
                         fontSize: 11,
@@ -1199,7 +1199,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       ),
                     ),
                     SizedBox(height: context.h(2)),
-                    Text(
+                    TText(
                       'Amit',
                       style: AppTypography.bold.copyWith(
                         fontSize: 14,
@@ -1274,7 +1274,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   ),
                 ),
                 SizedBox(height: context.h(4)),
-                Text(
+                TText(
                   'PKG-8923-8891-TRK',
                   style: AppTypography.regular.copyWith(
                     fontSize: 8,
@@ -1318,7 +1318,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 color: Color(0xFFEF4444),
                 size: 18,
               ),
-              label: Text(
+              label: TText(
                 'Report an Issue',
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -1403,7 +1403,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
               ],
             ),
           ),
-          Text(
+          TText(
             'Parcel Delivered',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -1413,7 +1413,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             ),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             'Successfully delivered to',
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -1422,7 +1422,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
               color: context.torkk.textSecondary,
             ),
           ),
-          Text(
+          TText(
             'Amit Verma',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -1473,7 +1473,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TText(
                         'You earned 200 coins',
                         style: TextStyle(
                           color: Colors.white,
@@ -1481,7 +1481,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                           fontSize: 14,
                         ),
                       ),
-                      Text(
+                      TText(
                         'Get your reward unlocked!',
                         style: TextStyle(color: Colors.white70, fontSize: 12),
                       ),
@@ -1539,7 +1539,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       ),
                     ],
                   ),
-                  Text(
+                  TText(
                     'Cancel Parcel ?',
                     style: AppTypography.bold.copyWith(
                       fontSize: 18,
@@ -1547,7 +1547,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       letterSpacing: -0.3,
                     ),
                   ),
-                  Text(
+                  TText(
                     "Tell us why you're cancelling.",
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -1555,14 +1555,14 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                     ),
                   ),
                   SizedBox(height: context.h(12)),
-                  Text(
+                  TText(
                     'Cancellation Reason?',
                     style: AppTypography.bold.copyWith(fontSize: 14),
                   ),
                   for (var i = 0; i < reasons.length; i++)
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(
+                      title: TText(
                         reasons[i],
                         style: AppTypography.regular.copyWith(fontSize: 14),
                       ),
@@ -1583,7 +1583,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   Center(
                     child: TextButton(
                       onPressed: () => Navigator.pop(sheetContext),
-                      child: Text(
+                      child: TText(
                         "No, Don't cancel",
                         style: AppTypography.bold.copyWith(
                           fontSize: 14,
@@ -1639,7 +1639,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  TText(
                     role,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,
@@ -1647,7 +1647,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                       color: AppColors.slate400,
                     ),
                   ),
-                  Text(
+                  TText(
                     name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1682,11 +1682,11 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(fontSize: 13, height: 1.2),
                 ),
-                Text(
+                TText(
                   body,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -1723,7 +1723,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
         children: [
           const Icon(Icons.check_circle, color: Color(0xFF16A34A), size: 18),
           SizedBox(width: context.w(8)),
-          Text(text, style: AppTypography.regular.copyWith(fontSize: 13)),
+          TText(text, style: AppTypography.regular.copyWith(fontSize: 13)),
         ],
       ),
     );
@@ -1753,7 +1753,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
@@ -1762,7 +1762,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   ),
                 ),
                 SizedBox(height: context.h(2)),
-                Text(
+                TText(
                   value,
                   style: AppTypography.bold.copyWith(
                     fontSize: 13,
@@ -1812,7 +1812,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
@@ -1821,7 +1821,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 ),
               ),
               SizedBox(height: context.h(4)),
-              Text(
+              TText(
                 value,
                 style: AppTypography.bold.copyWith(
                   fontSize: 14,
@@ -1861,7 +1861,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   _backButton(onBack),
                   if (showTitle)
                     Expanded(
-                      child: Text(
+                      child: TText(
                         title,
                         style: AppTypography.bold.copyWith(
                           fontSize: 18,
@@ -1923,7 +1923,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
   //         icon: icon == null
   //             ? const SizedBox.shrink()
   //             : Icon(icon, color: Colors.white, size: 16),
-  //         label: Text(
+  //         label: TText(
   //           label,
   //           style: AppTypography.bold.copyWith(
   //             fontSize: 15,
@@ -1958,7 +1958,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              TText(
                 label,
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -1997,7 +1997,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             borderRadius: BorderRadius.circular(context.r(14)),
           ),
         ),
-        child: Text(
+        child: TText(
           label,
           style: AppTypography.bold.copyWith(
             fontSize: 15,

@@ -11,6 +11,7 @@ import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/onboarding/kyc_documents_api.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Insurance step. The insurance PDF and its expiry date are sent to the
 /// server. Skip (or Continue with no PDF chosen) moves on without uploading.
@@ -106,7 +107,7 @@ class _VehicleInsuranceScreenState extends State<VehicleInsuranceScreen> {
   void _snack(String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(SnackBar(content: TText(message)));
   }
 
   /// Continue: uploads the insurance PDF with its expiry date (YYYY-MM-DD),
@@ -148,7 +149,7 @@ class _VehicleInsuranceScreenState extends State<VehicleInsuranceScreen> {
       onHelp: widget.onHelp,
       headerAction: TextButton(
         onPressed: widget.onSkip,
-        child: Text(
+        child: TText(
           AppStrings.skip,
           style: AppTypography.bold.copyWith(
             fontSize: 15,
@@ -172,7 +173,7 @@ class _VehicleInsuranceScreenState extends State<VehicleInsuranceScreen> {
               onTap: _pickPdf,
             ),
             SizedBox(height: context.h(16)),
-            Text(
+            TText(
               '${AppStrings.expiryDate} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
             ),
@@ -182,12 +183,12 @@ class _VehicleInsuranceScreenState extends State<VehicleInsuranceScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: TText(
                     AppStrings.permitIfApplicable,
                     style: AppTypography.regular.copyWith(fontSize: 13),
                   ),
                 ),
-                Text(
+                TText(
                   AppStrings.commercialPermit,
                   style: AppTypography.regular.copyWith(fontSize: 12),
                 ),
@@ -207,14 +208,14 @@ class _VehicleInsuranceScreenState extends State<VehicleInsuranceScreen> {
               onTap: () {},
             ),
             SizedBox(height: context.h(16)),
-            Text(
+            TText(
               '${AppStrings.expiryDate} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
             ),
             SizedBox(height: context.h(8)),
             _dateField(_permitExpiry),
             SizedBox(height: context.h(16)),
-            Text(
+            TText(
               AppStrings.preview,
               style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
             ),
@@ -254,7 +255,7 @@ class _VehicleInsuranceScreenState extends State<VehicleInsuranceScreen> {
             ),
             SizedBox(width: context.w(10)),
             Expanded(
-              child: Text(
+              child: TText(
                 chosen ? _pdfName : AppStrings.tapToUpload,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

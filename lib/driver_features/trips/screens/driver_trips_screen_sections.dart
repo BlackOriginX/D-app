@@ -33,7 +33,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           'Trip Invoice',
                           style: TextStyle(
                             fontSize: 18,
@@ -41,7 +41,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                             color: context.torkk.textPrimary,
                           ),
                         ),
-                        Text(
+                        TText(
                           'Ride #${trip['id'] ?? ''}',
                           style: TextStyle(
                             fontSize: 12,
@@ -114,7 +114,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               'ROUTE DETAILS',
                               style: TextStyle(
                                 fontSize: 11,
@@ -134,7 +134,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
-                                  child: Text(
+                                  child: TText(
                                     trip['pickup_address'] ?? 'Pickup Address',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -164,7 +164,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
-                                  child: Text(
+                                  child: TText(
                                     trip['drop_address'] ?? 'Drop Address',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -188,7 +188,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               'FARE BREAKDOWN',
                               style: TextStyle(
                                 fontSize: 11,
@@ -234,7 +234,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                                   ).withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Text(
+                          child: TText(
                             trip['status']?.toUpperCase() ?? 'COMPLETED',
                             style: TextStyle(
                               color: trip['status'] == 'completed'
@@ -266,7 +266,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                     ),
                     foregroundColor: context.legible(Color(0xFF475569)),
                   ),
-                  child: const Text(
+                  child: const TText(
                     'Close Invoice',
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
@@ -290,11 +290,11 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
+          TText(
             label,
             style: TextStyle(fontSize: 13, color: context.torkk.textSecondary),
           ),
-          Text(
+          TText(
             value,
             style: TextStyle(
               fontSize: 13,
@@ -320,7 +320,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
           children: [
             Icon(Icons.history, size: 64, color: Colors.blueGrey.shade200),
             const SizedBox(height: 16),
-            Text(
+            TText(
               'No trips found',
               style: TextStyle(color: Colors.blueGrey.shade400, fontSize: 15),
             ),
@@ -357,7 +357,7 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                   size: 24,
                 ),
               ),
-              title: Text(
+              title: TText(
                 '${trip['pickup_address'] ?? 'Pickup'} → ${trip['drop_address'] ?? 'Drop'}',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -366,14 +366,14 @@ extension _DriverTripsScreenStateSections on _DriverTripsScreenState {
                   fontSize: 13,
                 ),
               ),
-              subtitle: Text(
+              subtitle: TText(
                 '$date • ${trip['customer_name'] ?? 'Customer'}',
                 style: const TextStyle(fontSize: 11),
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
+                  TText(
                     '₹${(trip['driver_earnings'] as num?)?.toStringAsFixed(2) ?? (trip['fare'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

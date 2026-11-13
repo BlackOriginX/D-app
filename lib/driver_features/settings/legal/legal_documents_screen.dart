@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/settings/legal/cancellation_refund_pol
 import 'package:rider_app/driver_features/settings/legal/drivers_riders_agreement_screen.dart';
 import 'package:rider_app/driver_features/settings/legal/privacy_policy_screen.dart';
 import 'package:rider_app/driver_features/settings/legal/terms_conditions_users_screen.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Settings -> Legal & Policies: one row per document.
 class LegalDocumentsScreen extends StatelessWidget {
@@ -92,7 +93,7 @@ class _LegalRow extends StatelessWidget {
             Icon(icon, color: context.torkk.textPrimary, size: context.w(20)),
             SizedBox(width: context.w(12)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 15,

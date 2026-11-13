@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- AGREEMENTS SCREEN (Figma Settings -> Agreements) ---
 class DriverAgreementsScreen extends StatelessWidget {
@@ -22,7 +23,7 @@ class DriverAgreementsScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                TText(
                   title,
                   style: TextStyle(
                     fontSize: 18,
@@ -75,7 +76,7 @@ class DriverAgreementsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            Text(
+            TText(
               title,
               style: TextStyle(
                 fontSize: 22,
@@ -86,7 +87,7 @@ class DriverAgreementsScreen extends StatelessWidget {
             const SizedBox(height: 14),
             Expanded(
               child: SingleChildScrollView(
-                child: Text(
+                child: TText(
                   contentText,
                   style: TextStyle(
                     fontSize: 14,
@@ -111,7 +112,7 @@ class DriverAgreementsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
+                child: const TText(
                   'I Understand & Accept',
                   style: TextStyle(
                     color: Colors.white,
@@ -162,7 +163,7 @@ class DriverAgreementsScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(
+        title: TText(
           'Settings',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -177,7 +178,7 @@ class DriverAgreementsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 'Agreements',
                 style: TextStyle(
                   fontSize: 26,

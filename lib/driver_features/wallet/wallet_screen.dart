@@ -14,6 +14,7 @@ import 'package:rider_app/service/driver_api_service.dart';
 
 import '../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key, this.onBack});
@@ -141,7 +142,7 @@ class _WalletScreenState extends State<WalletScreen> {
             SizedBox(height: context.h(18)),
             _actions(context),
             // SizedBox(height: context.h(18)),
-            // Text(AppStrings.activePlan, style: AppTypography.regular.copyWith(fontSize: 14, fontWeight: FontWeight.w600)),
+            // TText(AppStrings.activePlan, style: AppTypography.regular.copyWith(fontSize: 14, fontWeight: FontWeight.w600)),
             // SizedBox(height: context.h(8)),
             // _activePlan(context),
           ],
@@ -169,7 +170,7 @@ class _WalletScreenState extends State<WalletScreen> {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TText(
                   label,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,
@@ -181,7 +182,7 @@ class _WalletScreenState extends State<WalletScreen> {
             ],
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             value,
             style: AppTypography.bold.copyWith(
               fontSize: 18,
@@ -266,7 +267,7 @@ class _WalletScreenState extends State<WalletScreen> {
             child: Icon(item.icon, color: item.color, size: context.w(22)),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             item.label,
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -309,14 +310,14 @@ class _WalletScreenState extends State<WalletScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     AppStrings.standardDriverPlan,
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text(
+                  TText(
                     AppStrings.perMonth,
                     style: AppTypography.bold.copyWith(
                       fontSize: 13,
@@ -324,7 +325,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       letterSpacing: -0.2,
                     ),
                   ),
-                  Text(
+                  TText(
                     AppStrings.validTill24Aug,
                     style: AppTypography.regular.copyWith(
                       fontSize: 12,
@@ -370,7 +371,7 @@ class _BalanceCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: TText(
                   AppStrings.availableCash,
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
@@ -393,7 +394,7 @@ class _BalanceCard extends StatelessWidget {
               ),
             ],
           ),
-          Text(
+          TText(
             rupees(balance, decimals: 0),
             style: AppTypography.bold.copyWith(
               fontSize: 28,
@@ -402,7 +403,7 @@ class _BalanceCard extends StatelessWidget {
               letterSpacing: -0.6,
             ),
           ),
-          Text(
+          TText(
             trips == 1 ? '1 ride' : '$trips rides',
             style: AppTypography.regular.copyWith(
               fontSize: 12,
@@ -422,7 +423,7 @@ class _BalanceCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: TText(
                     AppStrings.todaysCompletedJobs,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -430,7 +431,7 @@ class _BalanceCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
+                TText(
                   '$trips',
                   style: AppTypography.bold.copyWith(
                     fontSize: 16,

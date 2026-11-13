@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:rider_app/common/utils/translations_hi_text.dart';
+
 class AppTranslations {
   // Global value notifier for language state
   static final ValueNotifier<String> currentLanguage = ValueNotifier<String>(
@@ -551,7 +553,7 @@ class AppTranslations {
       'countryCodeIndia': '+91',
       'phoneHint': '00000 00000',
       'agreeWith': 'I agree with ',
-      'privacyPolicy': 'Privacy Policy',
+      'privacyPolicy': 'Privacy Security',
       'termsAndConditions': 'Terms & Conditions',
       'driverAgreement': 'Driver Agreement',
 
@@ -695,6 +697,13 @@ class AppTranslations {
       'drop': 'Drop',
     },
     'hi': {
+      'sosandemergency': 'SOS और आपातकाल',
+      'availableCash': 'उपलब्ध नकद',
+      'todaysCompletedJobs': 'आज की पूरी हुई जॉब',
+      'activePlan': 'चालू प्लान',
+      'standardDriverPlan': 'स्टैंडर्ड ड्राइवर प्लान',
+      'perMonth': '₹299 प्रति माह',
+      'validTill24Aug': '24 अगस्त तक मान्य',
 
       // --- Ride payment flow ---
       'payQrLoading': 'QR बन रहा है...',
@@ -1376,4 +1385,67 @@ class AppTranslations {
     final lang = currentLanguage.value;
     return _translations[lang]?[key] ?? _translations['en']?[key] ?? key;
   }
+
+  /// Translates a UI string that is written directly in a screen (not an
+  /// AppStrings key). Looks the exact English text up in [hiTextByEnglish];
+  /// text with numbers in it (like "5 mins away") goes through [_patterns].
+  /// Unknown text (names, addresses, server messages) is returned unchanged.
+  static String t(String text) {
+    if (currentLanguage.value != 'hi' || text.isEmpty) return text;
+    final exact = hiTextByEnglish[text];
+    if (exact != null) return exact;
+    for (final rule in _patterns) {
+      final match = rule.$1.firstMatch(text);
+      if (match != null) return rule.$2(match);
+    }
+    return text;
+  }
+
+  static final List<(RegExp, String Function(RegExpMatch))> _patterns = [
+    (RegExp(r'^(\d+) mins? away$'), (m) => '${m[1]} मिनट दूर'),
+    (RegExp(r'^(\d+) minutes? away$'), (m) => '${m[1]} मिनट दूर'),
+    (RegExp(r'^(\d+) mins?$'), (m) => '${m[1]} मिनट'),
+    (RegExp(r'^(\d+) min ago$'), (m) => '${m[1]} मिनट पहले'),
+    (RegExp(r'^(\d+) hr ago$'), (m) => '${m[1]} घंटे पहले'),
+    (RegExp(r'^(\d+) d ago$'), (m) => '${m[1]} दिन पहले'),
+    (RegExp(r'^(\d+) days? ago$'), (m) => '${m[1]} दिन पहले'),
+    (RegExp(r'^(\d+) passengers?$'), (m) => '${m[1]} यात्री'),
+    (RegExp(r'^(\d+) rides?$'), (m) => '${m[1]} राइड'),
+    (RegExp(r'^(\d+) Coins?$'), (m) => '${m[1]} कॉइन्स'),
+    (RegExp(r'^(\d+) Seater$'), (m) => '${m[1]} सीटर'),
+    (RegExp(r'^([\d.]+) [Kk]m$'), (m) => '${m[1]} किमी'),
+    (RegExp(r'^([\d.]+) kg$'), (m) => '${m[1]} किलो'),
+    (RegExp(r'^(.+) • (\d+) Seater$'), (m) => '${t(m[1]!)} • ${m[2]} सीटर'),
+    (RegExp(r'^Customer \((.+)\)$'), (m) => 'ग्राहक (${m[1]})'),
+    (RegExp(r'^Received Cash \((.+)\)$'), (m) => 'नकद मिला (${m[1]})'),
+    (
+      RegExp(r'^Received via (.+) \((.+)\)$'),
+      (m) => '${t(m[1]!)} से मिला (${m[2]})',
+    ),
+    (
+      RegExp(r'^Ride payment from (.+?)( • .+)?$'),
+      (m) => '${m[1]} से राइड भुगतान${m[2] ?? ''}',
+    ),
+    (
+      RegExp(
+        r'^(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(.*)$',
+      ),
+      (m) => '${m[1]} ${t(m[2]!)}${m[3]}',
+    ),
+    (
+      RegExp(r'^(Today|Yesterday|Tomorrow)(,| at) (.+)$'),
+      (m) => '${t(m[1]!)}${m[2] == ',' ? ',' : ' को'} ${m[3]}',
+    ),
+    (RegExp(r'^Pickup: (.+)$'), (m) => 'पिकअप: ${m[1]}'),
+    (RegExp(r'^Dropoff: (.+)$'), (m) => 'ड्रॉप: ${m[1]}'),
+    (RegExp(r'^Rider: (.+)$'), (m) => 'राइडर: ${m[1]}'),
+    (RegExp(r'^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) Earnings: (.+)$'), (m) => '${t(m[1]!)} की कमाई: ${m[2]}'),
+    (RegExp(r'^(.+) \((.+)\) has been saved as your driving hours\.$'), (m) => '${t(m[1]!)} (${m[2]}) आपके ड्राइविंग घंटों के रूप में सहेजा गया।'),
+    (RegExp(r'^(\d{1,2}:\d{2}) (AM|PM)$'), (m) => '${m[1]} ${m[2] == 'AM' ? 'पूर्वाह्न' : 'अपराह्न'}'),
+    (RegExp(r'^Valid till (.+)$'), (m) => '${m[1]} तक मान्य'),
+    (
+      RegExp(r'^Your plan expired on (.+)$'),
+      (m) => 'आपका प्लान ${m[1]} को समाप्त हुआ',
+    ),
+  ];
 }

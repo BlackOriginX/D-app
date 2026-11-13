@@ -4,6 +4,7 @@ import 'package:rider_app/common/routes/app_routes.dart';
 import 'package:rider_app/driver_features/earnings/screens/driver_earnings_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/driver_support_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/driver_profile_screen.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NavigationBottomNav extends StatelessWidget {
   final String driverPhotoUrl;
@@ -85,7 +86,7 @@ class NavigationBottomNav extends StatelessWidget {
                       size: 20,
                     ),
                     const SizedBox(height: 1),
-                    Text(
+                    TText(
                       item['label'] as String,
                       style: const TextStyle(
                         color: Colors.white,

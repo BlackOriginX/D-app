@@ -4,6 +4,7 @@ import '../theme/app_typography.dart';
 import '../utils/screen_utils.dart';
 import 'bouncing_widget.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 enum UnifiedButtonVariant { filled, outline, error }
 
@@ -82,7 +83,7 @@ class UnifiedButton extends StatelessWidget {
                   Icon(icon, color: labelColor, size: 18),
                   SizedBox(width: context.w(8)),
                 ],
-                Text(
+                TText(
                   label,
                   style: AppTypography.bold.copyWith(
                     color: labelColor,

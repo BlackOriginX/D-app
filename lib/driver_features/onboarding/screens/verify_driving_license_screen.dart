@@ -17,6 +17,7 @@ import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'verify_driving_license/dashed_border_painter.dart';
 part 'verify_driving_license/digilocker_card.dart';
@@ -109,7 +110,7 @@ class _VerifyDrivingLicenseScreenState
                   Icons.photo_camera_outlined,
                   color: context.legible(AppColors.primary),
                 ),
-                title: Text(
+                title: TText(
                   AppStrings.camera,
                   style: AppTypography.bold.copyWith(fontSize: 15),
                 ),
@@ -120,7 +121,7 @@ class _VerifyDrivingLicenseScreenState
                   Icons.photo_outlined,
                   color: context.legible(AppColors.primary),
                 ),
-                title: Text(
+                title: TText(
                   AppStrings.gallery,
                   style: AppTypography.bold.copyWith(fontSize: 15),
                 ),
@@ -215,7 +216,7 @@ class _VerifyDrivingLicenseScreenState
     if (dob == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Enter a valid ${AppStrings.dateOfBirth}')),
+        SnackBar(content: TText('Enter a valid ${AppStrings.dateOfBirth}')),
       );
       return;
     }
@@ -336,14 +337,14 @@ class _VerifyDrivingLicenseScreenState
             //   onTap: () => setState(() => _useDigilocker = true),
             // ),
             // SizedBox(height: context.h(16)),
-            // Text(
+            // TText(
             //   AppStrings.orWord,
             //   style: AppTypography.regular.copyWith(color: context.torkk.textSecondary, fontSize: 12),
             // ),
             SizedBox(height: context.h(16)),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
+              child: TText(
                 AppStrings.uploadDrivingLicense,
                 style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
               ),

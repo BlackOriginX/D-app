@@ -35,7 +35,7 @@ extension _OrdersScreenStateSections on _OrdersScreenState {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (coins > 0)
-                  Text(
+                  TText(
                     '${AppStrings.ordersYouEarnedCoins} $coins ${AppStrings.ordersCoins}',
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -44,7 +44,7 @@ extension _OrdersScreenStateSections on _OrdersScreenState {
                       letterSpacing: -0.2,
                     ),
                   ),
-                Text(
+                TText(
                   AppStrings.ordersCoinsHint,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

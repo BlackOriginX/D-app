@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Step 1: total amount and the QR the customer scans to pay by UPI.
 class PaymentQrPage extends StatelessWidget {
@@ -57,19 +58,19 @@ class PaymentQrPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(18)),
-          Text(
+          TText(
             AppStrings.payCollectPayment,
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(fontSize: 22),
           ),
           SizedBox(height: context.h(10)),
-          Text(
+          TText(
             AppStrings.payScanQr,
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(fontSize: 15),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             AppStrings.payScanQrHint,
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
@@ -88,7 +89,7 @@ class PaymentQrPage extends StatelessWidget {
                   child: const CircularProgressIndicator(strokeWidth: 2),
                 ),
                 SizedBox(width: context.w(8)),
-                Text(
+                TText(
                   AppStrings.payWaiting,
                   style: AppTypography.regular.copyWith(fontSize: 13),
                 ),
@@ -100,7 +101,7 @@ class PaymentQrPage extends StatelessWidget {
               Expanded(
                 child: OutlinedButton(
                   onPressed: onCollectCash,
-                  child: Text(AppStrings.payCollectCash),
+                  child: TText(AppStrings.payCollectCash),
                 ),
               ),
               if (onPartUpi != null) ...[
@@ -108,7 +109,7 @@ class PaymentQrPage extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: onPartUpi,
-                    child: Text(AppStrings.payPaidPartUpi),
+                    child: TText(AppStrings.payPaidPartUpi),
                   ),
                 ),
               ],

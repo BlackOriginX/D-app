@@ -4,6 +4,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Full-width primary button used on the payout screens.
 class PayoutButton extends StatelessWidget {
@@ -36,7 +37,7 @@ class PayoutButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(context.r(14)),
                 ),
               ),
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.bold.copyWith(fontSize: 15),
               ),
@@ -49,7 +50,7 @@ class PayoutButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(context.r(14)),
                 ),
               ),
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.bold.copyWith(
                   fontSize: 15,
@@ -102,7 +103,7 @@ class PayoutStatusHero extends StatelessWidget {
               ),
         ),
         SizedBox(height: context.h(24)),
-        Text(
+        TText(
           title,
           textAlign: TextAlign.center,
           style: AppTypography.bold.copyWith(fontSize: 22, letterSpacing: -0.4),
@@ -110,7 +111,7 @@ class PayoutStatusHero extends StatelessWidget {
         SizedBox(height: context.h(8)),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: context.w(32)),
-          child: Text(
+          child: TText(
             message,
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(

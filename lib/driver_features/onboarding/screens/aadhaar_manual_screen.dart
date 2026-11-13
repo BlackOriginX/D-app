@@ -14,6 +14,7 @@ import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class AadhaarManualScreen extends StatefulWidget {
   const AadhaarManualScreen({
@@ -62,7 +63,7 @@ class _AadhaarManualScreenState extends State<AadhaarManualScreen> {
                   Icons.photo_camera_outlined,
                   color: context.legible(AppColors.primary),
                 ),
-                title: Text(
+                title: TText(
                   AppStrings.camera,
                   style: AppTypography.bold.copyWith(fontSize: 15),
                 ),
@@ -73,7 +74,7 @@ class _AadhaarManualScreenState extends State<AadhaarManualScreen> {
                   Icons.photo_outlined,
                   color: context.legible(AppColors.primary),
                 ),
-                title: Text(
+                title: TText(
                   AppStrings.gallery,
                   style: AppTypography.bold.copyWith(fontSize: 15),
                 ),
@@ -130,7 +131,7 @@ class _AadhaarManualScreenState extends State<AadhaarManualScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               AppStrings.uploadYourAadhaar,
               style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
             ),
@@ -160,7 +161,7 @@ class _AadhaarManualScreenState extends State<AadhaarManualScreen> {
               ],
             ),
             SizedBox(height: context.h(18)),
-            Text(
+            TText(
               '${AppStrings.aadhaarCardNumber} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
             ),
@@ -231,7 +232,7 @@ class _SideTile extends StatelessWidget {
                       size: context.w(28),
                     ),
                     SizedBox(height: context.h(8)),
-                    Text(
+                    TText(
                       label,
                       style: AppTypography.bold.copyWith(
                         color: context.torkk.textPrimary,
@@ -239,7 +240,7 @@ class _SideTile extends StatelessWidget {
                         height: 1.2,
                       ),
                     ),
-                    Text(
+                    TText(
                       AppStrings.tapToUpload,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,

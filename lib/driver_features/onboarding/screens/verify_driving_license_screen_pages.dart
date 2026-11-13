@@ -25,13 +25,13 @@ extension _VerifyDrivingLicenseScreenStatePages
               ),
               SizedBox(height: context.h(16)),
               Center(
-                child: Text(
+                child: TText(
                   AppStrings.drivingLicenceVerified,
                   style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
                 ),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 AppStrings.drivingLicenceVerifiedSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(
@@ -71,7 +71,7 @@ extension _VerifyDrivingLicenseScreenStatePages
           children: [
             // TEMPORARILY OFF: licence photos are not uploaded for now (only the
             // number and date of birth are sent). Restore with the choose page.
-            // Text(
+            // TText(
             // AppStrings.preview,
             // style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
             // ),
@@ -94,7 +94,7 @@ extension _VerifyDrivingLicenseScreenStatePages
             // ],
             // ),
             // SizedBox(height: context.h(18)),
-            Text(
+            TText(
               '${AppStrings.licenseNumber} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
             ),
@@ -105,7 +105,7 @@ extension _VerifyDrivingLicenseScreenStatePages
               onChanged: (_) => setState(() {}),
             ),
             SizedBox(height: context.h(14)),
-            Text(
+            TText(
               '${AppStrings.dateOfBirth} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
             ),
@@ -128,7 +128,7 @@ extension _VerifyDrivingLicenseScreenStatePages
                 ),
               ],
             ),
-            // Text('${AppStrings.expiryDate} *', style: AppTypography.regular.copyWith(fontSize: 13)),
+            // TText('${AppStrings.expiryDate} *', style: AppTypography.regular.copyWith(fontSize: 13)),
             // SizedBox(height: context.h(8)),
             // Stack(
             //   alignment: Alignment.centerRight,
@@ -160,7 +160,7 @@ extension _VerifyDrivingLicenseScreenStatePages
                     size: context.w(16),
                   ),
                   SizedBox(width: context.w(6)),
-                  Text(
+                  TText(
                     AppStrings.verificationPending,
                     style: AppTypography.regular.copyWith(
                       color: context.legible(AppColors.amber700),
@@ -204,13 +204,13 @@ extension _VerifyDrivingLicenseScreenStatePages
               badgeColor: AppColors.green600,
             ),
             SizedBox(height: context.h(28)),
-            Text(
+            TText(
               AppStrings.drivingLicenseVerifiedManual,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               AppStrings.drivingLicenseVerifiedManualSubtitle,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -249,13 +249,13 @@ extension _VerifyDrivingLicenseScreenStatePages
               badgeColor: AppColors.error,
             ),
             SizedBox(height: context.h(28)),
-            Text(
+            TText(
               AppStrings.drivingLicenseRejected,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
             ),
             SizedBox(height: context.h(8)),
-            Text(
+            TText(
               AppStrings.drivingLicenseRejectedSubtitle,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(
@@ -276,7 +276,7 @@ extension _VerifyDrivingLicenseScreenStatePages
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     AppStrings.rejectionReason,
                     style: AppTypography.regular.copyWith(
                       color: context.torkk.textSecondary,
@@ -297,7 +297,7 @@ extension _VerifyDrivingLicenseScreenStatePages
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               _dlError,
                               style: AppTypography.bold.copyWith(
                                 color: context.torkk.textPrimary,
@@ -306,7 +306,7 @@ extension _VerifyDrivingLicenseScreenStatePages
                               ),
                             ),
                             SizedBox(height: context.h(4)),
-                            Text(
+                            TText(
                               'Check the licence number and date of birth, then try again.',
                               style: AppTypography.regular.copyWith(
                                 color: context.torkk.textSecondary,

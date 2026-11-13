@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets_screen.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HelpSupportScreen extends StatefulWidget {
   const HelpSupportScreen({super.key});
@@ -66,7 +67,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
             MaterialPageRoute<void>(builder: (_) => const TicketsScreen()),
           );
         },
-        child: Text(
+        child: TText(
           AppStrings.myTickets,
           style: AppTypography.regular.copyWith(
             fontSize: 13,
@@ -186,7 +187,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                         ? null
                         : Border.all(color: context.torkk.border),
                   ),
-                  child: Text(
+                  child: TText(
                     message.text,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
@@ -202,7 +203,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
               top: context.h(2),
               left: mine ? 0 : context.w(36),
             ),
-            child: Text(
+            child: TText(
               message.time,
               style: AppTypography.regular.copyWith(
                 fontSize: 10,
@@ -229,7 +230,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                           borderRadius: BorderRadius.circular(context.r(20)),
                           border: Border.all(color: accent),
                         ),
-                        child: Text(
+                        child: TText(
                           chip,
                           style: AppTypography.regular.copyWith(
                             fontSize: 12,
@@ -278,7 +279,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                             ),
                             SizedBox(width: context.w(8)),
                             Expanded(
-                              child: Text(
+                              child: TText(
                                 action,
                                 style: AppTypography.regular.copyWith(
                                   fontSize: 13,

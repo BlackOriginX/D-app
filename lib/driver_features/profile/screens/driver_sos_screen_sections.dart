@@ -41,7 +41,7 @@ extension _DriverSosScreenStateSections on _DriverSosScreenState {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(
+              child: TText(
                 title,
                 style: TextStyle(
                   fontSize: 16,

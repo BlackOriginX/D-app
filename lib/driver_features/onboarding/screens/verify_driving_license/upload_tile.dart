@@ -49,7 +49,7 @@ class _UploadTile extends StatelessWidget {
                       size: context.w(28),
                     ),
                     SizedBox(height: context.h(10)),
-                    Text(
+                    TText(
                       label,
                       style: AppTypography.bold.copyWith(
                         color: context.torkk.textPrimary,
@@ -58,7 +58,7 @@ class _UploadTile extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: context.h(2)),
-                    Text(
+                    TText(
                       AppStrings.tapToUpload,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,

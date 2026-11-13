@@ -62,7 +62,7 @@ extension _DriverHomeScreenStateSections on _DriverHomeScreenState {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
+          content: TText(
             'Your account was not found on the server. Please register again.',
           ),
         ),
@@ -236,7 +236,7 @@ extension _DriverHomeScreenStateSections on _DriverHomeScreenState {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Ride accepted! Starting navigation...'),
+            content: TText('Ride accepted! Starting navigation...'),
             backgroundColor: Colors.green,
           ),
         );
@@ -246,7 +246,7 @@ extension _DriverHomeScreenStateSections on _DriverHomeScreenState {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to accept ride: $e'),
+            content: TText('Failed to accept ride: $e'),
             backgroundColor: Colors.red,
           ),
         );

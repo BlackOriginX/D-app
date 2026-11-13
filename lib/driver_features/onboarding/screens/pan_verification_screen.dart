@@ -10,6 +10,7 @@ import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PanVerificationScreen extends StatefulWidget {
   const PanVerificationScreen({
@@ -54,7 +55,7 @@ class _PanVerificationScreenState extends State<PanVerificationScreen> {
           children: [
             const Center(child: _PanCardArt()),
             SizedBox(height: context.h(28)),
-            Text(
+            TText(
               '${AppStrings.panNumber} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
             ),

@@ -4,6 +4,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SubscriptionWarningBox extends StatelessWidget {
   const SubscriptionWarningBox({
@@ -27,7 +28,7 @@ class SubscriptionWarningBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             title,
             style: AppTypography.bold.copyWith(
               color: context.torkk.textPrimary,
@@ -47,7 +48,7 @@ class SubscriptionWarningBox extends StatelessWidget {
               ),
               SizedBox(width: context.w(8)),
               Expanded(
-                child: Text(
+                child: TText(
                   body,
                   style: subscriptionMuted(
                     context,

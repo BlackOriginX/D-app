@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
@@ -8,6 +9,7 @@ import 'package:rider_app/driver_features/profile/screens/tickets/ticket_full_de
 import 'package:rider_app/driver_features/profile/screens/tickets/follow_up_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
 import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
   const TicketDetailsScreen({super.key, required this.ticket});
@@ -44,7 +46,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(e.toString().replaceFirst('Exception: ', '')),
+        content: TText(e.toString().replaceFirst('Exception: ', '')),
         backgroundColor: Colors.red,
       ),
     );
@@ -55,22 +57,22 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
     final reason = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Reopen Ticket'),
+        title: const TText('Reopen Ticket'),
         content: TextField(
           controller: controller,
           maxLines: 3,
-          decoration: const InputDecoration(
-            hintText: 'Why is the issue not resolved?',
+          decoration: InputDecoration(
+            hintText: AppTranslations.t('Why is the issue not resolved?'),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+            child: const TText('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
-            child: const Text('Reopen'),
+            child: const TText('Reopen'),
           ),
         ],
       ),
@@ -127,7 +129,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                       borderRadius: BorderRadius.circular(context.r(14)),
                     ),
                   ),
-                  child: Text(
+                  child: TText(
                     reopen ? 'Reopen Ticket' : 'Follow up',
                     style: AppTypography.bold.copyWith(
                       fontSize: 15,
@@ -164,7 +166,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
               padding: EdgeInsets.symmetric(vertical: context.h(8)),
               child: Row(
                 children: [
-                  Text(
+                  TText(
                     'View Details',
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,

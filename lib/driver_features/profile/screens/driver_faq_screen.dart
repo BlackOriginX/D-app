@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- FAQ SCREEN ---
 class DriverFaqScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class DriverFaqScreen extends StatelessWidget {
         border: Border.all(color: context.torkk.border),
       ),
       child: ExpansionTile(
-        title: Text(
+        title: TText(
           question,
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -25,7 +26,7 @@ class DriverFaqScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-            child: Text(
+            child: TText(
               answer,
               style: TextStyle(
                 fontSize: 13,
@@ -44,7 +45,7 @@ class DriverFaqScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.torkk.surfaceMuted,
       appBar: AppBar(
-        title: const Text(
+        title: const TText(
           'FAQs',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -58,7 +59,7 @@ class DriverFaqScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Text(
+          TText(
             'Top Driver FAQs',
             style: TextStyle(
               fontSize: 20,

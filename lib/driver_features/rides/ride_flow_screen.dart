@@ -1,4 +1,5 @@
 import 'package:rider_app/common/widgets/sheet_with_sos.dart';
+import 'package:rider_app/common/utils/translations.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
@@ -20,6 +21,7 @@ import 'package:rider_app/driver_features/rides/widgets/passenger_gender_bubbles
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'ride_flow_screen_parts/ride_otp_boxes.dart';
 part 'ride_flow_screen_parts/ride_otp_boxes_state.dart';
@@ -294,7 +296,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
   void _toast(String message, {bool error = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: TText(message),
         backgroundColor: error ? Colors.red : Colors.green,
       ),
     );
@@ -568,7 +570,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
                   borderRadius: BorderRadius.circular(context.r(14)),
                 ),
               ),
-              child: const Text('Skip'),
+              child: const TText('Skip'),
             ),
           ),
         ],
@@ -587,13 +589,13 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
             ),
           ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             _customerName,
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(fontSize: 16),
           ),
           SizedBox(height: context.h(10)),
-          Text(
+          TText(
             'How was your Ride?',
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
@@ -640,7 +642,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
                           : context.adaptiveTint(Color(0xFFF8FAFC)),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
+                    child: TText(
                       tag,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
@@ -670,7 +672,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
                   color: context.torkk.textPrimary,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Add a comment (Optional)',
+                  hintText: AppTranslations.t('Add a comment (Optional)'),
                   hintStyle: AppTypography.regular.copyWith(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
@@ -693,7 +695,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
           SizedBox(height: context.h(6)),
           Align(
             alignment: Alignment.centerRight,
-            child: Text(
+            child: TText(
               '${_comment.text.length}/200',
               style: AppTypography.regular.copyWith(
                 fontSize: 11,

@@ -6,6 +6,7 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/widgets/animated_progress_steps.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_page.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PaymentProcessingScreen extends StatelessWidget {
   const PaymentProcessingScreen({super.key, required this.onCompleted});
@@ -55,13 +56,13 @@ class PaymentProcessingScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.h(18)),
-          Text(
+          TText(
             'Processing Payment...',
             textAlign: TextAlign.center,
             style: subscriptionTitle(),
           ),
           SizedBox(height: context.h(8)),
-          Text(
+          TText(
             'Please do not close the app',
             textAlign: TextAlign.center,
             style: subscriptionMuted(
@@ -113,7 +114,7 @@ class PaymentProcessingScreen extends StatelessWidget {
                 ),
                 SizedBox(width: context.w(8)),
                 Expanded(
-                  child: Text(
+                  child: TText(
                     "This may take a few moments. Please don't close the app",
                     style: subscriptionMuted(
                       context,

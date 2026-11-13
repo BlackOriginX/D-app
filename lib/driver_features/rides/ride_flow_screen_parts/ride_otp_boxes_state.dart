@@ -88,7 +88,7 @@ class _RideOtpBoxesState extends State<_RideOtpBoxes> {
                           width: isActive ? 1.6 : 1,
                         ),
                       ),
-                      child: Text(
+                      child: TText(
                         char,
                         style: AppTypography.bold.copyWith(
                           fontSize: 20,

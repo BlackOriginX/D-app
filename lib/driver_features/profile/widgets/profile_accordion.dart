@@ -6,6 +6,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ProfileSection {
   const ProfileSection(this.title, this.body, {this.readMore = false});
@@ -56,7 +57,7 @@ class _ProfileAccordionState extends State<ProfileAccordion> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: TText(
                             widget.sections[i].title,
                             style: AppTypography.regular.copyWith(
                               fontSize: 14,
@@ -74,7 +75,7 @@ class _ProfileAccordionState extends State<ProfileAccordion> {
                     ),
                     if (_open == i) ...[
                       SizedBox(height: context.h(8)),
-                      Text(
+                      TText(
                         widget.sections[i].body,
                         maxLines: widget.sections[i].readMore && !_readMore
                             ? 4
@@ -93,7 +94,7 @@ class _ProfileAccordionState extends State<ProfileAccordion> {
                           onTap: () => setState(() => _readMore = true),
                           child: Padding(
                             padding: EdgeInsets.only(top: context.h(4)),
-                            child: Text(
+                            child: TText(
                               AppStrings.readMore,
                               style: AppTypography.regular.copyWith(
                                 fontSize: 13,

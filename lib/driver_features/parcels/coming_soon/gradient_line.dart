@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/coming_soon_text.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class GradientLine extends StatelessWidget {
   final String text;
@@ -16,7 +17,7 @@ class GradientLine extends StatelessWidget {
         stops: [0.0, 0.3942, 1.0],
         colors: [Color(0xFFBA2879), Color(0xFF61217E), Color(0xFF0F3FBF)],
       ).createShader(bounds),
-      child: Text(
+      child: TText(
         text,
         textAlign: TextAlign.center,
         style: Inter(

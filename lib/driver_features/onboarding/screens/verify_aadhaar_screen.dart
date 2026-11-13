@@ -8,6 +8,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Screen after KYC. The two actions open their own screens.
 class VerifyAadhaarScreen extends StatelessWidget {
@@ -62,7 +63,7 @@ class VerifyAadhaarScreen extends StatelessWidget {
                   color: AppColors.green600,
                 ),
                 SizedBox(width: context.w(10)),
-                Text(
+                TText(
                   AppStrings.dataSafeWithUs,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

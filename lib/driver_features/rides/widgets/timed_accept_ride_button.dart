@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Animated accept ride button featuring a 20-second timeout countdown
 /// and left-to-right filling blue progress bar.
@@ -98,7 +99,7 @@ class _TimedAcceptRideButtonState extends State<TimedAcceptRideButton>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    const TText(
                       'Accept Ride',
                       style: TextStyle(
                         color: Colors.white,
@@ -122,7 +123,7 @@ class _TimedAcceptRideButtonState extends State<TimedAcceptRideButton>
                             color: Colors.white.withAlpha(40),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
+                          child: TText(
                             '${remaining}s',
                             style: const TextStyle(
                               color: Colors.white,

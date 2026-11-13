@@ -14,6 +14,7 @@ import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/driver_features/onboarding/kyc_documents_api.dart';
 import 'package:rider_app/driver_features/onboarding/widgets/pick_kyc_image.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 part 'vehicle_photos_screen_parts/photo_result_card.dart';
 part 'vehicle_photos_screen_parts/type_chip.dart';
@@ -133,7 +134,7 @@ class _VehiclePhotosScreenState extends State<VehiclePhotosScreen> {
     if (problem != null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(problem)));
+      ).showSnackBar(SnackBar(content: TText(problem)));
       return;
     }
     setState(() {
@@ -194,7 +195,7 @@ class _VehiclePhotosScreenState extends State<VehiclePhotosScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               AppStrings.uploadVehiclePhoto,
               style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
             ),
@@ -273,7 +274,7 @@ class _VehiclePhotosScreenState extends State<VehiclePhotosScreen> {
           children: [
             const CircularProgressIndicator(),
             SizedBox(height: context.h(16)),
-            Text(
+            TText(
               AppStrings.vehiclePhotosSubtitle,
               style: AppTypography.regular.copyWith(
                 fontSize: 13,

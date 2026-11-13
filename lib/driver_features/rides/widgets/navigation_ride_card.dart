@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NavigationRideCard extends StatelessWidget {
   final Map<String, dynamic>? ride;
@@ -228,7 +229,7 @@ class NavigationRideCard extends StatelessWidget {
           if (isAccept) ...[
             Row(
               children: [
-                Text(
+                TText(
                   '₹ ${estimatedFare > 0 ? estimatedFare.toStringAsFixed(2) : '0.00'}',
                   style: TextStyle(
                     fontSize: 26,
@@ -248,7 +249,7 @@ class NavigationRideCard extends StatelessWidget {
                       color: const Color(0xFF10B981).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text(
+                    child: TText(
                       '+₹ ${bonusVal.round()}',
                       style: const TextStyle(
                         fontSize: 14,
@@ -279,7 +280,7 @@ class NavigationRideCard extends StatelessWidget {
                           color: Color(0xFF2563EB),
                         ),
                         SizedBox(width: 4),
-                        Text(
+                        TText(
                           'Navigate',
                           style: TextStyle(
                             fontSize: 12,
@@ -318,7 +319,7 @@ class NavigationRideCard extends StatelessWidget {
                       )
                     : ((ride?['customer_photo'] == null ||
                               ride!['customer_photo'].toString().isEmpty)
-                          ? Text(
+                          ? TText(
                               customerInitial,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -333,7 +334,7 @@ class NavigationRideCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       displayName,
                       style: TextStyle(
                         fontSize: 16,
@@ -355,7 +356,7 @@ class NavigationRideCard extends StatelessWidget {
                             color: Color(0xFFEAB308),
                           ),
                           const SizedBox(width: 3),
-                          Text(
+                          TText(
                             customerRating,
                             style: TextStyle(
                               fontSize: 13,
@@ -368,7 +369,7 @@ class NavigationRideCard extends StatelessWidget {
                     ],
                     if (isParcel && ride?['item_category'] != null) ...[
                       const SizedBox(height: 2),
-                      Text(
+                      TText(
                         'Category: ${ride!['item_category']}',
                         style: TextStyle(
                           fontSize: 13,
@@ -431,7 +432,7 @@ class NavigationRideCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (pickupDistText.isNotEmpty)
-                        Text(
+                        TText(
                           pickupDistText,
                           style: TextStyle(
                             fontSize: 14,
@@ -440,7 +441,7 @@ class NavigationRideCard extends StatelessWidget {
                           ),
                         ),
                       const SizedBox(height: 2),
-                      Text(
+                      TText(
                         pickupAddress.isNotEmpty
                             ? pickupAddress
                             : 'Pickup Location',
@@ -518,7 +519,7 @@ class NavigationRideCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (dropDistText.isNotEmpty)
-                        Text(
+                        TText(
                           dropDistText,
                           style: TextStyle(
                             fontSize: 14,
@@ -527,7 +528,7 @@ class NavigationRideCard extends StatelessWidget {
                           ),
                         ),
                       const SizedBox(height: 2),
-                      Text(
+                      TText(
                         dropAddress.isNotEmpty ? dropAddress : 'Drop Location',
                         style: TextStyle(
                           fontSize: 12,

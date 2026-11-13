@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../widgets/widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 export '../widgets/widgets.dart';
 
@@ -273,7 +274,7 @@ class _OnlineRideSearchViewState extends State<OnlineRideSearchView> {
                             size: 22,
                           ),
                         )
-                      : const Text(
+                      : const TText(
                           'ONLINE',
                           style: TextStyle(
                             color: Colors.white,
@@ -391,7 +392,7 @@ class _OnlineRideSearchViewState extends State<OnlineRideSearchView> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(
+                        TText(
                           'searching',
                           style: TextStyle(
                             fontSize: 14,

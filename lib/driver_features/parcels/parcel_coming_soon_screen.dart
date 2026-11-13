@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/coming_soon_text.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/gradient_line.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/notify_button.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// "Coming Soon" screen for the Parcel tab. The subscription entry points use
 /// `new_feature_coming_soon_screen.dart` instead.
@@ -100,7 +101,7 @@ class _ParcelComingSoonScreenState extends State<ParcelComingSoonScreen> {
                               onPressed: _notified ? null : _notify,
                             ),
                             const SizedBox(height: 10),
-                            Text(
+                            TText(
                               'Be the first to know when it is live.',
                               style: Inter(
                                 fontSize: 13,

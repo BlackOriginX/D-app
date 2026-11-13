@@ -62,7 +62,7 @@ extension _DriverHistoryScreenStateSections on _DriverHistoryScreenState {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Text(
+                  child: TText(
                     initial,
                     style: const TextStyle(
                       color: Colors.white,
@@ -78,7 +78,7 @@ extension _DriverHistoryScreenStateSections on _DriverHistoryScreenState {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       name,
                       style: TextStyle(
                         fontSize: 16,
@@ -87,7 +87,7 @@ extension _DriverHistoryScreenStateSections on _DriverHistoryScreenState {
                       ),
                     ),
                     const SizedBox(height: 3),
-                    Text(
+                    TText(
                       address,
                       style: TextStyle(
                         fontSize: 12.5,
@@ -99,7 +99,7 @@ extension _DriverHistoryScreenStateSections on _DriverHistoryScreenState {
                 ),
               ),
               // Amount
-              Text(
+              TText(
                 '₹ ${fare.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: 17,

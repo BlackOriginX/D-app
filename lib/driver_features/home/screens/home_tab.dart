@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/driver_features/home/widgets/widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class DriverHomeTab extends StatelessWidget {
   final bool isOnline;
@@ -105,7 +106,7 @@ class DriverHomeTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     'Online for:',
                     style: TextStyle(
                       fontSize: 16,
@@ -122,7 +123,7 @@ class DriverHomeTab extends StatelessWidget {
                           onChanged: (val) {
                             if (val != null) onWantsRidesChanged(val);
                           },
-                          title: const Text(
+                          title: const TText(
                             'Rides',
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
@@ -137,7 +138,7 @@ class DriverHomeTab extends StatelessWidget {
                           onChanged: (val) {
                             if (val != null) onWantsParcelsChanged(val);
                           },
-                          title: const Text(
+                          title: const TText(
                             'Parcels',
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
@@ -170,7 +171,7 @@ class DriverHomeTab extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                TText(
                   'All Trips',
                   style: TextStyle(
                     fontSize: 22,
@@ -190,7 +191,7 @@ class DriverHomeTab extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24.0),
               child: Center(
-                child: Text(
+                child: TText(
                   'No recent trips available',
                   style: TextStyle(
                     color: subtextColor,
@@ -306,7 +307,7 @@ class DriverHomeTab extends StatelessWidget {
                   ],
                 ),
                 child: Center(
-                  child: Text(
+                  child: TText(
                     initialLetter,
                     style: const TextStyle(
                       color: Colors.white,
@@ -321,7 +322,7 @@ class DriverHomeTab extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       name,
                       style: TextStyle(
                         fontSize: 16,
@@ -330,7 +331,7 @@ class DriverHomeTab extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 3),
-                    Text(
+                    TText(
                       location,
                       style: TextStyle(
                         fontSize: 13,
@@ -341,7 +342,7 @@ class DriverHomeTab extends StatelessWidget {
                   ],
                 ),
               ),
-              Text(
+              TText(
                 '₹ ${amount.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: 16,

@@ -5,6 +5,7 @@ import 'package:rider_app/common/routes/app_routes.dart';
 import 'package:rider_app/driver_features/onboarding/onboarding_session.dart';
 import 'package:rider_app/driver_features/onboarding/screens/welcome_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -35,7 +36,7 @@ class WelcomePage extends StatelessWidget {
               if (error != null) {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(SnackBar(content: Text(error)));
+                ).showSnackBar(SnackBar(content: TText(error)));
               }
               context.go(AppRoutes.otp);
             },

@@ -5,6 +5,7 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shown on the Parcel tab until the driver is eligible for parcel requests.
 class ParcelDeliveryScreen extends StatelessWidget {
@@ -42,7 +43,7 @@ class ParcelDeliveryScreen extends StatelessWidget {
                       color: context.torkk.textPrimary,
                     ),
                   ),
-                  Text(
+                  TText(
                     AppStrings.parcelDelivery,
                     style: AppTypography.bold.copyWith(
                       fontSize: 18,
@@ -71,7 +72,7 @@ class ParcelDeliveryScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(8)),
-                  Text(
+                  TText(
                     AppStrings.unlockParcelTitle,
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(
@@ -81,7 +82,7 @@ class ParcelDeliveryScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(8)),
-                  Text(
+                  TText(
                     AppStrings.unlockParcelSubtitle,
                     textAlign: TextAlign.center,
                     style: AppTypography.regular.copyWith(
@@ -113,7 +114,7 @@ class ParcelDeliveryScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(context.r(14)),
                     ),
                   ),
-                  child: Text(
+                  child: TText(
                     AppStrings.continueAction,
                     style: AppTypography.bold.copyWith(
                       fontSize: 16,
@@ -227,7 +228,7 @@ class _StepRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   step.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -237,7 +238,7 @@ class _StepRow extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-                Text(
+                TText(
                   step.subtitle,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

@@ -7,6 +7,7 @@ import 'package:rider_app/driver_features/parcels/coming_soon/fill.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/gradient_line.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/hero_image.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/notify_button.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class FeaturePage extends StatelessWidget {
   final VoidCallback onNotify;
@@ -23,7 +24,7 @@ class FeaturePage extends StatelessWidget {
           fallback: Icons.card_giftcard_rounded,
         ),
         const SizedBox(height: 8),
-        Text(
+        TText(
           'New Feature',
           textAlign: TextAlign.center,
           style: Inter(
@@ -35,7 +36,7 @@ class FeaturePage extends StatelessWidget {
         ),
         const GradientLine('Coming Soon', size: 30),
         const SizedBox(height: 8),
-        Text(
+        TText(
           "We're working on something exciting to\nbring a better experience.",
           textAlign: TextAlign.center,
           style: Inter(
@@ -54,7 +55,7 @@ class FeaturePage extends StatelessWidget {
           onPressed: onNotify,
         ),
         const SizedBox(height: 10),
-        const Text(
+        const TText(
           'Be the first to know when it is live.',
           style: TextStyle(
             color: Color(0xFF8B909C),

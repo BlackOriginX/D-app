@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SosButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -38,7 +39,7 @@ class SosButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                Text(
+                TText(
                   'Emergency SOS Activated',
                   style: TextStyle(
                     fontSize: 20,
@@ -47,7 +48,7 @@ class SosButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
+                TText(
                   'Your live location and emergency packet are being broadcasted to the dispatch team and your registered emergency contacts.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -70,7 +71,7 @@ class SosButton extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
+                    child: const TText(
                       'Dismiss & Cancel SOS',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -92,7 +93,7 @@ class SosButton extends StatelessWidget {
     return FloatingActionButton(
       onPressed: () => _triggerSos(context),
       backgroundColor: Colors.red,
-      child: const Text(
+      child: const TText(
         'SOS',
         style: TextStyle(
           color: Colors.white,

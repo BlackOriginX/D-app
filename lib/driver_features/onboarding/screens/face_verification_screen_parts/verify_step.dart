@@ -57,7 +57,7 @@ class _VerifyStep extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(top: context.h(1)),
-            child: Text(
+            child: TText(
               label,
               style: AppTypography.regular.copyWith(
                 fontSize: 14,

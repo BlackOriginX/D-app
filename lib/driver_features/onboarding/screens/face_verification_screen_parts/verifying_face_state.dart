@@ -115,12 +115,12 @@ class _VerifyingFaceState extends State<_VerifyingFace>
                 ),
               ),
               SizedBox(height: context.h(24)),
-              Text(
+              TText(
                 AppStrings.verifyingYourFace,
                 style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
               ),
               SizedBox(height: context.h(6)),
-              Text(
+              TText(
                 AppStrings.verifyingFaceSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTypography.regular.copyWith(

@@ -38,7 +38,7 @@ class OrderCoinsBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   '${AppStrings.ordersYouEarnedCoins} $coins ${AppStrings.ordersCoins}',
                   style: AppTypography.bold.copyWith(
                     fontSize: 14,
@@ -47,7 +47,7 @@ class OrderCoinsBanner extends StatelessWidget {
                     letterSpacing: -0.2,
                   ),
                 ),
-                Text(
+                TText(
                   AppStrings.ordersCoinsHint,
                   style: AppTypography.regular.copyWith(
                     fontSize: 12,

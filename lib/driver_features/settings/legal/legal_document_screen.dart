@@ -4,6 +4,7 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// One piece of a legal document: a section heading or a paragraph.
 class LegalBlock {
@@ -45,7 +46,7 @@ class LegalDocumentScreen extends StatelessWidget {
                 top: context.h(18),
                 bottom: context.h(8),
               ),
-              child: Text(
+              child: TText(
                 block.text,
                 style: AppTypography.bold.copyWith(
                   fontSize: 16,
@@ -57,7 +58,7 @@ class LegalDocumentScreen extends StatelessWidget {
           }
           return Padding(
             padding: EdgeInsets.only(bottom: context.h(10)),
-            child: Text(
+            child: TText(
               block.text,
               style: AppTypography.regular.copyWith(
                 fontSize: 14,

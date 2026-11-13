@@ -7,6 +7,7 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class DocumentValidationScreen extends StatelessWidget {
   final String title;
@@ -50,7 +51,7 @@ class DocumentValidationScreen extends StatelessWidget {
                   size: context.w(16),
                 ),
                 SizedBox(width: context.w(6)),
-                Text(
+                TText(
                   title,
                   style: AppTypography.regular.copyWith(
                     color: context.legible(AppColors.error),
@@ -60,7 +61,7 @@ class DocumentValidationScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: context.h(6)),
-            Text(
+            TText(
               message,
               textAlign: TextAlign.center,
               style: AppTypography.regular.copyWith(

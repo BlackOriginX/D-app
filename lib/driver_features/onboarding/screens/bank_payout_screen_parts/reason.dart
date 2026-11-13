@@ -16,7 +16,7 @@ class _Reason extends StatelessWidget {
         ),
         SizedBox(width: context.w(8)),
         Expanded(
-          child: Text(
+          child: TText(
             text,
             style: AppTypography.regular.copyWith(
               fontSize: 13,

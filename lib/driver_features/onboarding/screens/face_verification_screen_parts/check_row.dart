@@ -32,7 +32,7 @@ class _CheckRow extends StatelessWidget {
           ),
           SizedBox(width: context.w(14)),
           Expanded(
-            child: Text(
+            child: TText(
               text,
               style: AppTypography.regular.copyWith(
                 fontSize: 14,

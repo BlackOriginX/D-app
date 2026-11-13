@@ -6,6 +6,7 @@ import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'call_112_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 part 'driver_sos_screen_sections.dart';
 
 // --- DRIVER SOS SCREEN ---
@@ -144,7 +145,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             "Get Emergency Help",
                             style: TextStyle(
                               fontSize: 26,
@@ -154,7 +155,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                             ),
                           ),
                           SizedBox(height: 4),
-                          Text(
+                          TText(
                             "Your Current Location and Information will be shared to the help",
                             style: TextStyle(
                               fontSize: 13,
@@ -221,7 +222,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TText(
                                       _driverName,
                                       style: TextStyle(
                                         fontSize: 17,
@@ -230,7 +231,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text(
+                                    TText(
                                       "$_driverGender $_driverDob",
                                       style: TextStyle(
                                         fontSize: 13,
@@ -244,7 +245,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          Text(
+                          TText(
                             "Vehical Info",
                             style: TextStyle(
                               fontSize: 13,
@@ -253,7 +254,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TText(
                             _vehicleInfo,
                             style: TextStyle(
                               fontSize: 12,
@@ -262,7 +263,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Text(
+                          TText(
                             "Location",
                             style: TextStyle(
                               fontSize: 13,
@@ -271,7 +272,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TText(
                             "${_currentLat.toStringAsFixed(7)}, ${_currentLng.toStringAsFixed(7)}",
                             style: TextStyle(
                               fontSize: 12,
@@ -353,7 +354,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
               child: Stack(
                 children: [
                   const Center(
-                    child: Text(
+                    child: TText(
                       "Slide to Call for help",
                       style: TextStyle(
                         color: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- CALL 112 SCREEN (Emergency Dialing UI) ---
 class Call112Screen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _Call112ScreenState extends State<Call112Screen> {
           child: Column(
             children: [
               const Spacer(),
-              const Text(
+              const TText(
                 "112",
                 style: TextStyle(
                   fontSize: 56,
@@ -107,7 +108,7 @@ class _Call112ScreenState extends State<Call112Screen> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
+                  child: const TText(
                     "End",
                     style: TextStyle(
                       color: Colors.white,

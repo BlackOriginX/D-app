@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- CALL SUPPORT SCREEN ---
 class DriverCallSupportScreen extends StatelessWidget {
@@ -10,7 +11,7 @@ class DriverCallSupportScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.torkk.background,
       appBar: AppBar(
-        title: const Text(
+        title: const TText(
           'Call Support',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -37,7 +38,7 @@ class DriverCallSupportScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              Text(
+              TText(
                 'Speak to Support Representative',
                 style: TextStyle(
                   fontSize: 20,
@@ -46,7 +47,7 @@ class DriverCallSupportScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
+              TText(
                 'Our Partner Support hotline is available 24/7 to resolve operations and billing inquiries.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: context.torkk.textSecondary),
@@ -62,7 +63,7 @@ class DriverCallSupportScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: context.torkk.border),
                 ),
-                child: Text(
+                child: TText(
                   '+1 (800) 555-0199',
                   style: TextStyle(
                     fontSize: 22,
@@ -79,14 +80,14 @@ class DriverCallSupportScreen extends StatelessWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(
+                        content: TText(
                           'Simulating telephone dialer initiation...',
                         ),
                       ),
                     );
                   },
                   icon: const Icon(Icons.call, color: Colors.white),
-                  label: const Text(
+                  label: const TText(
                     'Call Helpline Now',
                     style: TextStyle(
                       color: Colors.white,
