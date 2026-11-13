@@ -290,9 +290,8 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 context.h(10),
               ),
               decoration: BoxDecoration(
-                color: context.torkk.surfaceMuted.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(context.r(12)),
-                border: Border.all(color: const Color(0xB2F1F5F9)),
+                border: Border.all(color: context.torkk.border),
               ),
               child: Row(
                 children: [
@@ -360,9 +359,8 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                 context.h(10),
               ),
               decoration: BoxDecoration(
-                color: context.torkk.surfaceMuted.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(context.r(12)),
-                border: Border.all(color: const Color(0xB2F1F5F9)),
+                border: Border.all(color: context.torkk.border),
               ),
               child: Row(
                 children: [

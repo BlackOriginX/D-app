@@ -363,10 +363,11 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
               context.w(12),
               context.h(10),
             ),
+            // No fill (the old light grey looked muddy in dark mode): just a
+            // simple border that follows the theme.
             decoration: BoxDecoration(
-              color: const Color(0xCCF8FAFC),
               borderRadius: BorderRadius.circular(context.r(12)),
-              border: Border.all(color: const Color(0xB2F1F5F9)),
+              border: Border.all(color: context.torkk.border),
             ),
             child: Row(
               children: [
