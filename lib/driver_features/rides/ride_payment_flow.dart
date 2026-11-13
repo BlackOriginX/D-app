@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,10 @@ import 'package:rider_app/driver_features/rides/payment/payment_done_page.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_qr_page.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_result.dart';
 import 'package:rider_app/driver_features/rides/payment/payment_review_page.dart';
+import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/service/razorpay_service.dart';
+import 'package:rider_app/service/ride_payment_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:rider_app/driver_features/rides/payment/payment_result.dart';
 
@@ -57,6 +61,10 @@ class _RidePaymentFlowState extends State<RidePaymentFlow> {
   bool _qrLoading = true;
   String? _qrError;
   bool _qrPaid = false;
+
+  /// True when the server made the QR (the normal case). False only for the
+  /// sample rides, which have no ride on the server and use a test QR.
+  bool _qrFromServer = false;
 
   double _upi = 0;
   double _cash = 0;
@@ -108,12 +116,20 @@ class _RidePaymentFlowState extends State<RidePaymentFlow> {
       _qrPaid = false;
     });
     try {
-      final qr = await RazorpayService.createUpiQr(
-        amountRupees: _total,
-        rideId: widget.rideId,
-      );
+      // The QR is made by our server: POST /api/ride/payment/qr {"ride_id"}.
+      // Sample rides (9901 / 9902) are not on the server, so they keep using
+      // the Razorpay test QR made on the phone.
+      final rideId = int.tryParse(widget.rideId);
+      final sample = rideId == null || rideId == 9901 || rideId == 9902;
+      _qrFromServer = !sample;
+      final qr = sample
+          ? await RazorpayService.createUpiQr(
+              amountRupees: _total,
+              rideId: widget.rideId,
+            )
+          : await RidePaymentApi.createQr(rideId: rideId, amountRupees: _total);
       if (!mounted) {
-        RazorpayService.closeQr(qr.id);
+        if (!_qrFromServer) RazorpayService.closeQr(qr.id);
         return;
       }
       setState(() {
@@ -137,6 +153,10 @@ class _RidePaymentFlowState extends State<RidePaymentFlow> {
     if (_polling || qr == null || _step != _Step.qr) return;
     _polling = true;
     try {
+      if (_qrFromServer) {
+        await _pollServer();
+        return;
+      }
       final status = await RazorpayService.fetchQrStatus(qr.id);
       if (!mounted || _step != _Step.qr) return;
       if (status.receivedPaise >= qr.amountPaise) {
@@ -160,10 +180,41 @@ class _RidePaymentFlowState extends State<RidePaymentFlow> {
     }
   }
 
-  /// Closes the QR if nobody paid on it (cash chosen, or the driver left).
+  /// For a QR made by the server: the ride on the server gets a transaction id
+  /// (or a paid status) once the rider pays, so the ride is read every few
+  /// seconds. The paid amount is not sent, so a payment counts as the full fare.
+  Future<void> _pollServer() async {
+    final rideId = int.tryParse(widget.rideId);
+    if (rideId == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    final response = await DriverApiService.fetchRideDetailResponse(
+      rideId: rideId,
+      driverPhone: prefs.getString('user_phone') ?? '',
+    );
+    if (!mounted || _step != _Step.qr || response.statusCode != 200) return;
+    final body = jsonDecode(response.body);
+    final data = body is Map && body['ride'] is Map ? body['ride'] : body;
+    if (data is! Map) return;
+    final txn = '${data['transaction_id'] ?? ''}'.trim();
+    final paidStatus = '${data['payment_status'] ?? ''}'.toLowerCase();
+    final paid =
+        (txn.isNotEmpty && txn.toUpperCase() != 'CASH') ||
+        const {'paid', 'success', 'captured', 'completed'}.contains(paidStatus);
+    if (paid) {
+      _pollTimer?.cancel();
+      _qrPaid = true;
+      _setAmounts(upi: _total);
+      _show(_Step.review);
+    }
+  }
+
+  /// Closes the test QR if nobody paid on it (cash chosen, or the driver
+  /// left). A QR made by the server is left to the server.
   void _closeQr() {
     final qr = _qr;
-    if (qr != null && !_qrPaid) RazorpayService.closeQr(qr.id);
+    if (qr != null && !_qrPaid && !_qrFromServer) {
+      RazorpayService.closeQr(qr.id);
+    }
   }
 
   void _setAmounts({

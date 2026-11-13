@@ -28,6 +28,12 @@ class AuthClient extends http.BaseClient {
 
   static final String _backendHost = Uri.parse(AppUrls.baseUrl).authority;
 
+  /// Other hosts that belong to our own backend and need the login token.
+  static final Set<String> _ownHosts = {
+    _backendHost,
+    Uri.parse(AppUrls.paymentQr).authority,
+  };
+
   static final Set<String> _publicPaths = {
     Uri.parse(AppUrls.sendOtp).path,
     Uri.parse(AppUrls.verifyOtp).path,
@@ -36,7 +42,7 @@ class AuthClient extends http.BaseClient {
   };
 
   static bool isProtected(Uri url) =>
-      url.authority == _backendHost && !_publicPaths.contains(url.path);
+      _ownHosts.contains(url.authority) && !_publicPaths.contains(url.path);
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {

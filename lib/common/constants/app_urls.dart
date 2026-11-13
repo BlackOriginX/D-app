@@ -148,6 +148,9 @@ class AppUrls {
   static const String reached = '$apiBase/driver/reached';
   static const String setPaymentMethod = '$apiBase/driver/set-payment-method';
 
+  /// The server creates the UPI QR (Razorpay) for a ride: POST {"ride_id": 123}.
+  static const String paymentQr = 'https://api.torkk.in/api/ride/payment/qr';
+
   static String activeRides({required String driverPhone, String city = ''}) {
     if (city.isEmpty) {
       return '$apiBase/driver/rides/active?driver_phone=${Uri.encodeComponent(driverPhone)}';
