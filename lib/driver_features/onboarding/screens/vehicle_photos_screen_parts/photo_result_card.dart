@@ -4,11 +4,15 @@ class _PhotoResultCard extends StatelessWidget {
   const _PhotoResultCard({
     required this.label,
     required this.failed,
+    this.imagePath,
+    this.imageUrl = '',
     this.onRetake,
   });
 
   final String label;
   final bool failed;
+  final String? imagePath;
+  final String imageUrl;
   final VoidCallback? onRetake;
 
   @override
@@ -54,11 +58,14 @@ class _PhotoResultCard extends StatelessWidget {
           SizedBox(height: context.h(6)),
           ClipRRect(
             borderRadius: BorderRadius.circular(context.r(8)),
-            child: Image.asset(
-              AppAssets.cab,
+            child: SizedBox(
               height: context.h(72),
               width: double.infinity,
-              fit: BoxFit.cover,
+              child: imagePath != null
+                  ? Image.file(File(imagePath!), fit: BoxFit.cover)
+                  : imageUrl.isNotEmpty
+                  ? Image.network(imageUrl, fit: BoxFit.cover)
+                  : ColoredBox(color: context.torkk.surfaceMuted),
             ),
           ),
           if (onRetake != null) ...[

@@ -1,14 +1,16 @@
 part of 'package:rider_app/driver_features/onboarding/screens/verify_vehicle_rc_screen.dart';
 
 extension _VerifyVehicleRcScreenStateSections on _VerifyVehicleRcScreenState {
+  /// Continue on the form: calls the verify-rc API straight away with
+  /// whatever number is typed. The server decides if it is valid; there is no
+  /// local format check that could stop the call.
   void _continueFromForm() {
-    if (_frontPath == null ||
-        _backPath == null ||
-        !isRegistrationNumber(_numberController.text)) {
-      _go(_RcPage.unclear);
-      return;
-    }
-    _go(_RcPage.preview);
+    debugPrint(
+      'ONB_API | VEHICLE RC VERIFY | CONTINUE PRESSED | '
+      'front=${_frontPath != null} back=${_backPath != null} '
+      'number="${_numberController.text}" -> calling API',
+    );
+    _verify();
   }
 
   Widget _preview(BuildContext context) {

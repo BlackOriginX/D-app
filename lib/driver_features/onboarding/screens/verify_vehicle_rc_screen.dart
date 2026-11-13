@@ -143,11 +143,21 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
   }
 
   Future<void> _verify() async {
-    final number = parseRegistrationNumber(_numberController.text);
-    if (number == null) {
+    // Send exactly what was typed (upper case, no spaces or dashes).
+    final number = _numberController.text.toUpperCase().replaceAll(
+      RegExp(r'[^A-Z0-9]'),
+      '',
+    );
+    if (number.isEmpty) {
+      debugPrint(
+        'ONB_API | VEHICLE RC VERIFY | SKIPPED | API not called, number is empty: "${_numberController.text}"',
+      );
       _go(_RcPage.unclear);
       return;
     }
+    debugPrint(
+      'ONB_API | VEHICLE RC VERIFY | calling API with id_number=$number',
+    );
     setState(() => _verifying = true);
     try {
       final details = await verifyVehicleRc(idNumber: number);
@@ -160,7 +170,8 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
         _numberController.text = details.registrationNumber;
         _page = _RcPage.extracted;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('ONB_API | VEHICLE RC VERIFY | ERROR | $e');
       if (!mounted) return;
       setState(() {
         _verifying = false;
@@ -247,6 +258,7 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
             SizedBox(height: context.h(24)),
             UnifiedButton(
               label: AppStrings.continueAction,
+              isLoading: _verifying,
               enabled:
                   _frontPath != null &&
                   _backPath != null &&

@@ -20,15 +20,38 @@ class _VerifyingFaceState extends State<_VerifyingFace>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat();
+    // Moves the steps along while the server call runs; the last step stays
+    // active until the server answers.
     _timer = Timer.periodic(const Duration(milliseconds: 900), (timer) {
-      if (!mounted) return;
-      if (_done >= _labels.length) {
+      if (!mounted || _done >= _labels.length - 1) {
         timer.cancel();
-        widget.onFinished();
         return;
       }
       setState(() => _done++);
     });
+    _verify();
+  }
+
+  Future<void> _verify() async {
+    final path = widget.selfiePath;
+    if (path == null) {
+      widget.onFinished('No photo was captured. Please try again.');
+      return;
+    }
+    final prefs = await SharedPreferences.getInstance();
+    final phone = (prefs.getString('user_phone') ?? '').replaceAll(' ', '');
+    try {
+      await KycDocumentsApi.verifyLiveness(phone: phone, selfiePath: path);
+      if (!mounted) return;
+      _timer?.cancel();
+      setState(() => _done = _labels.length);
+      await Future<void>.delayed(const Duration(milliseconds: 700));
+      if (mounted) widget.onFinished(null);
+    } on KycApiException catch (e) {
+      if (mounted) widget.onFinished(e.message);
+    } catch (e) {
+      if (mounted) widget.onFinished('Face verification failed. Try again.');
+    }
   }
 
   @override

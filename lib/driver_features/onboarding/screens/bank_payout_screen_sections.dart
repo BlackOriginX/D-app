@@ -1,6 +1,36 @@
 part of 'package:rider_app/driver_features/onboarding/screens/bank_payout_screen.dart';
 
+/// Stops typing once the account number reaches the bank's maximum length.
+class _MaxDigits extends TextInputFormatter {
+  _MaxDigits(this.max);
+
+  final int Function() max;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.text.length > max() ? oldValue : newValue;
+  }
+}
+
 extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
+  /// Small red message under a field (nothing when [message] is null).
+  Widget _fieldError(String? message) {
+    if (message == null) return const SizedBox.shrink();
+    return Padding(
+      padding: EdgeInsets.only(top: context.h(6)),
+      child: Text(
+        message,
+        style: AppTypography.regular.copyWith(
+          fontSize: 12,
+          color: context.legible(AppColors.error),
+        ),
+      ),
+    );
+  }
+
   Widget _form(BuildContext context) {
     return OnboardingStepScaffold(
       title: AppStrings.bankPayoutDetails,
@@ -56,7 +86,14 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
               controller: _account,
               keyboardType: TextInputType.number,
               obscureText: true,
+              hasError: _accountError != null,
+              onChanged: (_) => _refresh(),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                _MaxDigits(() => _limits.max),
+              ],
             ),
+            _fieldError(_accountError),
             SizedBox(height: context.h(14)),
             KycRequiredLabel(AppStrings.confirmAccountNumber),
             SizedBox(height: context.h(8)),
@@ -64,22 +101,53 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
               controller: _confirm,
               keyboardType: TextInputType.number,
               obscureText: true,
+              hasError: _confirmError != null,
+              onChanged: (_) => _refresh(),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                _MaxDigits(() => _limits.max),
+              ],
             ),
+            _fieldError(_confirmError),
             SizedBox(height: context.h(14)),
             Row(
               children: [
                 Expanded(child: KycRequiredLabel(AppStrings.ifscCode)),
-                Text(
-                  AppStrings.findIfsc,
-                  style: AppTypography.bold.copyWith(
-                    fontSize: 12,
-                    color: AppColors.green600,
-                  ),
+                GestureDetector(
+                  onTap: _findingIfsc ? null : _findIfsc,
+                  child: _findingIfsc
+                      ? SizedBox(
+                          width: context.w(14),
+                          height: context.w(14),
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          AppStrings.findIfsc,
+                          style: AppTypography.bold.copyWith(
+                            fontSize: 12,
+                            color: AppColors.green600,
+                          ),
+                        ),
                 ),
               ],
             ),
             SizedBox(height: context.h(8)),
-            AppTextField(controller: _ifsc),
+            AppTextField(
+              controller: _ifsc,
+              onChanged: (_) {
+                _branch = '';
+                _refresh();
+              },
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(11),
+                TextInputFormatter.withFunction(
+                  (old, value) =>
+                      value.copyWith(text: value.text.toUpperCase()),
+                ),
+              ],
+            ),
             SizedBox(height: context.h(14)),
             KycRequiredLabel(AppStrings.bankName),
             SizedBox(height: context.h(8)),
@@ -87,11 +155,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
             SizedBox(height: context.h(14)),
             KycPendingBanner(title: AppStrings.verificationPending),
             SizedBox(height: context.h(24)),
-            UnifiedButton(
-              label: AppStrings.saveAndVerify,
-              onPressed: () =>
-                  _matches ? _startVerifying() : _go(_BankPage.failed),
-            ),
+            UnifiedButton(label: AppStrings.saveAndVerify, onPressed: _submit),
           ],
         ),
       ),
@@ -184,10 +248,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
             UnifiedButton(
               label: AppStrings.continueAction,
               enabled: _bankDone >= 3,
-              onPressed: () {
-                _bankTimer?.cancel();
-                _go(_BankPage.verified);
-              },
+              onPressed: () => _go(_BankPage.verified),
             ),
           ],
         ),
@@ -368,9 +429,13 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                       ),
                     ),
                     SizedBox(height: context.h(8)),
-                    _Reason(AppStrings.incorrectAccountOrIfsc),
-                    SizedBox(height: context.h(6)),
-                    _Reason(AppStrings.accountInactive),
+                    if (_error != null)
+                      _Reason(_error!)
+                    else ...[
+                      _Reason(AppStrings.incorrectAccountOrIfsc),
+                      SizedBox(height: context.h(6)),
+                      _Reason(AppStrings.accountInactive),
+                    ],
                   ],
                 ),
               ),

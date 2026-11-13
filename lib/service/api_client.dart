@@ -64,17 +64,22 @@ class AuthClient extends http.BaseClient {
     return response;
   }
 
-  /// Prints one line before the call (method, URL, body) and one after it
-  /// (status, time, response body) so every API can be checked in the console.
-  /// Debug builds only. The Authorization header is never printed.
+  /// Prints one line before the call (method, URL, request body) and one after
+  /// it (status code, time, response body) so every API can be checked in the
+  /// console. Debug builds only. The Authorization header is never printed.
+  ///
+  /// Onboarding APIs also print their own `ONB_API | ...` lines at the call
+  /// site (see onboarding_api_log.dart).
   Future<http.StreamedResponse> _logged(
     http.BaseRequest request,
     bool attachedToken,
   ) async {
     if (!kDebugMode) return _inner.send(request);
+    const before = '[API] before ->';
+    const after = '[API] after  <-';
     final tag = '${request.method} ${request.url}';
     debugPrint(
-      '[API] before -> $tag (token: $attachedToken) body=${_requestBody(request)}',
+      '$before $tag (token: $attachedToken) request body=${_requestBody(request)}',
     );
     final clock = Stopwatch()..start();
     try {
@@ -82,8 +87,8 @@ class AuthClient extends http.BaseClient {
       // Read the body to print it, then hand back an identical response.
       final bytes = await response.stream.toBytes();
       debugPrint(
-        '[API] after  <- $tag status=${response.statusCode} '
-        '(${clock.elapsedMilliseconds}ms) body=${_clip(utf8.decode(bytes, allowMalformed: true))}',
+        '$after $tag status=${response.statusCode} '
+        '(${clock.elapsedMilliseconds}ms) response body=${_clip(utf8.decode(bytes, allowMalformed: true))}',
       );
       return http.StreamedResponse(
         Stream.value(bytes),
@@ -97,7 +102,7 @@ class AuthClient extends http.BaseClient {
       );
     } catch (e) {
       debugPrint(
-        '[API] after  <- $tag FAILED (${clock.elapsedMilliseconds}ms): $e',
+        '$after $tag FAILED (${clock.elapsedMilliseconds}ms) error=$e',
       );
       rethrow;
     }
@@ -105,7 +110,7 @@ class AuthClient extends http.BaseClient {
 
   static String _requestBody(http.BaseRequest request) {
     if (request is http.Request) {
-      return request.body.isEmpty ? '-' : _clip(request.body);
+      return request.body.isEmpty ? '-' : _clip(_hideBigFields(request.body));
     }
     if (request is http.MultipartRequest) {
       final files = [for (final f in request.files) '${f.field}:${f.filename}'];
@@ -113,6 +118,12 @@ class AuthClient extends http.BaseClient {
     }
     return '<stream>';
   }
+
+  /// Replaces very long base64 values (the face selfie) with their length.
+  static String _hideBigFields(String body) => body.replaceAllMapped(
+    RegExp(r'"([a-z_]*base64[a-z_]*)"\s*:\s*"[^"]{200,}"'),
+    (m) => '"${m[1]}":"<base64 hidden>"',
+  );
 
   static String _clip(String text) =>
       text.length <= 3000 ? text : '${text.substring(0, 3000)}... [clipped]';

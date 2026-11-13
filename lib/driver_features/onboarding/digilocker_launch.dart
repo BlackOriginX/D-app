@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:rider_app/service/api_client.dart';
+import 'package:rider_app/service/onboarding_api_log.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
 import 'package:rider_app/driver_features/onboarding/onboarding_session.dart';
 
@@ -27,9 +28,18 @@ Future<String?> launchDigilocker(BuildContext context) async {
       if (cleanPhone.isNotEmpty) 'phone': cleanPhone,
     };
     final startUri = Uri.parse(AppUrls.digilockerStart);
-    final response = await apiClient
-        .post(startUri, headers: headers, body: json.encode(requestBody))
-        .timeout(const Duration(seconds: 10));
+    final startBody = json.encode(requestBody);
+    onbBefore('DIGILOCKER START', 'POST', '$startUri', startBody);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .post(startUri, headers: headers, body: startBody)
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      onbFailed('DIGILOCKER START', e);
+      rethrow;
+    }
+    onbAfter('DIGILOCKER START', response.statusCode, response.body);
     session.loading = false;
     session.touch();
     if (!_isSuccessful(response.statusCode)) {
@@ -137,13 +147,18 @@ Future<String?> _download() async {
     };
 
     final downloadUri = Uri.parse(AppUrls.digilockerDownload);
-    debugPrint('[DigiLocker][_download] POST $downloadUri');
-    debugPrint('[DigiLocker][_download] body: ${json.encode(requestBody)}');
-    final response = await apiClient
-        .post(downloadUri, headers: headers, body: json.encode(requestBody))
-        .timeout(const Duration(seconds: 15));
-    debugPrint('[DigiLocker][_download] status: ${response.statusCode}');
-    debugPrint('[DigiLocker][_download] response body: ${response.body}');
+    final fetchBody = json.encode(requestBody);
+    onbBefore('DIGILOCKER FETCH', 'POST', '$downloadUri', fetchBody);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .post(downloadUri, headers: headers, body: fetchBody)
+          .timeout(const Duration(seconds: 15));
+    } catch (e) {
+      onbFailed('DIGILOCKER FETCH', e);
+      rethrow;
+    }
+    onbAfter('DIGILOCKER FETCH', response.statusCode, response.body);
     session.loading = false;
     session.touch();
     if (!_isSuccessful(response.statusCode)) {

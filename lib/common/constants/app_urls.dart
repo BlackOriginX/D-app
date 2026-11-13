@@ -17,40 +17,62 @@ class AppUrls {
   static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
   // ---------------------------------------------------------------------------
-  // Authentication & Verification Endpoints
+  // ONBOARDING APIs (login, KYC, vehicle, bank, face, profile submission)
+  // Every call to these URLs prints before/after lines starting with
+  // `ONB_API` (see service/onboarding_api_log.dart). Filter the console by it.
   // ---------------------------------------------------------------------------
+
+  // 1. Login (OTP)
   static const String sendOtp = '$apiBase/auth/send-otp';
   static const String verifyOtp = '$apiBase/driver/auth/verify-otp';
 
+  // 2. Vehicle type selection
+  static const String updateVehicleType = '$apiBase/driver/update-vehicle';
+
+  // 3. KYC: Aadhaar + PAN, DigiLocker, Driving Licence, Vehicle RC
+  static const String verifyAadhaar = '$apiBase/driver/verify-aadhaar';
+  static const String digilockerStart = '$apiBase/kyc/driver/digilocker/start';
+  static const String digilockerDownload =
+      '$apiBase/kyc/driver/digilocker/fetch';
+  static const String verifyDl = '$apiBase/driver/verify-dl';
+  static const String verifyRc = '$apiBase/driver/verify-rc';
+
+  // 4. KYC: Vehicle photos and insurance
+  static const String vehicleInfo = '$apiBase/driver/vehicle/info';
+  static const String vehiclePhotos = '$apiBase/driver/vehicle/photos';
+  static String vehiclePhotoReplace(String type) =>
+      '$vehiclePhotos/${Uri.encodeComponent(type)}';
+  static const String vehicleInsurance = '$apiBase/driver/vehicle/insurance';
+
+  // 5. KYC: Face verification
+  static const String kycLiveness = '$apiBase/kyc/liveness';
+
+  // 6. KYC: Bank details
+  static const String bankDetails = '$apiBase/driver/bank-details';
+  static const String findIfsc = '$apiBase/bank/find-ifsc';
+
+  // 7. Profile review and submission
+  static const String driverRegister = '$apiBase/driver/register';
+  static const String updateProfile = '$apiBase/driver/profile';
+  static const String uploadProfilePhoto = '$apiBase/driver/upload-photo';
+
+  // ---------------------------------------------------------------------------
+  // Service Area (Delhi NCR launch)
+  // ---------------------------------------------------------------------------
   // Service-area check (Delhi NCR launch) and the "Notify me" sign-up.
   static const String locationCheck = '$baseUrl/api/v1/location/check';
   static const String locationNotifyMe = '$baseUrl/api/v1/location/notify-me';
 
-  static const String verifyAadhaar = '$apiBase/driver/verify-aadhaar';
-  static const String verifyDl = '$apiBase/driver/verify-dl';
-  static const String verifyRc = '$apiBase/driver/verify-rc';
-
-  // ---------------------------------------------------------------------------
-  // DigiLocker KYC Endpoints
-  // ---------------------------------------------------------------------------
-  static const String digilockerStart = '$apiBase/kyc/driver/digilocker/start';
-  static const String digilockerDownload =
-      '$apiBase/kyc/driver/digilocker/fetch';
-
   // ---------------------------------------------------------------------------
   // Driver Registration & Profile Endpoints
   // ---------------------------------------------------------------------------
-  static const String driverRegister = '$apiBase/driver/register';
-  static const String updateProfile = '$apiBase/driver/profile'; // remaining
   static const String driverSchedule = '$apiBase/driver/schedule';
-  static const String bankDetails = '$apiBase/driver/bank-details';
+
   static const String chatStart = '$apiBase/chat/start';
   static const String chatMessage = '$apiBase/chat/message';
   static String chatHistory(String conversationId) =>
       '$apiBase/chat/${Uri.encodeComponent(conversationId)}/history';
   static const String updateContact = '$apiBase/driver/profile/contact';
-  static const String updateVehicleType = '$apiBase/driver/update-vehicle';
-  static const String uploadProfilePhoto = '$apiBase/driver/upload-photo';
   static const String updateLocation = '$apiBase/driver/update-location';
   static const String onlineStatus = '$apiBase/driver/online-status';
   static const String reportIssue = '$apiBase/driver/report-issue';

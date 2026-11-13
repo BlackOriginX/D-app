@@ -39,11 +39,17 @@ class KycUploadTile extends StatelessWidget {
     required this.label,
     required this.uploaded,
     required this.onTap,
+    this.imagePath,
+    this.imageUrl,
   });
 
   final String label;
   final bool uploaded;
   final VoidCallback onTap;
+
+  /// Local photo (or server link) shown behind the label once chosen.
+  final String? imagePath;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -53,41 +59,72 @@ class KycUploadTile extends StatelessWidget {
         width: double.infinity,
         height: context.h(110),
         alignment: Alignment.center,
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: context.adaptiveTint(const Color(0xFFFAF5FF)),
           borderRadius: BorderRadius.circular(context.r(16)),
           border: Border.all(
             color: uploaded ? AppColors.primary : const Color(0xFFE9D5FF),
           ),
+          image: _preview(),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              uploaded ? Icons.check_circle : Icons.description_outlined,
-              color: context.legible(AppColors.primary),
-              size: context.w(26),
-            ),
-            SizedBox(height: context.h(8)),
-            Text(
-              label,
-              style: AppTypography.bold.copyWith(
-                fontSize: 13,
-                height: 1.2,
-                color: context.legible(AppColors.primary),
+        child: imagePath != null || imageUrl != null
+            ? Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.black54,
+                  padding: EdgeInsets.symmetric(vertical: context.h(4)),
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    uploaded ? Icons.check_circle : Icons.description_outlined,
+                    color: context.legible(AppColors.primary),
+                    size: context.w(26),
+                  ),
+                  SizedBox(height: context.h(8)),
+                  Text(
+                    label,
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 13,
+                      height: 1.2,
+                      color: context.legible(AppColors.primary),
+                    ),
+                  ),
+                  Text(
+                    uploaded ? AppStrings.kycVerified : AppStrings.tapToUpload,
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 11,
+                      color: context.torkk.textSecondary,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Text(
-              uploaded ? AppStrings.kycVerified : AppStrings.tapToUpload,
-              style: AppTypography.regular.copyWith(
-                fontSize: 11,
-                color: context.torkk.textSecondary,
-              ),
-            ),
-          ],
-        ),
       ),
     );
+  }
+
+  DecorationImage? _preview() {
+    final path = imagePath;
+    if (path != null) {
+      return DecorationImage(image: FileImage(File(path)), fit: BoxFit.cover);
+    }
+    final url = imageUrl;
+    if (url != null) {
+      return DecorationImage(image: NetworkImage(url), fit: BoxFit.cover);
+    }
+    return null;
   }
 }
 

@@ -4,7 +4,9 @@ class _VerifyingFace extends StatefulWidget {
   const _VerifyingFace({required this.selfiePath, required this.onFinished});
 
   final String? selfiePath;
-  final VoidCallback onFinished;
+
+  /// Called once with null when the face is verified, or the error message.
+  final ValueChanged<String?> onFinished;
 
   @override
   State<_VerifyingFace> createState() => _VerifyingFaceState();

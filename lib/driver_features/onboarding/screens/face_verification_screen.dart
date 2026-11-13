@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rider_app/driver_features/onboarding/kyc_documents_api.dart';
 
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/asset_constants.dart';
@@ -51,6 +53,7 @@ class FaceVerificationScreen extends StatefulWidget {
 class _FaceVerificationScreenState extends State<FaceVerificationScreen> {
   _FacePage _page = _FacePage.intro;
   String? _selfiePath;
+  String? _error;
 
   void _go(_FacePage page) => setState(() => _page = page);
 
@@ -68,7 +71,12 @@ class _FaceVerificationScreenState extends State<FaceVerificationScreen> {
       ),
       _FacePage.verifying => _VerifyingFace(
         selfiePath: _selfiePath,
-        onFinished: () => _go(_FacePage.verified),
+        onFinished: (error) {
+          setState(() {
+            _error = error;
+            _page = error == null ? _FacePage.verified : _FacePage.failed;
+          });
+        },
       ),
       _FacePage.verified => _verified(context),
       _FacePage.failed => _failed(context),

@@ -182,21 +182,22 @@ extension _FaceVerificationScreenStateSections on _FaceVerificationScreenState {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppStrings.faceNotDetectedReason,
+                                _error ?? AppStrings.faceNotDetectedReason,
                                 style: AppTypography.bold.copyWith(
                                   fontSize: 13,
                                   height: 1.3,
                                   color: context.legible(AppColors.error),
                                 ),
                               ),
-                              Text(
-                                AppStrings.faceNotDetectedHint,
-                                style: AppTypography.regular.copyWith(
-                                  fontSize: 13,
-                                  height: 1.35,
-                                  color: context.legible(AppColors.error),
+                              if (_error == null)
+                                Text(
+                                  AppStrings.faceNotDetectedHint,
+                                  style: AppTypography.regular.copyWith(
+                                    fontSize: 13,
+                                    height: 1.35,
+                                    color: context.legible(AppColors.error),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),

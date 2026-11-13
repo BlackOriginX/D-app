@@ -54,13 +54,16 @@ class VerifyDrivingLicenseScreen extends StatefulWidget {
 
 class _VerifyDrivingLicenseScreenState
     extends State<VerifyDrivingLicenseScreen> {
-  _DlPage _page = _DlPage.choose;
+  // The photo upload page (choose) is switched off; start on the number form.
+  _DlPage _page = _DlPage.manualForm;
   bool _useDigilocker = false;
   bool _frontUploaded = false;
   bool _backUploaded = false;
   bool _readingFront = false;
   bool _readingBack = false;
   bool _verifying = false;
+  // Reason shown on the rejected page (server message or local check).
+  String _dlError = 'Driving licence could not be verified.';
   String? _frontPath;
   String? _backPath;
   final _licenseController = TextEditingController();
@@ -200,14 +203,30 @@ class _VerifyDrivingLicenseScreenState
             .replaceAll(' ', '')
             .replaceAll('-', '');
     if (idNumber.isEmpty || phone.isEmpty) {
+      _dlError = idNumber.isEmpty
+          ? 'Enter the driving licence number.'
+          : 'Phone number not found. Please log in again.';
       _go(_DlPage.rejected);
       return;
     }
+    // Both the licence number and the date of birth are required by the server.
+    // The field shows dd-mm-yyyy; it is sent as yyyy-mm-dd.
+    final dob = normalizeDob(_dobController.text.trim());
+    if (dob == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Enter a valid ${AppStrings.dateOfBirth}')),
+      );
+      return;
+    }
+    final parts = dob.split('-');
+    final apiDob = '${parts[2]}-${parts[1]}-${parts[0]}';
     setState(() => _verifying = true);
     try {
       final details = await verifyDrivingLicence(
         idNumber: idNumber,
         phone: phone,
+        dob: apiDob,
       );
       print(
         'Verification successful: name=${details.name}, licenseNumber=${_mask(details.licenseNumber)}, dob=${details.dob}, vehicleClass=${details.vehicleClass}, validity=${details.validity}',
@@ -221,10 +240,14 @@ class _VerifyDrivingLicenseScreenState
         }
         _page = _DlPage.manualVerified;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('ONB_API | DRIVING LICENCE VERIFY | ERROR | $e');
       if (!mounted) return;
       setState(() {
         _verifying = false;
+        _dlError = e is DlVerificationException
+            ? e.message
+            : 'Could not reach the server. Check your internet and try again.';
         _page = _DlPage.rejected;
       });
     }
@@ -281,9 +304,9 @@ class _VerifyDrivingLicenseScreenState
       _DlPage.unclear => DocumentValidationScreen(
         title: AppStrings.documentUnclear,
         message: AppStrings.documentUnclearHint,
-        onBack: () => _go(_DlPage.choose),
+        onBack: () => _go(_DlPage.manualForm),
         onHelp: widget.onHelp,
-        onRetake: () => _go(_DlPage.choose),
+        onRetake: () => _go(_DlPage.manualForm),
       ),
       _DlPage.manualVerified => _verified(context),
       _DlPage.rejected => _rejected(context),

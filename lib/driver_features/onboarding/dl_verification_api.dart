@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:rider_app/common/constants/app_urls.dart';
+import 'package:rider_app/service/onboarding_api_log.dart';
 import 'package:rider_app/service/api_client.dart';
 
 /// Details returned after the licence number and date of birth are checked.
@@ -87,36 +88,44 @@ class DlVerificationException implements Exception {
   String toString() => message;
 }
 
-/// Posts `{ "document_number", "phone" }` to the Torkk server, which keeps the
+/// Posts `{ "document_number", "phone", "dob" }` (dob as yyyy-mm-dd) to the Torkk server, which keeps the
 /// Surepass token. The login Bearer token is added by [apiClient].
 Future<DrivingLicenceDetails> verifyDrivingLicence({
   required String idNumber,
   required String phone,
+  required String dob,
 }) async {
   var requestBody = <String, dynamic>{
     'document_number': idNumber,
     'phone': phone,
+    'dob': dob,
   };
-  debugPrint(
-    '[DL][api] POST ${AppUrls.verifyDl} body: ${json.encode(requestBody)}',
-  );
-  final response = await apiClient
-      .post(
-        Uri.parse(AppUrls.verifyDl),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(requestBody),
-      )
-      .timeout(const Duration(seconds: 20));
-  debugPrint('[DL][api] status ${response.statusCode}, ${response.body} bytes');
+  final encodedBody = json.encode(requestBody);
+  onbBefore('DRIVING LICENCE VERIFY', 'POST', AppUrls.verifyDl, encodedBody);
+  final http.Response response;
+  try {
+    response = await apiClient
+        .post(
+          Uri.parse(AppUrls.verifyDl),
+          headers: {'Content-Type': 'application/json'},
+          body: encodedBody,
+        )
+        .timeout(const Duration(seconds: 20));
+  } catch (e) {
+    onbFailed('DRIVING LICENCE VERIFY', e);
+    rethrow;
+  }
+  onbAfter('DRIVING LICENCE VERIFY', response.statusCode, response.body);
 
-  if (response.statusCode < 200 || response.statusCode >= 300) {
-    debugPrint('[DL][api] error body: ${response.body}');
+  if (response.statusCode < 200 ||
+      response.statusCode >= 300 ||
+      _rejectedByServer(response.body)) {
     throw DlVerificationException(_errorMessage(response.body));
   }
   return DrivingLicenceDetails.fromBody(
     response.body,
     fallbackNumber: idNumber,
-    fallbackDob: '',
+    fallbackDob: dob,
   );
 }
 
@@ -161,4 +170,19 @@ String _errorMessage(String body) {
     }
   } catch (_) {}
   return 'Driving licence could not be verified.';
+}
+
+/// True when a 2xx reply still says the check failed (`success: false`).
+bool _rejectedByServer(String body) {
+  try {
+    final decoded = jsonDecode(body);
+    if (decoded is! Map) return false;
+    if (decoded['success'] == false || decoded['status'] == 'error') {
+      return true;
+    }
+    final status = decoded['status_code'];
+    return status is num && status >= 400;
+  } catch (_) {
+    return false;
+  }
 }

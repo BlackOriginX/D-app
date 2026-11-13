@@ -57,7 +57,7 @@ extension _VerifyDrivingLicenseScreenStatePages
     );
     return OnboardingStepScaffold(
       title: AppStrings.drivingLicenseTitle,
-      onBack: () => _go(_DlPage.choose),
+      onBack: widget.onBack,
       onHelp: widget.onHelp,
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -69,29 +69,31 @@ extension _VerifyDrivingLicenseScreenStatePages
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              AppStrings.preview,
-              style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
-            ),
-            SizedBox(height: context.h(10)),
-            Row(
-              children: [
-                Expanded(
-                  child: _PreviewTile(
-                    imagePath: _frontPath,
-                    onRetake: () => _pickLicenceSide(front: true),
-                  ),
-                ),
-                SizedBox(width: context.w(12)),
-                Expanded(
-                  child: _PreviewTile(
-                    imagePath: _backPath,
-                    onRetake: () => _pickLicenceSide(front: false),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: context.h(18)),
+            // TEMPORARILY OFF: licence photos are not uploaded for now (only the
+            // number and date of birth are sent). Restore with the choose page.
+            // Text(
+            // AppStrings.preview,
+            // style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2),
+            // ),
+            // SizedBox(height: context.h(10)),
+            // Row(
+            // children: [
+            // Expanded(
+            // child: _PreviewTile(
+            // imagePath: _frontPath,
+            // onRetake: () => _pickLicenceSide(front: true),
+            // ),
+            // ),
+            // SizedBox(width: context.w(12)),
+            // Expanded(
+            // child: _PreviewTile(
+            // imagePath: _backPath,
+            // onRetake: () => _pickLicenceSide(front: false),
+            // ),
+            // ),
+            // ],
+            // ),
+            // SizedBox(height: context.h(18)),
             Text(
               '${AppStrings.licenseNumber} *',
               style: AppTypography.regular.copyWith(fontSize: 13),
@@ -100,21 +102,32 @@ extension _VerifyDrivingLicenseScreenStatePages
             AppTextField(
               controller: _licenseController,
               hintText: AppStrings.licenseNumber,
+              onChanged: (_) => setState(() {}),
             ),
             SizedBox(height: context.h(14)),
-            // Text('${AppStrings.dateOfBirth} *', style: AppTypography.regular.copyWith(fontSize: 13)),
-            // SizedBox(height: context.h(8)),
-            // Stack(
-            //   alignment: Alignment.centerRight,
-            //   children: [
-            //     AppTextField(controller: _dobController, hintText: AppStrings.dobFormatHint),
-            //     IconButton(
-            //       onPressed: _pickDob,
-            //       icon: Icon(Icons.calendar_today_outlined, size: context.w(18), color: context.torkk.textSecondary),
-            //     ),
-            //   ],
-            // ),
-            // SizedBox(height: context.h(14)),
+            Text(
+              '${AppStrings.dateOfBirth} *',
+              style: AppTypography.regular.copyWith(fontSize: 13),
+            ),
+            SizedBox(height: context.h(8)),
+            Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                AppTextField(
+                  controller: _dobController,
+                  hintText: AppStrings.dobFormatHint,
+                  onChanged: (_) => setState(() {}),
+                ),
+                IconButton(
+                  onPressed: _pickDob,
+                  icon: Icon(
+                    Icons.calendar_today_outlined,
+                    size: context.w(18),
+                    color: context.torkk.textSecondary,
+                  ),
+                ),
+              ],
+            ),
             // Text('${AppStrings.expiryDate} *', style: AppTypography.regular.copyWith(fontSize: 13)),
             // SizedBox(height: context.h(8)),
             // Stack(
@@ -161,6 +174,9 @@ extension _VerifyDrivingLicenseScreenStatePages
             UnifiedButton(
               label: AppStrings.continueAction,
               isLoading: _verifying,
+              enabled:
+                  _licenseController.text.trim().isNotEmpty &&
+                  _dobController.text.trim().isNotEmpty,
               onPressed: _verifyReadLicence,
             ),
           ],
@@ -282,7 +298,7 @@ extension _VerifyDrivingLicenseScreenStatePages
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              AppStrings.documentImageUnclear,
+                              _dlError,
                               style: AppTypography.bold.copyWith(
                                 color: context.torkk.textPrimary,
                                 fontSize: 14,
@@ -291,7 +307,7 @@ extension _VerifyDrivingLicenseScreenStatePages
                             ),
                             SizedBox(height: context.h(4)),
                             Text(
-                              AppStrings.documentImageUnclearHint,
+                              'Check the licence number and date of birth, then try again.',
                               style: AppTypography.regular.copyWith(
                                 color: context.torkk.textSecondary,
                                 fontSize: 13,
@@ -310,9 +326,7 @@ extension _VerifyDrivingLicenseScreenStatePages
             UnifiedButton(
               label: AppStrings.fixAndResubmit,
               onPressed: () {
-                print('Resubmitting driving license verification');
-                _go(_DlPage.choose);
-                print('Navigated back to choose page for resubmission');
+                _go(_DlPage.manualForm);
               },
             ),
           ],

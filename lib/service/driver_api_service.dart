@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rider_app/service/api_client.dart';
+import 'package:rider_app/service/onboarding_api_log.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
 import 'package:rider_app/driver_features/models/driver_order_model.dart';
 import 'package:rider_app/driver_features/models/ride_model.dart';
@@ -407,26 +408,34 @@ class DriverApiService {
       'bank_name': bankName,
       'branch_name': branchName,
     };
-    debugPrint(
-      'BANK_API_01 | POST ${AppUrls.bankDetails} body=${json.encode(payload)}',
-    );
-    final response = await apiClient
-        .post(
-          Uri.parse(AppUrls.bankDetails),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(payload),
-        )
-        .timeout(const Duration(seconds: 10));
-    debugPrint(
-      'BANK_API_02 | HTTP ${response.statusCode} body=${response.body}',
-    );
+    final requestBody = json.encode(payload);
+    onbBefore('BANK DETAILS SAVE', 'POST', AppUrls.bankDetails, requestBody);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .post(
+            Uri.parse(AppUrls.bankDetails),
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+          )
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      onbFailed('BANK DETAILS SAVE', e);
+      rethrow;
+    }
+    onbAfter('BANK DETAILS SAVE', response.statusCode, response.body);
     dynamic decoded;
     try {
       decoded = response.body.isEmpty ? null : json.decode(response.body);
     } catch (_) {
       decoded = response.body;
     }
-    if (response.statusCode >= 200 && response.statusCode < 300) return decoded;
+    final saidNo =
+        decoded is Map &&
+        (decoded['success'] == false || decoded['status'] == 'error');
+    if (response.statusCode >= 200 && response.statusCode < 300 && !saidNo) {
+      return decoded;
+    }
     var message = 'Failed to save bank details (${response.statusCode})';
     if (decoded is Map) {
       final m = decoded['message'] ?? decoded['error'] ?? decoded['detail'];
@@ -754,20 +763,25 @@ class DriverApiService {
     required String driverPhone,
     required String vehicleType,
   }) async {
-    debugPrint('Updating vehicle type for $driverPhone to $vehicleType');
-    final response = await apiClient
-        .post(
-          Uri.parse(AppUrls.updateVehicleType),
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode({
-            'phone': driverPhone,
-            'vehicle_type': vehicleType,
-          }),
-        )
-        .timeout(const Duration(seconds: 10));
-    debugPrint(
-      'Update vehicle type response: ${response.statusCode} - ${response.body}',
-    );
+    final requestBody = json.encode({
+      'phone': driverPhone,
+      'vehicle_type': vehicleType,
+    });
+    onbBefore('VEHICLE TYPE', 'POST', AppUrls.updateVehicleType, requestBody);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .post(
+            Uri.parse(AppUrls.updateVehicleType),
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+          )
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      onbFailed('VEHICLE TYPE', e);
+      rethrow;
+    }
+    onbAfter('VEHICLE TYPE', response.statusCode, response.body);
     if (response.statusCode != 200) {
       throw Exception(
         'Failed to update vehicle type: ${response.statusCode} ${response.body}',
@@ -793,31 +807,39 @@ class DriverApiService {
     String? bankAccountHolderName,
     String? upiId,
   }) async {
-    final response = await apiClient
-        .post(
-          Uri.parse(AppUrls.updateProfile),
-          headers: {'Content-Type': 'application/json'},
-
-          body: json.encode({
-            'phone': phone,
-            'name': name,
-            'email': email,
-            'vehicle_type': vehicleType,
-            'aadhaar_number': aadhaarNumber,
-            'pan_number': panNumber,
-            'driving_licence_number': drivingLicenceNumber,
-            'rc_number': rcNumber,
-            'puc_number': pucNumber,
-            'puc_total_marks': pucTotalMarks,
-            'insurance_number': insuranceNumber,
-            'bank_name': bankName,
-            'bank_account_number': bankAccountNumber,
-            'bank_ifsc_code': bankIfscCode,
-            'bank_account_holder_name': bankAccountHolderName,
-            'upi_id': upiId,
-          }),
-        )
-        .timeout(const Duration(seconds: 10));
+    final requestBody = json.encode({
+      'phone': phone,
+      'name': name,
+      'email': email,
+      'vehicle_type': vehicleType,
+      'aadhaar_number': aadhaarNumber,
+      'pan_number': panNumber,
+      'driving_licence_number': drivingLicenceNumber,
+      'rc_number': rcNumber,
+      'puc_number': pucNumber,
+      'puc_total_marks': pucTotalMarks,
+      'insurance_number': insuranceNumber,
+      'bank_name': bankName,
+      'bank_account_number': bankAccountNumber,
+      'bank_ifsc_code': bankIfscCode,
+      'bank_account_holder_name': bankAccountHolderName,
+      'upi_id': upiId,
+    });
+    onbBefore('PROFILE UPDATE', 'POST', AppUrls.updateProfile, requestBody);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .post(
+            Uri.parse(AppUrls.updateProfile),
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+          )
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      onbFailed('PROFILE UPDATE', e);
+      rethrow;
+    }
+    onbAfter('PROFILE UPDATE', response.statusCode, response.body);
 
     if (response.statusCode != 200) {
       throw Exception('Failed to update profile: ${response.statusCode}');
