@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
 import 'dart:io';
 import 'package:rider_app/common/utils/translations.dart';
-import 'dart:ui' as ui;
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -23,6 +22,8 @@ import 'package:rider_app/common/constants/map_styles.dart';
 import '../widgets/widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
+import 'package:rider_app/common/maps/live_map.dart';
+import 'package:rider_app/common/maps/map_icons.dart';
 export '../widgets/widgets.dart';
 part 'driver_navigation_screen_sections.dart';
 
@@ -42,7 +43,8 @@ enum DriverRideUiMode {
   waiting, // RideWaiting (RideCard3)
 }
 
-class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
+class _DriverNavigationScreenState extends State<DriverNavigationScreen>
+    with TickerProviderStateMixin {
   Timer? _locationTimer;
   String _driverPhone = '';
   String _driverGender = 'Male';
@@ -57,47 +59,94 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   final bool _showFullRoute = false;
 
   final Set<Marker> _markers = {};
-  final Set<Polyline> _polylines = {};
   final Set<Circle> _circles = {};
-  BitmapDescriptor? _navPuckIcon;
+
+  // Ola / Uber style motion (polyline_animation_plus): the driver marker glides
+  // along the route, the route shrinks behind it and the camera follows.
+  late final LiveMap _live = LiveMap(vsync: this);
+  BitmapDescriptor? _riderIcon;
+  BitmapDescriptor? _dropIcon;
+  bool _routeDrawn = false;
+  bool _followActive = false;
+  // ===== TESTING: the sample rides (9901 / 9902) have Delhi coordinates, so a
+  // phone anywhere else never moves along them. With this on, the vehicle drives
+  // along the route by itself so the movement can be seen.
+  // Set to false (PRODUCTION) before building a release.
+  static const bool _simulateSampleRideMovement = false;
+  Timer? _simTimer;
+  LatLng? _simPosition;
+  DateTime? _lastReroute;
+
+  bool get _simulating =>
+      _simulateSampleRideMovement && (_rideId == 9901 || _rideId == 9902);
+
+  /// Where the driver is: the simulated spot, else the GPS position.
+  LatLng? get _driverLatLng {
+    if (_simulating) return _simPosition;
+    final p = _currentPosition;
+    return p == null ? null : LatLng(p.latitude, p.longitude);
+  }
+
+  /// Drives the vehicle along [route] by itself (about 90 seconds in total).
+  void _startSimulation(List<LatLng> route) {
+    _simTimer?.cancel();
+    if (route.length < 2) return;
+    final step = (route.length ~/ 90).clamp(1, 1000);
+    var index = 0;
+    _simTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      index += step;
+      if (!mounted || index >= route.length) {
+        timer.cancel();
+        return;
+      }
+      _simPosition = route[index];
+      _live.moveDriver(route[index]);
+    });
+  }
+
+  /// The driver left the route: find a new one (not more than once in 20 s).
+  void _onOffRoute(LatLng position) {
+    if (_simulating) return;
+    final now = DateTime.now();
+    final last = _lastReroute;
+    if (last != null && now.difference(last) < const Duration(seconds: 20)) {
+      return;
+    }
+    _lastReroute = now;
+    debugPrint('[DEBUG NAV] Off route, finding a new route');
+    _clearRouteCache();
+    _setupMap();
+  }
+
+  // The driver dragged the map away: do not pull the camera back by itself.
+  bool _userMovedMap = false;
+  List<LatLng> _lastRoute = [];
+  Color _lastRouteColor = const Color(0xFF2563EB);
 
   static const String _navigationMapStyle = MapStyles.navigationMapStyle;
 
-  Future<void> _initNavigationPuckIcon() async {
+  /// Loads the driver arrow, the rider pin and the drop pin.
+  Future<void> _initMapIcons() async {
     try {
-      final pictureRecorder = ui.PictureRecorder();
-      final canvas = Canvas(pictureRecorder);
-      const size = 64.0;
-
-      final paint = Paint()
-        ..color = const Color(0xFF1D4ED8)
-        ..style = PaintingStyle.fill;
-
-      final strokePaint = Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.0;
-
-      final path = Path();
-      path.moveTo(size / 2, 6);
-      path.lineTo(size - 10, size - 10);
-      path.lineTo(size / 2, size - 20);
-      path.lineTo(10, size - 10);
-      path.close();
-
-      canvas.drawPath(path, paint);
-      canvas.drawPath(path, strokePaint);
-
-      final picture = pictureRecorder.endRecording();
-      final image = await picture.toImage(size.toInt(), size.toInt());
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (bytes != null) {
-        _navPuckIcon = BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
-        if (mounted) setState(() {});
-      }
+      _live.driverIcon = await MapIcons.driver();
+      _riderIcon = await MapIcons.rider();
+      _dropIcon = await MapIcons.drop();
+      if (mounted) setState(() {});
     } catch (e) {
-      debugPrint('[DEBUG NAV] Error creating nav puck icon: $e');
+      debugPrint('[DEBUG NAV] Error creating map icons: $e');
     }
+  }
+
+  /// Camera follows the driver (tilted, turning with the vehicle).
+  void _startFollow() {
+    if (!_live.isAttached || _driverLatLng == null) return;
+    _followActive = true;
+    _live.follow(
+      onStopped: () {
+        _userMovedMap = true;
+        if (mounted) setState(() => _followActive = false);
+      },
+    );
   }
 
   int get _currentSpeedKmH {
@@ -230,7 +279,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   @override
   void initState() {
     super.initState();
-    _initNavigationPuckIcon();
+    _initMapIcons();
     _initTrip();
   }
 
@@ -238,6 +287,8 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   void dispose() {
     _locationTimer?.cancel();
     _waitingTimer?.cancel();
+    _simTimer?.cancel();
+    _live.dispose();
     _mapController?.dispose();
     super.dispose();
   }
@@ -420,81 +471,12 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
     return double.tryParse(value.toString());
   }
 
+  /// A new GPS position: the driver marker glides there along the route.
   void _updateDriverMarkerOnly() {
     if (_currentPosition == null || !mounted) return;
-    final pos = LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
-    final heading = _currentPosition!.heading;
-    setState(() {
-      _markers.removeWhere((m) => m.markerId.value == 'driver');
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('driver'),
-          position: pos,
-          icon:
-              _navPuckIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-          rotation: heading,
-          anchor: const Offset(0.5, 0.5),
-          flat: true,
-          infoWindow: const InfoWindow(title: 'Your location'),
-          zIndex: 5,
-        ),
-      );
-      _circles.removeWhere((c) => c.circleId.value == 'driver_aura');
-      _circles.add(
-        Circle(
-          circleId: const CircleId('driver_aura'),
-          center: pos,
-          radius: 35,
-          fillColor: const Color(0xFF2563EB).withValues(alpha: 0.22),
-          strokeColor: const Color(0xFF2563EB).withValues(alpha: 0.45),
-          strokeWidth: 1,
-          zIndex: 4,
-        ),
-      );
-
-      // Live Polyline Trimming: Trim route behind driver as driver moves forward
-      if (_cachedRoutePoints.length >= 2) {
-        int closestIndex = 0;
-        double minDistance = double.infinity;
-        for (int i = 0; i < _cachedRoutePoints.length; i++) {
-          final dist = Geolocator.distanceBetween(
-            pos.latitude,
-            pos.longitude,
-            _cachedRoutePoints[i].latitude,
-            _cachedRoutePoints[i].longitude,
-          );
-          if (dist < minDistance) {
-            minDistance = dist;
-            closestIndex = i;
-          }
-        }
-        final remaining = [
-          pos,
-          ..._cachedRoutePoints.sublist(
-            (closestIndex + 1).clamp(0, _cachedRoutePoints.length),
-          ),
-        ];
-        if (remaining.length >= 2) {
-          final routeColor = _tripPhase == TripPhase.goingToPickup
-              ? const Color(0xFF2563EB)
-              : const Color(0xFF10B981);
-          _polylines
-            ..clear()
-            ..add(
-              Polyline(
-                polylineId: const PolylineId('route'),
-                points: remaining,
-                color: routeColor,
-                width: 6,
-                jointType: JointType.round,
-                endCap: Cap.roundCap,
-                startCap: Cap.roundCap,
-              ),
-            );
-        }
-      }
-    });
+    _live.moveDriver(
+      LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+    );
   }
 
   Future<void> _setupMap() async {
@@ -520,9 +502,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('pickup'),
               position: LatLng(pickupLat, pickupLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+              icon:
+                  _riderIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueGreen,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Pickup Location',
                 snippet: '${_ride!['pickup_address'] ?? ''}',
@@ -536,9 +520,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('drop'),
               position: LatLng(dropLat, dropLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+              icon:
+                  _dropIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Drop Location',
                 snippet: '${_ride!['drop_address'] ?? ''}',
@@ -556,9 +542,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('pickup'),
               position: LatLng(pickupLat, pickupLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+              icon:
+                  _riderIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueGreen,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Pickup Location',
                 snippet: '${_ride!['pickup_address'] ?? ''}',
@@ -582,9 +570,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('drop'),
               position: LatLng(dropLat, dropLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+              icon:
+                  _dropIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Drop Location',
                 snippet: '${_ride!['drop_address'] ?? ''}',
@@ -601,43 +591,27 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
         }
       }
 
-      // Driver / car navigation arrow marker & halo
-      if (_currentPosition != null) {
-        final pos = LatLng(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        );
-        final heading = _currentPosition!.heading;
-        _markers.removeWhere((m) => m.markerId.value == 'driver');
-        _markers.add(
-          Marker(
-            markerId: const MarkerId('driver'),
-            position: pos,
-            icon:
-                _navPuckIcon ??
-                BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueAzure,
-                ),
-            rotation: heading,
-            anchor: const Offset(0.5, 0.5),
-            flat: true,
-            infoWindow: const InfoWindow(title: 'Your location'),
-            zIndex: 5,
-          ),
-        );
-        _circles.removeWhere((c) => c.circleId.value == 'driver_aura');
-        _circles.add(
-          Circle(
-            circleId: const CircleId('driver_aura'),
-            center: pos,
-            radius: 35,
-            fillColor: const Color(0xFF2563EB).withValues(alpha: 0.22),
-            strokeColor: const Color(0xFF2563EB).withValues(alpha: 0.45),
-            strokeWidth: 1,
-            zIndex: 4,
-          ),
-        );
+      // TESTING: a sample ride starts about 700 m before the pickup (or at the
+      // pickup once the rider is on board), not at the phone's real GPS spot.
+      if (_simulating && destination != null) {
+        final pLat = _asDouble(_ride!['pickup_lat']);
+        final pLng = _asDouble(_ride!['pickup_lng']);
+        if (_tripPhase == TripPhase.goingToPickup) {
+          origin =
+              _simPosition ??
+              LatLng(
+                destination.latitude - 0.006,
+                destination.longitude - 0.006,
+              );
+        } else if (pLat != null && pLng != null) {
+          origin = LatLng(pLat, pLng);
+        }
+        _simPosition = origin;
       }
+
+      // Driver marker: the controller draws it and moves it along the route.
+      final here = _driverLatLng;
+      if (here != null) _live.moveDriver(here);
 
       if (mounted && token == _mapSetupToken) {
         setState(() {});
@@ -653,25 +627,22 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
 
       if (!mounted || token != _mapSetupToken) return;
 
-      _polylines
-        ..clear()
-        ..addAll(
-          routePoints.length >= 2
-              ? [
-                  Polyline(
-                    polylineId: const PolylineId('route'),
-                    points: routePoints,
-                    color: routeColor,
-                    width: 6,
-                    jointType: JointType.round,
-                    endCap: Cap.roundCap,
-                    startCap: Cap.roundCap,
-                  ),
-                ]
-              : [],
+      _routeDrawn = routePoints.length >= 2;
+      _lastRoute = routePoints;
+      _lastRouteColor = routeColor;
+      if (_routeDrawn) {
+        _live.trackRoute(
+          routePoints,
+          color: routeColor,
+          onOffRoute: _onOffRoute,
         );
+        final here = _driverLatLng;
+        if (here != null) _live.moveDriver(here);
+        if (_simulating) _startSimulation(routePoints);
+      }
 
       setState(() {});
+      if (_routeDrawn && !_followActive && !_userMovedMap) _startFollow();
       _fitMapBounds();
     } catch (e, st) {
       debugPrint('[DEBUG NAV] Map setup error: $e\n$st');
@@ -863,7 +834,6 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                           tilt: 35.0,
                         ),
                         markers: _markers,
-                        polylines: _polylines,
                         circles: _circles,
                         myLocationEnabled: false,
                         myLocationButtonEnabled: false,
@@ -873,9 +843,20 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                         buildingsEnabled: true,
                         indoorViewEnabled: true,
                         compassEnabled: true,
+                        onCameraMoveStarted: _live.onCameraMoveStarted,
                         onMapCreated: (controller) {
                           _mapController = controller;
                           controller.setMapStyle(_navigationMapStyle);
+                          _live.attach(controller, driverAt: _driverLatLng);
+                          // The route may have been found before the map existed.
+                          if (_lastRoute.length >= 2) {
+                            _live.trackRoute(
+                              _lastRoute,
+                              color: _lastRouteColor,
+                              onOffRoute: _onOffRoute,
+                            );
+                          }
+                          if (!_userMovedMap) _startFollow();
                           _fitMapBounds();
                         },
                       ),

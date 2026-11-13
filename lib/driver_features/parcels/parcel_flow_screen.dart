@@ -16,6 +16,8 @@ import 'package:rider_app/driver_features/profile/screens/tickets_screen.dart';
 import '../../common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
+import 'package:rider_app/common/maps/live_map.dart';
+import 'package:rider_app/common/maps/map_icons.dart';
 
 part 'parcel_flow_screen_parts/dashed_border_painter.dart';
 part 'parcel_flow_screen_parts/parcel_otp_boxes.dart';

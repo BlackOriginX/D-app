@@ -1,8 +1,13 @@
 part of 'package:rider_app/driver_features/rides/ride_flow_screen.dart';
 
-class _RouteMapState extends State<_RouteMap> {
+class _RouteMapState extends State<_RouteMap> with TickerProviderStateMixin {
   GoogleMapController? _controller;
   Set<Marker> _markers = {};
+
+  // The route is drawn dimmed with a light travelling along it
+  // (polyline_animation_plus). It follows the real road when it can be found.
+  late final LiveMap _live = LiveMap(vsync: this);
+  List<LatLng> _route = const [];
 
   LatLng get _from => widget.pickup;
   LatLng get _to => widget.drop;
@@ -26,6 +31,32 @@ class _RouteMapState extends State<_RouteMap> {
   void initState() {
     super.initState();
     _loadMarkers();
+    _loadRoute();
+  }
+
+  @override
+  void dispose() {
+    _live.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadRoute() async {
+    final from = _from;
+    final to = _to;
+    _route = [from, to];
+    final road = await RouteService.fetch(from, to);
+    if (!mounted || from != _from || to != _to) return;
+    setState(() => _route = road);
+    _showRoute();
+  }
+
+  void _showRoute() {
+    _live.showAnimatedRoute(
+      'ride',
+      _route.length >= 2 ? _route : [_from, _to],
+      color: const Color(0xFF4285F4),
+      width: 6,
+    );
   }
 
   @override
@@ -38,6 +69,9 @@ class _RouteMapState extends State<_RouteMap> {
       return;
     }
     _loadMarkers();
+    if (oldWidget.pickup != widget.pickup || oldWidget.drop != widget.drop) {
+      _loadRoute();
+    }
     _frame();
   }
 
@@ -92,18 +126,9 @@ class _RouteMapState extends State<_RouteMap> {
       mapToolbarEnabled: false,
       onMapCreated: (controller) {
         _controller = controller;
+        _live.attach(controller);
+        _showRoute();
         WidgetsBinding.instance.addPostFrameCallback((_) => _frame());
-      },
-      polylines: {
-        Polyline(
-          polylineId: const PolylineId('ride'),
-          color: Color(0xFF4285F4),
-          width: 6,
-          jointType: JointType.round,
-          startCap: Cap.roundCap,
-          endCap: Cap.roundCap,
-          points: [_from, _to],
-        ),
       },
       markers: _markers,
     );

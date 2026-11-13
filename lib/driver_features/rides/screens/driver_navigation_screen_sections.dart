@@ -26,6 +26,12 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
   }
 
   void _recenterMap() {
+    // Follow the driver again (after the driver dragged the map away).
+    if (_live.isAttached && _driverLatLng != null) {
+      _userMovedMap = false;
+      _startFollow();
+      return;
+    }
     if (_currentPosition != null && _mapController != null) {
       _mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -198,6 +204,8 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
   }
 
   void _fitMapBounds() {
+    // While the camera follows the driver it must not be moved from here.
+    if (_followActive) return;
     if (_mapController == null || _markers.isEmpty) return;
 
     final bounds = _calculateBounds(_markers.map((m) => m.position).toList());
@@ -248,6 +256,9 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
       }
     }
 
+    // TESTING: a sample ride is driven by the simulation, not by the phone's GPS.
+    if (_simulating) return;
+
     try {
       if (!await LocationConsentService.hasAccepted()) return;
 
@@ -292,7 +303,7 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
         }
       }
 
-      if (_polylines.isEmpty || _cachedRoutePoints.length < 2) {
+      if (!_routeDrawn || _cachedRoutePoints.length < 2) {
         await _setupMap();
       } else {
         // Soft-refresh route if driver moved out of cache grid.

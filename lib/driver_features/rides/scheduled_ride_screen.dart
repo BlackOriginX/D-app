@@ -9,6 +9,8 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
+import 'package:rider_app/common/maps/live_map.dart';
+import 'package:rider_app/common/maps/map_icons.dart';
 
 part 'scheduled_ride_screen_parts/map.dart';
 part 'scheduled_ride_screen_sections.dart';

@@ -1,7 +1,40 @@
 part of 'package:rider_app/driver_features/rides/scheduled_ride_screen.dart';
 
-class _Map extends StatelessWidget {
+class _Map extends StatefulWidget {
   const _Map();
+
+  @override
+  State<_Map> createState() => _MapState();
+}
+
+class _MapState extends State<_Map> with TickerProviderStateMixin {
+  // The route is drawn dimmed with a light travelling along it
+  // (polyline_animation_plus).
+  late final LiveMap _live = LiveMap(vsync: this);
+  BitmapDescriptor? _riderIcon;
+  BitmapDescriptor? _dropIcon;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIcons();
+  }
+
+  Future<void> _loadIcons() async {
+    final rider = await MapIcons.rider();
+    final drop = await MapIcons.drop();
+    if (!mounted) return;
+    setState(() {
+      _riderIcon = rider;
+      _dropIcon = drop;
+    });
+  }
+
+  @override
+  void dispose() {
+    _live.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,26 +47,30 @@ class _Map extends StatelessWidget {
       myLocationButtonEnabled: false,
       compassEnabled: false,
       mapToolbarEnabled: false,
-      polylines: {
-        const Polyline(
-          polylineId: PolylineId('scheduled'),
-          color: Color(0xFF2563EB),
-          width: 5,
-          points: _route,
-        ),
+      onMapCreated: (controller) {
+        _live.attach(controller);
+        _live.showAnimatedRoute(
+          'scheduled',
+          _route,
+          color: const Color(0xFF2563EB),
+        );
       },
       markers: {
         Marker(
           markerId: const MarkerId('pickup'),
           position: _pickup,
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueAzure,
-          ),
+          anchor: const Offset(0.5, 1),
+          icon:
+              _riderIcon ??
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
         ),
         Marker(
           markerId: const MarkerId('drop'),
           position: _drop,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          anchor: const Offset(0.5, 1),
+          icon:
+              _dropIcon ??
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         ),
       },
     );

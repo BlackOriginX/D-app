@@ -11,6 +11,8 @@ import 'package:rider_app/driver_features/home/home_stats_card.dart';
 import 'package:rider_app/driver_features/home/home_status_card.dart';
 import 'package:rider_app/driver_features/home/screens/plan_driving_hours_screen.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/maps/live_map.dart';
+import 'package:rider_app/common/maps/map_icons.dart';
 
 /// Home map and cards shown when the driver is not in an active ride search.
 class DriverHomeView extends StatefulWidget {
@@ -47,8 +49,39 @@ class DriverHomeView extends StatefulWidget {
   State<DriverHomeView> createState() => _DriverHomeViewState();
 }
 
-class _DriverHomeViewState extends State<DriverHomeView> {
+class _DriverHomeViewState extends State<DriverHomeView>
+    with TickerProviderStateMixin {
   GoogleMapController? _mapController;
+
+  // The driver marker glides between GPS positions (polyline_animation_plus)
+  // and the camera follows it until the driver drags the map.
+  late final LiveMap _live = LiveMap(vsync: this);
+  bool _userMovedMap = false;
+
+  @override
+  void initState() {
+    super.initState();
+    MapIcons.driver().then((icon) {
+      _live.driverIcon = icon;
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _live.dispose();
+    super.dispose();
+  }
+
+  void _follow() {
+    if (!_live.isAttached) return;
+    _live.follow(
+      zoom: 16,
+      tilt: 0,
+      turnWithVehicle: false,
+      onStopped: () => _userMovedMap = true,
+    );
+  }
 
   @override
   void didUpdateWidget(DriverHomeView oldWidget) {
@@ -60,9 +93,10 @@ class _DriverHomeViewState extends State<DriverHomeView> {
         previous?.longitude == next.longitude) {
       return;
     }
-    _mapController!.animateCamera(
-      CameraUpdate.newLatLng(LatLng(next.latitude, next.longitude)),
-    );
+    final point = LatLng(next.latitude, next.longitude);
+    final firstFix = previous == null;
+    _live.moveDriver(point);
+    if (firstFix && !_userMovedMap) _follow();
   }
 
   @override
@@ -78,14 +112,22 @@ class _DriverHomeViewState extends State<DriverHomeView> {
         Positioned.fill(
           child: GoogleMap(
             initialCameraPosition: CameraPosition(target: target, zoom: 15),
-            myLocationEnabled: position != null,
+            myLocationEnabled: false,
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
             style: context.isDarkTheme ? homeDarkMapStyle : null,
             compassEnabled: false,
             mapToolbarEnabled: false,
+            onCameraMoveStarted: _live.onCameraMoveStarted,
             onMapCreated: (controller) {
               _mapController = controller;
+              _live.attach(
+                controller,
+                driverAt: position == null
+                    ? null
+                    : LatLng(position.latitude, position.longitude),
+              );
+              if (position != null) _follow();
               widget.onMapCreated?.call(controller);
             },
           ),
