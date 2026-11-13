@@ -35,7 +35,7 @@ class _BankStep extends StatelessWidget {
             if (!last)
               Container(
                 width: 2,
-                height: context.h(36),
+                constraints: BoxConstraints(minHeight: context.h(36)),
                 color: done ? AppColors.green600 : AppColors.slate200,
               ),
           ],

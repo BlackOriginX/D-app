@@ -16,10 +16,12 @@ class HomePlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.h(58),
+      // minHeight, not a fixed height: Hindi text and larger phone font sizes
+      // are taller and used to overflow a fixed 58.
+      constraints: BoxConstraints(minHeight: context.h(58)),
       padding: EdgeInsets.symmetric(
         horizontal: context.w(12),
-        vertical: context.h(12),
+        vertical: context.h(10),
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.r(16)),
@@ -37,6 +39,7 @@ class HomePlanCard extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             width: context.w(32),

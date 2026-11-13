@@ -313,7 +313,7 @@ class ReviewDetailsScreen extends StatelessWidget {
   ) {
     return Container(
       width: double.infinity,
-      height: context.h(63),
+      constraints: BoxConstraints(minHeight: context.h(63)),
       padding: EdgeInsets.symmetric(horizontal: context.w(14)),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: context.torkk.border)),

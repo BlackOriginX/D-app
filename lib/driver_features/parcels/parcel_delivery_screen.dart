@@ -204,7 +204,7 @@ class _StepRow extends StatelessWidget {
         ? const Color(0xFFFEF3C7)
         : accent.withValues(alpha: 0.1);
     return Container(
-      height: context.h(64),
+      constraints: BoxConstraints(minHeight: context.h(64)),
       padding: EdgeInsets.symmetric(horizontal: context.w(14)),
       decoration: BoxDecoration(
         border: showDivider

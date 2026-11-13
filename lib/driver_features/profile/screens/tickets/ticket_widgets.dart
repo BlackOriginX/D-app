@@ -139,7 +139,7 @@ Widget ticketTimeline(BuildContext context, TicketStatus status) {
                 if (i < steps.length - 1)
                   Container(
                     width: 2,
-                    height: context.h(28),
+                    constraints: BoxConstraints(minHeight: context.h(28)),
                     color: context.adaptiveTint(const Color(0xFFDCFCE7)),
                   ),
               ],

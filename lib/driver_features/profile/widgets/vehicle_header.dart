@@ -24,7 +24,7 @@ class VehicleHeader extends StatelessWidget {
         children: [
           Container(
             width: context.w(72),
-            height: context.h(48),
+            constraints: BoxConstraints(minHeight: context.h(48)),
             decoration: BoxDecoration(
               color: context.adaptiveTint(const Color(0xFFE2E8F0)),
               borderRadius: BorderRadius.circular(context.r(8)),

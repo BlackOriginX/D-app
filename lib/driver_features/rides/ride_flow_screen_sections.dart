@@ -498,7 +498,7 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                 ),
                 Container(
                   width: 2,
-                  height: context.h(36),
+                  constraints: BoxConstraints(minHeight: context.h(36)),
                   color: context.adaptiveTint(const Color(0xFFE2E8F0)),
                 ),
                 Container(

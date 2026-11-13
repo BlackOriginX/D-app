@@ -894,7 +894,7 @@ extension _ScheduledRideScreenStateSections on _ScheduledRideScreenState {
 
   Widget _stats(BuildContext context) {
     return Container(
-      height: context.h(64),
+      constraints: BoxConstraints(minHeight: context.h(64)),
       decoration: BoxDecoration(
         color: context.torkk.surfaceMuted,
         borderRadius: BorderRadius.circular(context.r(14)),

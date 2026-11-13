@@ -282,7 +282,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             SizedBox(height: context.h(14)),
             Container(
               width: context.w(338),
-              height: context.h(58),
+              constraints: BoxConstraints(minHeight: context.h(58)),
               padding: EdgeInsets.fromLTRB(
                 context.w(12),
                 context.h(10),
@@ -462,7 +462,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
                   ),
                   Container(
                     width: 2,
-                    height: context.h(36),
+                    constraints: BoxConstraints(minHeight: context.h(36)),
                     color: context.adaptiveTint(const Color(0xFFE2E8F0)),
                   ),
                   Container(
@@ -968,7 +968,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
             ),
             Container(
               width: 2,
-              height: context.h(36),
+              constraints: BoxConstraints(minHeight: context.h(36)),
               color: context.adaptiveTint(const Color(0xFFE2E8F0)),
             ),
             Container(
@@ -1617,7 +1617,7 @@ extension _ParcelFlowScreenStateSections on _ParcelFlowScreenState {
       onTap: () => _openPerson(context, sender: sender),
       child: Container(
         width: context.w(169),
-        height: context.h(44),
+        constraints: BoxConstraints(minHeight: context.h(44)),
         padding: EdgeInsets.all(context.w(8)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.r(12)),
