@@ -149,6 +149,7 @@ class AppUrls {
   static const String startRide = '$apiBase/driver/start-ride';
   static const String pickupCustomer = '$apiBase/driver/pickup-customer';
   static const String completeRide = '$apiBase/driver/complete-ride';
+  static const String deleteAccount = '$apiBase/driver/account';
   static const String cancelRide = '$apiBase/driver/cancel-ride';
   static const String reached = '$apiBase/driver/reached';
   static const String setPaymentMethod = '$apiBase/driver/set-payment-method';

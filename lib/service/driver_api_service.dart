@@ -137,6 +137,40 @@ class DriverApiService {
     }
   }
 
+  /// DELETE /api/driver/account {reason, confirm_forfeit_balance}.
+  /// The Bearer token is added by [apiClient]. Throws with the server's
+  /// message when the account could not be deleted.
+  static Future<void> deleteAccount({required String reason}) async {
+    final body = json.encode({
+      'reason': reason,
+      'confirm_forfeit_balance': true,
+    });
+    print(
+      '[DEBUG DELETE ACCOUNT API] BEFORE call: DELETE ${AppUrls.deleteAccount} body=$body',
+    );
+    final request = http.Request('DELETE', Uri.parse(AppUrls.deleteAccount))
+      ..headers['Content-Type'] = 'application/json'
+      ..body = body;
+    final response = await http.Response.fromStream(
+      await apiClient.send(request).timeout(const Duration(seconds: 15)),
+    );
+    print(
+      '[DEBUG DELETE ACCOUNT API] AFTER call: status=${response.statusCode} '
+      'body=${response.body}',
+    );
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      String message = 'Could not delete the account. Please try again.';
+      try {
+        final data = json.decode(response.body);
+        if (data is Map) {
+          final m = data['message'] ?? data['error'] ?? data['detail'];
+          if (m != null && '$m'.trim().isNotEmpty) message = '$m';
+        }
+      } catch (_) {}
+      throw Exception(message);
+    }
+  }
+
   /// POST /api/driver/cancel-ride {ride_id, driver_phone}.
   static Future<void> cancelRide({
     required int rideId,

@@ -8,6 +8,8 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/app_confirm_dialog.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/driver_features/settings/screens/delete_account_reason_dialog.dart';
+import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/driver_features/settings/legal/legal_documents_screen.dart';
 import 'package:rider_app/driver_features/settings/screens/driver_appearance_screen.dart';
 import 'package:rider_app/driver_features/settings/screens/privacy_security_screen.dart';
@@ -98,9 +100,31 @@ class DriverSettingsScreen extends StatelessWidget {
       accent: accent,
     );
     if (!confirmed || !context.mounted) return;
+    final reason = await showDeleteAccountReasonDialog(context);
+    if (reason == null || !context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      await DriverApiService.deleteAccount(reason: reason);
+    } catch (e) {
+      if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
+      messenger.showSnackBar(
+        SnackBar(
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    if (context.mounted) context.go(AppRoutes.login);
+    if (!context.mounted) return;
+    Navigator.of(context, rootNavigator: true).pop();
+    context.go(AppRoutes.login);
   }
 }
 
