@@ -113,37 +113,32 @@ class _BankPayoutScreenState extends State<BankPayoutScreen> {
     return '${now.day} ${months[now.month - 1]} ${now.year}, $hour:$minute $period';
   }
 
-  /// "Find IFSC": looks the code up and fills the bank name and branch.
-  /// "Find IFSC": sends the account holder name and account number (and the
-  /// IFSC if typed) and fills the IFSC, bank name and branch from the reply.
+  /// "Find IFSC": sends the typed IFSC code to the IFSC API and fills the
+  /// Bank Name field from `ifsc_data.bank_name` in the reply.
   Future<void> _findIfsc() async {
-    final holder = _name.text.trim();
-    final account = _account.text.trim();
     final typedIfsc = _ifsc.text.trim().toUpperCase();
-    final ready = holder.isNotEmpty && account.isNotEmpty;
+    final ready = typedIfsc.length == 11;
     debugPrint(
-      'ONB_API | FIND IFSC | BUTTON PRESSED | holder="$holder" account="$account" '
-      'ifsc="$typedIfsc" -> ${ready ? 'calling API' : 'API NOT called (holder name or account number is empty)'}',
+      'ONB_API | FIND IFSC | BUTTON PRESSED | ifsc="$typedIfsc" -> '
+      '${ready ? 'calling API' : 'API NOT called (IFSC is not 11 characters)'}',
     );
     if (!ready) {
-      _snack('Enter the account holder name and account number first');
+      _snack('Enter a valid 11 character IFSC code.');
       return;
     }
     setState(() => _findingIfsc = true);
     try {
-      final found = await KycDocumentsApi.findIfsc(
-        ifsc: typedIfsc,
-        accountHolderName: holder,
-        accountNumber: account,
-      );
+      final found = await KycDocumentsApi.findIfsc(ifsc: typedIfsc);
       if (!mounted) return;
       setState(() {
-        if (found.ifsc.isNotEmpty) _ifsc.text = found.ifsc.toUpperCase();
         if (found.bankName.isNotEmpty) _bank.text = found.bankName;
         _branch = found.branchName;
       });
     } on KycApiException catch (e) {
       if (mounted) _snack(e.message);
+    } catch (e) {
+      debugPrint('ONB_API | FIND IFSC | ERROR | $e');
+      if (mounted) _snack('Could not fetch the bank details. Try again.');
     } finally {
       if (mounted) setState(() => _findingIfsc = false);
     }

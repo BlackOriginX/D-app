@@ -158,17 +158,9 @@ class KycDocumentsApi {
 
   /// POST /api/bank/find-ifsc
   static Future<IfscDetails> findIfsc({
-    String ifsc = '',
-    String accountHolderName = '',
-    String accountNumber = '',
+    required String ifsc,
   }) async {
-    // The account holder name and number are sent so the server can find the
-    // IFSC from them; `ifsc` is sent too (empty when the driver has not typed it).
-    final requestBody = jsonEncode({
-      'ifsc': ifsc,
-      'account_holder_name': accountHolderName,
-      'account_number': accountNumber,
-    });
+    final requestBody = jsonEncode({'ifsc': ifsc});
     final body = await _call(
       'FIND IFSC',
       'POST',
@@ -182,7 +174,14 @@ class KycDocumentsApi {
           .timeout(_timeout),
       requestNote: requestBody,
     );
-    final data = _map(body['data']).isNotEmpty ? _map(body['data']) : body;
+    // Reply: {success, data: {ifsc, exists, ifsc_data: {bank_name, branch, ...}}}
+    final outer = _map(body['data']).isNotEmpty ? _map(body['data']) : body;
+    if (outer['exists'] == false) {
+      throw KycApiException('IFSC code not found.');
+    }
+    final data = _map(outer['ifsc_data']).isNotEmpty
+        ? _map(outer['ifsc_data'])
+        : outer;
     String pick(List<String> keys) {
       for (final key in keys) {
         final value = _text(data[key]);

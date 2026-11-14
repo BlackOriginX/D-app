@@ -110,29 +110,7 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
             ),
             _fieldError(_confirmError),
             SizedBox(height: context.h(14)),
-            Row(
-              children: [
-                Expanded(child: KycRequiredLabel(AppStrings.ifscCode)),
-                GestureDetector(
-                  onTap: _findingIfsc ? null : _findIfsc,
-                  child: _findingIfsc
-                      ? SizedBox(
-                          width: context.w(14),
-                          height: context.w(14),
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : TText(
-                          AppStrings.findIfsc,
-                          style: AppTypography.bold.copyWith(
-                            fontSize: 12,
-                            color: AppColors.green600,
-                          ),
-                        ),
-                ),
-              ],
-            ),
+            KycRequiredLabel(AppStrings.ifscCode),
             SizedBox(height: context.h(8)),
             AppTextField(
               controller: _ifsc,
@@ -147,6 +125,26 @@ extension _BankPayoutScreenStateSections on _BankPayoutScreenState {
                       value.copyWith(text: value.text.toUpperCase()),
                 ),
               ],
+            ),
+            SizedBox(height: context.h(8)),
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: _findingIfsc ? null : _findIfsc,
+                child: _findingIfsc
+                    ? SizedBox(
+                        width: context.w(14),
+                        height: context.w(14),
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : TText(
+                        AppStrings.findIfsc,
+                        style: AppTypography.bold.copyWith(
+                          fontSize: 12,
+                          color: AppColors.green600,
+                        ),
+                      ),
+              ),
             ),
             SizedBox(height: context.h(14)),
             KycRequiredLabel(AppStrings.bankName),
