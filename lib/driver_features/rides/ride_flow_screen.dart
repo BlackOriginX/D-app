@@ -196,6 +196,42 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
 
   void _close() => widget.onClose();
 
+  /// "Cancel Ride" in the cancel sheet: tells the backend, then closes the
+  /// flow. If the call fails the ride stays open and an error is shown.
+  Future<void> _cancelRide() async {
+    print(
+      '[DEBUG CANCEL RIDE] 2. _cancelRide started: busy=$_busy rideId=$_rideId '
+      'phone="${widget.driverPhone}" callsApi=$_callsApi',
+    );
+    if (_busy) {
+      print('[DEBUG CANCEL RIDE] STOPPED: _busy is true');
+      return;
+    }
+    if (!_callsApi) {
+      print('[DEBUG CANCEL RIDE] SKIPPED API (sample ride or empty phone), closing');
+      _close();
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await DriverApiService.cancelRide(
+        rideId: _rideId!,
+        driverPhone: widget.driverPhone,
+      );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('active_ride_id');
+      await prefs.remove('active_ride_picked_up');
+      if (!mounted) return;
+      setState(() => _busy = false);
+      _close();
+    } catch (e) {
+      print('[DEBUG CANCEL RIDE] 3. FAILED: $e');
+      if (!mounted) return;
+      setState(() => _busy = false);
+      _toast(_errorText(e));
+    }
+  }
+
   // ----- ride data -----
   int? get _rideId {
     final id = _ride['id'];

@@ -1320,8 +1320,9 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       onTap: () => setSheet(() => reason = i),
                     ),
                   _fill(context, 'Cancel Ride', () {
+                    print('[DEBUG CANCEL RIDE] 1. Cancel Ride button tapped, reason="${reasons[reason]}"');
                     Navigator.pop(sheetContext);
-                    _close();
+                    _cancelRide();
                   }),
                   SizedBox(height: context.h(8)),
                   SizedBox(

@@ -137,6 +137,36 @@ class DriverApiService {
     }
   }
 
+  /// POST /api/driver/cancel-ride {ride_id, driver_phone}.
+  static Future<void> cancelRide({
+    required int rideId,
+    required String driverPhone,
+  }) async {
+    print(
+      '[DEBUG CANCEL RIDE API] BEFORE call: url=${AppUrls.cancelRide} '
+      'ride_id=$rideId driver_phone=$driverPhone',
+    );
+    final response = await _loggedPost('cancel-ride', AppUrls.cancelRide, {
+      'ride_id': rideId,
+      'driver_phone': driverPhone,
+    }, timeout: const Duration(seconds: 10));
+    print(
+      '[DEBUG CANCEL RIDE API] AFTER call: status=${response.statusCode} '
+      'body=${response.body}',
+    );
+    if (response.statusCode != 200) {
+      String message = 'Could not cancel the ride. Please try again.';
+      try {
+        final data = json.decode(response.body);
+        if (data is Map) {
+          final m = data['message'] ?? data['error'];
+          if (m != null) message = m.toString();
+        }
+      } catch (_) {}
+      throw Exception(message);
+    }
+  }
+
   static Future<void> pickupCustomer({
     required int rideId,
     required String driverPhone,
