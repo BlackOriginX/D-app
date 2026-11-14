@@ -50,6 +50,7 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
   String? _frontPath;
   String? _backPath;
   VehicleRcDetails? _details;
+  String? _rcError;
   final _numberController = TextEditingController();
 
   @override
@@ -176,6 +177,7 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
       if (!mounted) return;
       setState(() {
         _verifying = false;
+        _rcError = e is RcVerificationException ? e.message : null;
         _page = _RcPage.unclear;
       });
     }
@@ -186,8 +188,14 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
     return switch (_page) {
       _RcPage.form => _form(context),
       _RcPage.unclear => DocumentValidationScreen(
-        title: AppStrings.documentUnclear,
-        message: AppStrings.documentUnclearHint,
+        // No photos are sent for the RC any more, only the number, so the
+        // "document is unclear / retake photo" wording does not apply.
+        title: 'Vehicle RC could not be verified',
+        message:
+            (_rcError != null && _rcError != 'Verification Failed.')
+            ? _rcError!
+            : 'Please check the registration number and try again.',
+        retryLabel: 'Try again',
         onBack: () => _go(_RcPage.form),
         onHelp: widget.onHelp,
         onRetake: () => _go(_RcPage.form),

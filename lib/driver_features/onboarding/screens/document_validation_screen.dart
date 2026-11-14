@@ -16,6 +16,9 @@ class DocumentValidationScreen extends StatelessWidget {
   final VoidCallback? onHelp;
   final VoidCallback onRetake;
 
+  /// Button text; defaults to "Retake" (photo flows).
+  final String? retryLabel;
+
   const DocumentValidationScreen({
     super.key,
     required this.title,
@@ -23,6 +26,7 @@ class DocumentValidationScreen extends StatelessWidget {
     required this.onBack,
     required this.onRetake,
     this.onHelp,
+    this.retryLabel,
   });
 
   @override
@@ -70,7 +74,10 @@ class DocumentValidationScreen extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            UnifiedButton(label: AppStrings.retake, onPressed: onRetake),
+            UnifiedButton(
+              label: retryLabel ?? AppStrings.retake,
+              onPressed: onRetake,
+            ),
           ],
         ),
       ),

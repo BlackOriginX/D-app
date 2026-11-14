@@ -789,6 +789,10 @@ const Map<String, String> hiTextByEnglish = {
   'Uploaded': 'अपलोड हुआ',
   'Uploaded Documents': 'अपलोड किए गए दस्तावेज़',
   'User': 'यूज़र',
+  'Vehicle RC could not be verified': 'वाहन RC सत्यापित नहीं हो सका',
+  'Please check the registration number and try again.':
+      'कृपया रजिस्ट्रेशन नंबर जाँचें और फिर से प्रयास करें।',
+  'Try again': 'फिर से प्रयास करें',
   'Valid for 1 day': '1 दिन के लिए मान्य',
   'Valid for 30 days': '30 दिन के लिए मान्य',
   'Valid for 7 days': '7 दिन के लिए मान्य',
