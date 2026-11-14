@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
@@ -30,13 +29,18 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
 
   Future<void> _load() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final phone = prefs.getString('user_phone') ?? '';
-      final profile = await DriverApiService.fetchProfile(phone);
-      debugPrint('BANK_SCREEN_03 | profile response=$profile');
+      debugPrint('BANK_SCREEN_01 | loading from GET /api/driver/bank-details');
+      final reply = await DriverApiService.fetchBankDetails();
+      debugPrint('BANK_SCREEN_03 | bank-details response=$reply');
       if (!mounted) return;
       setState(() {
-        _details = BankDetails.fromProfile(profile);
+        _details = BankDetails.fromProfile(reply);
+        debugPrint(
+          'BANK_SCREEN_03A | parsed: holder="${_details.accountHolderName}" '
+          'bank="${_details.bankName}" ifsc="${_details.ifscCode}" '
+          'branch="${_details.branchName}" '
+          'account_len=${_details.accountNumber.length}',
+        );
         _loading = false;
       });
     } catch (e) {

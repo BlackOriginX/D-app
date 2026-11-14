@@ -508,6 +508,27 @@ class DriverApiService {
     throw Exception(message);
   }
 
+  /// GET /api/driver/bank-details. The driver is identified by the Bearer
+  /// token (added by [apiClient]). Returns the decoded JSON reply.
+  static Future<Map<String, dynamic>> fetchBankDetails() async {
+    onbBefore('BANK DETAILS GET', 'GET', AppUrls.bankDetails);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .get(Uri.parse(AppUrls.bankDetails))
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      onbFailed('BANK DETAILS GET', e);
+      rethrow;
+    }
+    onbAfter('BANK DETAILS GET', response.statusCode, response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Failed to load bank details (${response.statusCode})');
+    }
+    final decoded = response.body.isEmpty ? null : json.decode(response.body);
+    return decoded is Map ? Map<String, dynamic>.from(decoded) : {};
+  }
+
   /// POST /api/chat/start {} - must be called before chatting.
   /// Returns the conversation id from the response, or null if the server
   /// did not send one.
