@@ -9,18 +9,21 @@ import 'package:flutter/foundation.dart';
 /// Call [onbBefore] right before the request and [onbAfter] right after the
 /// response. Use [onbFailed] when the call throws (no internet, timeout).
 void onbBefore(String step, String method, String url, [Object? requestBody]) {
+  if (!kDebugMode) return; // never log request bodies in a release build
   debugPrint(
     'ONB_API | $step | BEFORE | $method $url | request body=${_show(requestBody)}',
   );
 }
 
 void onbAfter(String step, int statusCode, String responseBody) {
+  if (!kDebugMode) return;
   debugPrint(
     'ONB_API | $step | AFTER  | status=$statusCode | response body=${_show(responseBody)}',
   );
 }
 
 void onbFailed(String step, Object error) {
+  if (!kDebugMode) return;
   debugPrint('ONB_API | $step | AFTER  | FAILED (no response) | error=$error');
 }
 

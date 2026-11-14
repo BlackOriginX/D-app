@@ -4,6 +4,9 @@ PODS:
     - FlutterMacOS
   - camera_avfoundation (0.0.1):
     - Flutter
+  - file_picker_darwin (1.0.0):
+    - Flutter
+    - FlutterMacOS
   - file_saver (0.3.1):
     - Flutter
   - Firebase/CoreOnly (12.15.0):
@@ -166,6 +169,7 @@ PODS:
 DEPENDENCIES:
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
+  - file_picker_darwin (from `.symlinks/plugins/file_picker_darwin/darwin`)
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
@@ -217,6 +221,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audioplayers_darwin/darwin"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
+  file_picker_darwin:
+    :path: ".symlinks/plugins/file_picker_darwin/darwin"
   file_saver:
     :path: ".symlinks/plugins/file_saver/ios"
   firebase_core:
@@ -261,6 +267,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
   camera_avfoundation: 5675ca25298b6f81fa0a325188e7df62cc217741
+  file_picker_darwin: 4c2b9a50ea44cb3b071381ea0cf48591bdd80251
   file_saver: 65a61a4f67241c3b06cde53b564087ce898fa878
   Firebase: a8539b633d474fbeb654c7043f9c1649e274045b
   firebase_core: 1c1e250a77e2df9e80bb8bf0875c8b427044a697

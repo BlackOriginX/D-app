@@ -30,6 +30,12 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>We need your camera to verify your identity.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The camera component of Torkk may ask for microphone access. Torkk does not record audio.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need your photos so you can upload your documents.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

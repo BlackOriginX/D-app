@@ -5,13 +5,17 @@ class AppUrls {
   // ---------------------------------------------------------------------------
   // Base Configurations
   // ---------------------------------------------------------------------------
-  static const String baseUrl = 'http://3.110.156.16:8080';
+  // HTTPS: Apple and Google both prefer it, and plain http to an IP address
+  // can get an app questioned in review. The old address (same backend) is
+  // kept below in case it is needed again:
+  // static const String baseUrl = 'http://3.110.156.16:8080';
+  static const String baseUrl = 'https://api.torkk.in';
   static const String apiBase = '$baseUrl/api';
 
   /// Converts the HTTP/HTTPS [baseUrl] to WS/WSS format for WebSocket connections.
-  static String get wsBase => baseUrl
-      .replaceFirst('http://', 'ws://')
-      .replaceFirst('https://', 'wss://');
+  /// The chat WebSocket stays on the old address: it is not confirmed that the
+  /// https domain forwards WebSockets.
+  static String get wsBase => 'ws://3.110.156.16:8080';
 
   /// Gemini API Key passed via `--dart-define=GEMINI_API_KEY=...`
   static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');

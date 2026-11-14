@@ -237,13 +237,15 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
     return AppAssets.cab;
   }
 
-  /// Masked number issued by the backend for this ride. The driver never sees
-  /// the customer's real number, and the customer never sees the driver's.
-  String get _virtualNumber => _text([
-    'virtual_number',
-    'masked_number',
-    'proxy_number',
-    'call_number',
+  /// The customer's phone number, as sent with the ride. (Virtual / masked
+  /// numbers are not used for now; the real number is dialled.)
+  String get _customerPhone => _text([
+    'customer_phone',
+    'user_phone',
+    'passenger_phone',
+    'rider_phone',
+    'phone',
+    'sender_phone',
   ], '');
 
   /// Amount to collect from the rider.
@@ -463,13 +465,19 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
     }
   }
 
-  void _callCustomer() {
-    final number = _virtualNumber;
+  /// Opens the phone's dialer with the customer's number, ready to call.
+  Future<void> _callCustomer() async {
+    final number = _customerPhone.replaceAll(RegExp(r'[^0-9+]'), '');
+    debugPrint('[RIDE FLOW] call customer: number="$number"');
     if (number.isEmpty) {
-      _toast('Virtual number not available yet');
+      _toast('Customer phone not available');
       return;
     }
-    launchUrl(Uri.parse('tel:$number'));
+    final opened = await launchUrl(
+      Uri(scheme: 'tel', path: number),
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && mounted) _toast('Could not open the phone app');
   }
 
   bool get _showSos => switch (_phase) {

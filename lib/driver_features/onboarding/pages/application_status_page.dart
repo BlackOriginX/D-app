@@ -21,9 +21,9 @@ class ApplicationStatusPage extends StatelessWidget {
           submittedAt: _session.submittedAt ?? DateTime.now(),
           outcome: _session.outcome,
           onBack: () => context.go(AppRoutes.review),
-          // Location check, then home. To skip the check (testing outside
-          // Delhi NCR): comment this line and uncomment the one below it.
+          // ===== PRODUCTION: location check, then home =====
           onGoHome: () => openHomeIfServiceable(context),
+          // ===== TESTING (off): skip the Delhi NCR location check =====
           // onGoHome: () => goDashboard(context),
           onResubmit: () => context.go(AppRoutes.kyc),
           onMakeCorrections: () => context.go(AppRoutes.review),

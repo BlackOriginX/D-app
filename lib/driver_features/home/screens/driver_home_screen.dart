@@ -38,6 +38,7 @@ import 'package:rider_app/driver_features/notifications/screens/driver_notificat
 import 'package:rider_app/driver_features/parcels/parcel_coming_soon_screen.dart';
 import '../widgets/widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 export '../widgets/widgets.dart';
 part 'driver_home_screen_sections.dart';
@@ -52,6 +53,9 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
+  // ===== TESTING: inject sample rides 9901/9902 so the ride/payment UI can be viewed =====
+  // Set to false (PRODUCTION) before building a release.
+  static const bool _showSampleRideForTesting = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isOnline = false;
   final bool _wantsRides = true;
@@ -498,7 +502,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       }
       if (mounted) {
         setState(() {
-          _rides = data;
+          // ===== TESTING: prepend sample rides =====
+          _rides = _showSampleRideForTesting
+              ? [..._sampleTestRides(), ...data]
+              : data;
           _syncFlowRide();
         });
       }
@@ -545,7 +552,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(SnackBar(content: TText(message)));
   }
 
   /// Turns lat/lng into a readable address for the location card. Skips the
@@ -667,7 +674,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     if (!_wantsRides && !_wantsParcels) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select at least one service to go online.'),
+          content: TText('Please select at least one service to go online.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -739,54 +746,56 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     }
   }
 
-  void _simulateTestRide() {
-    setState(() {
-      _rides = [
-        {
-          'id': 9901,
-          'status': 'requested',
-          'estimated_fare': 72.98,
-          'bonus': 17.0,
-          'customer_name': 'Manish Kumar',
-          'customer_rating': '4.9',
-          'passenger_gender': 'Male',
-          'male_passengers': 1,
-          'female_passengers': 0,
-          'passenger_count': 1,
-          'pickup_address': 'Arya Nagar, East Delhi, Delhi',
-          'drop_address': 'Preet Vihar, East Delhi, Delhi',
-          'pickup_lat': (_currentPosition?.latitude ?? 28.6328) + 0.003,
-          'pickup_lng': (_currentPosition?.longitude ?? 77.2197) + 0.003,
-          'drop_lat': (_currentPosition?.latitude ?? 28.6328) + 0.015,
-          'drop_lng': (_currentPosition?.longitude ?? 77.2197) + 0.015,
-          'pickup_distance_km': '0.3',
-          'distance_km': '1.9',
-        },
-        {
-          'id': 9902,
-          'status': 'requested',
-          'is_parcel': true,
-          'item_category': 'Electronics',
-          'item_weight': 'Under 5kg',
-          'item_notes': 'Handle with care, fragile item.',
-          'estimated_fare': 120.50,
-          'bonus': 20.0,
-          'customer_name': 'Fatima Sheikh', // Used as generic sender for now
-          'sender_name': 'Fatima Sheikh',
-          'sender_phone': '+91 98765 43211',
-          'receiver_name': 'Ramesh Bhai',
-          'receiver_phone': '+91 99999 11111',
-          'pickup_address': 'GTB, Civil Lines, Delhi',
-          'drop_address': 'Connaught Place, Delhi',
-          'pickup_lat': (_currentPosition?.latitude ?? 28.6328) + 0.008,
-          'pickup_lng': (_currentPosition?.longitude ?? 77.2197) + 0.004,
-          'drop_lat': (_currentPosition?.latitude ?? 28.6328) + 0.035,
-          'drop_lng': (_currentPosition?.longitude ?? 77.2197) + 0.020,
-          'pickup_distance_km': '0.9',
-          'distance_km': '5.1',
-        },
-      ];
-    });
+  List<Map<String, dynamic>> _sampleTestRides() {
+    return [
+      {
+        'id': 9901,
+        'status': 'requested',
+        'estimated_fare': 72.98,
+        'bonus': 17.0,
+        'customer_name': 'Manish Kumar',
+        'customer_phone': '9273290039',
+        'user_phone': '9273290039',
+        'customer_rating': '4.9',
+        'passenger_gender': 'Male',
+        'male_passengers': 1,
+        'female_passengers': 0,
+        'passenger_count': 1,
+        'pickup_address': 'Arya Nagar, East Delhi, Delhi',
+        'drop_address': 'Preet Vihar, East Delhi, Delhi',
+        'pickup_lat': (_currentPosition?.latitude ?? 28.6328) + 0.003,
+        'pickup_lng': (_currentPosition?.longitude ?? 77.2197) + 0.003,
+        'drop_lat': (_currentPosition?.latitude ?? 28.6328) + 0.015,
+        'drop_lng': (_currentPosition?.longitude ?? 77.2197) + 0.015,
+        'pickup_distance_km': '0.3',
+        'distance_km': '1.9',
+      },
+      {
+        'id': 9902,
+        'status': 'requested',
+        'is_parcel': true,
+        'item_category': 'Electronics',
+        'item_weight': 'Under 5kg',
+        'item_notes': 'Handle with care, fragile item.',
+        'estimated_fare': 120.50,
+        'bonus': 20.0,
+        'customer_name': 'Fatima Sheikh', // Used as generic sender for now
+        'sender_name': 'Fatima Sheikh',
+        'sender_phone': '9273290039',
+        'customer_phone': '9273290039',
+        'user_phone': '9273290039',
+        'receiver_name': 'Ramesh Bhai',
+        'receiver_phone': '9273290039',
+        'pickup_address': 'GTB, Civil Lines, Delhi',
+        'drop_address': 'Connaught Place, Delhi',
+        'pickup_lat': (_currentPosition?.latitude ?? 28.6328) + 0.008,
+        'pickup_lng': (_currentPosition?.longitude ?? 77.2197) + 0.004,
+        'drop_lat': (_currentPosition?.latitude ?? 28.6328) + 0.035,
+        'drop_lng': (_currentPosition?.longitude ?? 77.2197) + 0.020,
+        'pickup_distance_km': '0.9',
+        'distance_km': '5.1',
+      },
+    ];
   }
 
   @override

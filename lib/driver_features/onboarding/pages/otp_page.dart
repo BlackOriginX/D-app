@@ -68,10 +68,9 @@ class OtpPage extends StatelessWidget {
                 showOnboardingSnack(context, result.message!);
               }
               if (result.openDashboard) {
-                // Location check, then home (Coming Soon outside Delhi NCR).
+                // ===== PRODUCTION: location check, then home (Coming Soon outside Delhi NCR) =====
                 await openHomeIfServiceable(context);
-                // To open home without the location check (testing outside
-                // Delhi NCR): comment the line above and uncomment this one.
+                // ===== TESTING (off): skip the Delhi NCR location check =====
                 // goDashboard(context);
               } else if (result.openVehicle) {
                 context.go(AppRoutes.vehicleDetails);
