@@ -85,7 +85,7 @@ extension _VerifyVehicleRcScreenStateSections on _VerifyVehicleRcScreenState {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            KycRequiredLabel(AppStrings.registrationNumber),
+            KycRequiredLabel(AppTranslations.t('Plate Number')),
             SizedBox(height: context.h(8)),
             AppTextField(controller: _numberController),
             // RC document (uploaded file) hidden: no photos are taken for now.

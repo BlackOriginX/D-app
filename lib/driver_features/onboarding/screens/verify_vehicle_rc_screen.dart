@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -221,11 +222,11 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            KycRequiredLabel(AppStrings.registrationNumber),
+            KycRequiredLabel(AppTranslations.t('Plate Number')),
             SizedBox(height: context.h(8)),
             AppTextField(
               controller: _numberController,
-              hintText: AppStrings.registrationNumber,
+              hintText: 'Plate Number',
               onChanged: (_) => setState(() {}),
             ),
             // RC front / back photo upload is hidden for now: the verify-rc

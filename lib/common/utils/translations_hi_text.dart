@@ -790,6 +790,7 @@ const Map<String, String> hiTextByEnglish = {
   'Uploaded Documents': 'अपलोड किए गए दस्तावेज़',
   'User': 'यूज़र',
   'Vehicle RC could not be verified': 'वाहन RC सत्यापित नहीं हो सका',
+  'Plate Number': 'प्लेट नंबर',
   'Please check the registration number and try again.':
       'कृपया रजिस्ट्रेशन नंबर जाँचें और फिर से प्रयास करें।',
   'Try again': 'फिर से प्रयास करें',

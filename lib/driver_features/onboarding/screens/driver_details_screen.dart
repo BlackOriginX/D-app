@@ -12,6 +12,7 @@ import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
+import 'package:rider_app/service/driver_api_service.dart';
 
 /// Profile details after KYC. Male uses blue, Female switches the accent to pink.
 class DriverDetailsScreen extends StatefulWidget {
@@ -45,6 +46,7 @@ class DriverDetailsScreen extends StatefulWidget {
 class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
   final ImagePicker _picker = ImagePicker();
   bool _showError = false;
+  bool _uploadingPhoto = false;
 
   Color get _accent => widget.gender == AppStrings.genderFemale
       ? AppColors.femalePink
@@ -55,8 +57,25 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
       source: ImageSource.gallery,
       imageQuality: 80,
     );
-    if (photo == null) return;
-    widget.onPhotoPicked(photo.path);
+    if (photo == null || _uploadingPhoto) return;
+    // Same API as the Profile screen: POST /api/driver/upload-photo.
+    setState(() => _uploadingPhoto = true);
+    try {
+      await DriverApiService.uploadProfilePhoto(filePath: photo.path);
+      if (!mounted) return;
+      widget.onPhotoPicked(photo.path);
+    } catch (e) {
+      debugPrint('ONB_API | PROFILE PHOTO UPLOAD | ERROR | $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: TText('Could not upload the photo. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _uploadingPhoto = false);
+    }
   }
 
   Future<void> _pickDob() async {
@@ -246,7 +265,9 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                         fit: BoxFit.cover,
                       ),
               ),
-              child: path == null
+              child: _uploadingPhoto
+                  ? const Center(child: CircularProgressIndicator())
+                  : path == null
                   ? Icon(
                       Icons.person,
                       size: context.w(40),
