@@ -220,50 +220,51 @@ class _VerifyVehicleRcScreenState extends State<VerifyVehicleRcScreen> {
               hintText: AppStrings.registrationNumber,
               onChanged: (_) => setState(() {}),
             ),
-            SizedBox(height: context.h(16)),
-            KycRequiredLabel(AppStrings.rcDocument),
-            SizedBox(height: context.h(4)),
-            TText(
-              AppStrings.rcDocumentHint,
-              style: AppTypography.regular.copyWith(
-                fontSize: 12,
-                color: context.torkk.textSecondary,
-              ),
-            ),
-            SizedBox(height: context.h(10)),
-            Row(
-              children: [
-                Expanded(
-                  child: _RcUploadTile(
-                    label: AppStrings.frontSide,
-                    icon: Icons.description_outlined,
-                    imagePath: _frontPath,
-                    reading: _readingFront,
-                    onTap: () => _pickSide(front: true),
-                  ),
-                ),
-                SizedBox(width: context.w(12)),
-                Expanded(
-                  child: _RcUploadTile(
-                    label: AppStrings.backSide,
-                    icon: Icons.badge_outlined,
-                    imagePath: _backPath,
-                    reading: _readingBack,
-                    onTap: () => _pickSide(front: false),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: context.h(14)),
-            OnboardingInfoBanner(message: AppStrings.rcClearHint),
+            // RC front / back photo upload is hidden for now: the verify-rc
+            // API only takes the registration number. Uncomment to bring it back
+            // (and add the photo checks back to `enabled` below).
+            // SizedBox(height: context.h(16)),
+            // KycRequiredLabel(AppStrings.rcDocument),
+            // SizedBox(height: context.h(4)),
+            // TText(
+            //   AppStrings.rcDocumentHint,
+            //   style: AppTypography.regular.copyWith(
+            //     fontSize: 12,
+            //     color: context.torkk.textSecondary,
+            //   ),
+            // ),
+            // SizedBox(height: context.h(10)),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: _RcUploadTile(
+            //         label: AppStrings.frontSide,
+            //         icon: Icons.description_outlined,
+            //         imagePath: _frontPath,
+            //         reading: _readingFront,
+            //         onTap: () => _pickSide(front: true),
+            //       ),
+            //     ),
+            //     SizedBox(width: context.w(12)),
+            //     Expanded(
+            //       child: _RcUploadTile(
+            //         label: AppStrings.backSide,
+            //         icon: Icons.badge_outlined,
+            //         imagePath: _backPath,
+            //         reading: _readingBack,
+            //         onTap: () => _pickSide(front: false),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // SizedBox(height: context.h(14)),
+            // OnboardingInfoBanner(message: AppStrings.rcClearHint),
             SizedBox(height: context.h(24)),
             UnifiedButton(
               label: AppStrings.continueAction,
               isLoading: _verifying,
-              enabled:
-                  _frontPath != null &&
-                  _backPath != null &&
-                  _numberController.text.trim().isNotEmpty,
+              // enabled: _frontPath != null && _backPath != null && ... (photos off)
+              enabled: _numberController.text.trim().isNotEmpty,
               onPressed: _continueFromForm,
             ),
           ],

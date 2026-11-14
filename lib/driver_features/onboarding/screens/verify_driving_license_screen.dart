@@ -194,24 +194,13 @@ class _VerifyDrivingLicenseScreenState
       RegExp(r'[^A-Z0-9]'),
       '',
     );
-    final prefs = await SharedPreferences.getInstance();
-    // Same phone the driver logged in with (saved after OTP verify).
-    final savedPhone = prefs.getString('user_phone') ?? '';
-    final phone =
-        (savedPhone.isNotEmpty
-                ? savedPhone
-                : OnboardingSession.instance.phone.text)
-            .replaceAll(' ', '')
-            .replaceAll('-', '');
-    if (idNumber.isEmpty || phone.isEmpty) {
-      _dlError = idNumber.isEmpty
-          ? 'Enter the driving licence number.'
-          : 'Phone number not found. Please log in again.';
+    if (idNumber.isEmpty) {
+      _dlError = 'Enter the driving licence number.';
       _go(_DlPage.rejected);
       return;
     }
     // Both the licence number and the date of birth are required by the server.
-    // The field shows dd-mm-yyyy; it is sent as yyyy-mm-dd.
+    // The field shows dd-mm-yyyy and it is sent the same way.
     final dob = normalizeDob(_dobController.text.trim());
     if (dob == null) {
       if (!mounted) return;
@@ -220,18 +209,16 @@ class _VerifyDrivingLicenseScreenState
       );
       return;
     }
-    final parts = dob.split('-');
-    final apiDob = '${parts[2]}-${parts[1]}-${parts[0]}';
     setState(() => _verifying = true);
     try {
       final details = await verifyDrivingLicence(
         idNumber: idNumber,
-        phone: phone,
-        dob: apiDob,
+        dob: dob,
       );
       print(
         'Verification successful: name=${details.name}, licenseNumber=${_mask(details.licenseNumber)}, dob=${details.dob}, vehicleClass=${details.vehicleClass}, validity=${details.validity}',
       );
+      final prefs = await SharedPreferences.getInstance();
       await prefs.setString('driving_licence_number', details.licenseNumber);
       if (!mounted) return;
       setState(() {

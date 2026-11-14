@@ -88,18 +88,14 @@ class DlVerificationException implements Exception {
   String toString() => message;
 }
 
-/// Posts `{ "document_number", "phone", "dob" }` (dob as yyyy-mm-dd) to the Torkk server, which keeps the
-/// Surepass token. The login Bearer token is added by [apiClient].
+/// Posts `{ "document_no", "dob" }` (dob as dd-mm-yyyy) to the Torkk server,
+/// which keeps the Surepass token. The login Bearer token is added by
+/// [apiClient].
 Future<DrivingLicenceDetails> verifyDrivingLicence({
   required String idNumber,
-  required String phone,
   required String dob,
 }) async {
-  var requestBody = <String, dynamic>{
-    'document_number': idNumber,
-    'phone': phone,
-    'dob': dob,
-  };
+  var requestBody = <String, dynamic>{'document_no': idNumber, 'dob': dob};
   final encodedBody = json.encode(requestBody);
   onbBefore('DRIVING LICENCE VERIFY', 'POST', AppUrls.verifyDl, encodedBody);
   final http.Response response;

@@ -60,11 +60,11 @@ class RcVerificationException implements Exception {
   String toString() => message;
 }
 
-/// Posts `{ "id_number" }` to the Torkk server.
+/// Posts `{ "document_no" }` to the Torkk server.
 /// The server keeps the Surepass token and calls
 /// `POST /api/v1/rc/rc-full` with that same body.
 Future<VehicleRcDetails> verifyVehicleRc({required String idNumber}) async {
-  final requestBody = jsonEncode({'id_number': idNumber});
+  final requestBody = jsonEncode({'document_no': idNumber});
   onbBefore('VEHICLE RC VERIFY', 'POST', AppUrls.verifyRc, requestBody);
   final http.Response response;
   try {
