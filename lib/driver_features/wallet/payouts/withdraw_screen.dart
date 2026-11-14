@@ -7,13 +7,17 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/wallet/payouts/payout_widgets.dart';
 import 'package:rider_app/driver_features/wallet/payouts/withdraw_result_screens.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
+import 'package:rider_app/driver_features/wallet/wallet_payout_api.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Pick an amount (typed or with the 25/50/75/100% chips) and withdraw it.
 class WithdrawScreen extends StatefulWidget {
-  const WithdrawScreen({super.key, required this.balance});
+  const WithdrawScreen({super.key, required this.balance, this.bankLabel = ''});
 
   final double balance;
+
+  /// Bank the money goes to, e.g. "HDFC ••1234" (empty if unknown).
+  final String bankLabel;
 
   @override
   State<WithdrawScreen> createState() => _WithdrawScreenState();
@@ -63,7 +67,12 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
     FocusScope.of(context).unfocus();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => WithdrawProcessingScreen(amount: _amount),
+        builder: (_) => WithdrawProcessingScreen(
+          amount: _amount,
+          // One key per withdrawal; "Try Again" reuses it.
+          idempotencyKey: WalletPayoutApi.newIdempotencyKey(),
+          bankLabel: widget.bankLabel,
+        ),
       ),
     );
   }
@@ -125,7 +134,9 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                           style: AppTypography.bold.copyWith(fontSize: 16),
                         ),
                         TText(
-                          rupees(widget.balance),
+                          widget.bankLabel.isEmpty
+                              ? rupees(widget.balance)
+                              : '${rupees(widget.balance)}  •  ${widget.bankLabel}',
                           style: AppTypography.regular.copyWith(
                             fontSize: 13,
                             color: context.torkk.textSecondary,

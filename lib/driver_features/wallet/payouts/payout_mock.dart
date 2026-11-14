@@ -1,27 +1,4 @@
-/// Placeholder payout data until the payout APIs are ready. Replace these with
-/// API calls; the screens only read from these classes.
-class PayoutMock {
-  static const double availableBalance = 1000;
-  static const double thisWeek = 3420;
-  static const double pendingPayouts = 3420;
-
-  /// Set to true to see the "Payment Failed" screen after tapping Withdraw.
-  static const bool withdrawFails = false;
-
-  static const List<PayoutEntry> today = [
-    PayoutEntry('Personal Expense', '10:24 pm', 520),
-    PayoutEntry('Transfer', '10:24 pm', 200),
-    PayoutEntry('Billing', '10:24 pm', 430),
-  ];
-}
-
-class PayoutEntry {
-  const PayoutEntry(this.title, this.time, this.amount);
-
-  final String title;
-  final String time;
-  final double amount;
-}
+import 'package:rider_app/driver_features/wallet/wallet_payout_api.dart';
 
 /// What the withdraw flow shows on the result screens.
 class WithdrawReceipt {
@@ -30,8 +7,9 @@ class WithdrawReceipt {
     required this.transactionId,
     required this.dateTime,
     this.fee = 0,
-    this.method = 'UPI',
-    this.paidTo = 'upi@id65//',
+    this.method = 'Bank transfer',
+    this.paidTo = '',
+    this.status = 'Completed',
   });
 
   final double amount;
@@ -40,6 +18,7 @@ class WithdrawReceipt {
   final double fee;
   final String method;
   final String paidTo;
+  final String status;
 
   static const _months = [
     'jan',
@@ -55,6 +34,19 @@ class WithdrawReceipt {
     'nov',
     'dec',
   ];
+
+  /// Receipt built from the withdraw API reply.
+  factory WithdrawReceipt.fromResult(WithdrawResult r, {String paidTo = ''}) {
+    final base = WithdrawReceipt.now(r.amount);
+    return WithdrawReceipt(
+      amount: r.amount,
+      transactionId: r.id.isEmpty ? base.transactionId : r.id,
+      dateTime: base.dateTime,
+      fee: r.fee,
+      paidTo: paidTo,
+      status: r.status.isEmpty ? 'Completed' : r.status,
+    );
+  }
 
   factory WithdrawReceipt.now(double amount) {
     final t = DateTime.now();

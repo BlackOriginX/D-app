@@ -508,6 +508,28 @@ class DriverApiService {
     throw Exception(message);
   }
 
+  /// GET /api/driver/wallet/balance (older endpoint). The driver is identified
+  /// by the Bearer token. For now it only calls the API and prints the reply;
+  /// the decoded JSON is returned so the UI can use it later.
+  static Future<Map<String, dynamic>> fetchWalletBalance() async {
+    onbBefore('WALLET BALANCE GET', 'GET', AppUrls.walletBalance);
+    final http.Response response;
+    try {
+      response = await apiClient
+          .get(Uri.parse(AppUrls.walletBalance))
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      onbFailed('WALLET BALANCE GET', e);
+      rethrow;
+    }
+    onbAfter('WALLET BALANCE GET', response.statusCode, response.body);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Failed to load wallet balance (${response.statusCode})');
+    }
+    final decoded = response.body.isEmpty ? null : json.decode(response.body);
+    return decoded is Map ? Map<String, dynamic>.from(decoded) : {};
+  }
+
   /// GET /api/driver/bank-details. The driver is identified by the Bearer
   /// token (added by [apiClient]). Returns the decoded JSON reply.
   static Future<Map<String, dynamic>> fetchBankDetails() async {

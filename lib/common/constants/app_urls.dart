@@ -119,6 +119,26 @@ class AppUrls {
   static String driverProfile(String phone) =>
       '$apiBase/driver/profile?phone=${Uri.encodeComponent(phone)}';
 
+  static const String payoutSummary = '$apiBase/driver/payouts/summary';
+  static const String walletWithdraw = '$apiBase/driver/wallet/withdraw';
+  static const String walletWithdrawals = '$apiBase/driver/wallet/withdrawals';
+
+  /// Paged statement; [from] / [to] are yyyy-mm-dd and optional.
+  static String walletTransactions({
+    int limit = 20,
+    int offset = 0,
+    String? from,
+    String? to,
+  }) {
+    final q = StringBuffer('limit=$limit&offset=$offset');
+    if (from != null && from.isNotEmpty) q.write('&from=$from');
+    if (to != null && to.isNotEmpty) q.write('&to=$to');
+    return '$apiBase/driver/wallet/transactions?$q';
+  }
+
+  /// GET: available balance (older endpoint). Driver comes from the token.
+  static const String walletBalance = '$apiBase/driver/wallet/balance';
+
   static String driverWallet(String phone) =>
       '$apiBase/driver/wallet?phone=${Uri.encodeComponent(phone)}';
 

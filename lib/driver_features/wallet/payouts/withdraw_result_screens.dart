@@ -5,6 +5,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/driver_features/wallet/payouts/payout_mock.dart';
+import 'package:rider_app/driver_features/wallet/wallet_payout_api.dart';
 import 'package:rider_app/driver_features/wallet/payouts/payout_widgets.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
@@ -20,12 +21,19 @@ void _backToPayouts(BuildContext context) {
   if (nav.canPop()) nav.pop();
 }
 
-/// Shown while the withdrawal is being confirmed. Blocks going back. With no
-/// API yet it waits a moment, then moves on to the success or failed screen.
+/// Shown while the withdrawal is sent to POST /api/driver/wallet/withdraw.
+/// Blocks going back, then moves on to the success or failed screen.
 class WithdrawProcessingScreen extends StatefulWidget {
-  const WithdrawProcessingScreen({super.key, required this.amount});
+  const WithdrawProcessingScreen({
+    super.key,
+    required this.amount,
+    required this.idempotencyKey,
+    this.bankLabel = '',
+  });
 
   final double amount;
+  final String idempotencyKey;
+  final String bankLabel;
 
   @override
   State<WithdrawProcessingScreen> createState() =>
@@ -36,15 +44,42 @@ class _WithdrawProcessingScreenState extends State<WithdrawProcessingScreen> {
   @override
   void initState() {
     super.initState();
-    Future<void>.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      final Widget next = PayoutMock.withdrawFails
-          ? WithdrawFailedScreen(amount: widget.amount)
-          : WithdrawSuccessScreen(receipt: WithdrawReceipt.now(widget.amount));
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute<void>(builder: (_) => next));
-    });
+    _run();
+  }
+
+  Future<void> _run() async {
+    debugPrint(
+      'PAYOUT_W1 | withdraw amount=${widget.amount} key=${widget.idempotencyKey}',
+    );
+    Widget next;
+    try {
+      final result = await WalletPayoutApi.withdraw(
+        amount: widget.amount,
+        idempotencyKey: widget.idempotencyKey,
+      );
+      debugPrint(
+        'PAYOUT_W2 | withdraw ok id=${result.id} status=${result.status}',
+      );
+      next = WithdrawSuccessScreen(
+        receipt: WithdrawReceipt.fromResult(result, paidTo: widget.bankLabel),
+      );
+    } catch (e) {
+      debugPrint('PAYOUT_W3 | withdraw failed: $e');
+      final code = e is PayoutApiException ? e.statusCode : null;
+      next = WithdrawFailedScreen(
+        amount: widget.amount,
+        idempotencyKey: widget.idempotencyKey,
+        bankLabel: widget.bankLabel,
+        message: code == 409
+            ? 'Your bank account is not verified yet. You can withdraw once it is verified.'
+            : e.toString(),
+        canRetry: code != 409,
+      );
+    }
+    if (!mounted) return;
+    Navigator.of(
+      context,
+    ).pushReplacement(MaterialPageRoute<void>(builder: (_) => next));
   }
 
   @override
@@ -105,9 +140,12 @@ class WithdrawSuccessScreen extends StatelessWidget {
                     PayoutStatusHero(
                       color: _green,
                       icon: Icons.check_rounded,
-                      title: 'Withdraw Successful',
-                      message:
-                          'Your payment of $amount was completed successful',
+                      title: receipt.status.toLowerCase() == 'completed'
+                          ? 'Withdraw Successful'
+                          : 'Withdraw Requested',
+                      message: receipt.status.toLowerCase() == 'completed'
+                          ? 'Your payment of $amount was completed successful'
+                          : 'Your withdrawal of $amount has been placed.',
                     ),
                     SizedBox(height: context.h(24)),
                     TText(
@@ -138,7 +176,9 @@ class WithdrawSuccessScreen extends StatelessWidget {
                           ),
                           SizedBox(height: context.h(2)),
                           TText(
-                            'Money Debited.',
+                            receipt.status.toLowerCase() == 'completed'
+                                ? 'Money Debited.'
+                                : 'Your withdrawal is being processed.',
                             style: AppTypography.bold.copyWith(fontSize: 14),
                           ),
                         ],
@@ -182,7 +222,7 @@ class _DetailsCard extends StatelessWidget {
       ('Amount', amount),
       ('Date & Time', receipt.dateTime),
       ('Payment Method', receipt.method),
-      ('Bill Paid To', receipt.paidTo),
+      if (receipt.paidTo.isNotEmpty) ('Paid To', receipt.paidTo),
     ];
     return Container(
       padding: EdgeInsets.symmetric(
@@ -209,7 +249,7 @@ class _DetailsCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(context.r(20)),
                 ),
                 child: TText(
-                  'Completed',
+                  receipt.status,
                   style: AppTypography.bold.copyWith(
                     fontSize: 12,
                     color: _green,
@@ -253,9 +293,20 @@ class _DetailsCard extends StatelessWidget {
 }
 
 class WithdrawFailedScreen extends StatelessWidget {
-  const WithdrawFailedScreen({super.key, required this.amount});
+  const WithdrawFailedScreen({
+    super.key,
+    required this.amount,
+    required this.idempotencyKey,
+    this.bankLabel = '',
+    this.message = 'Due to network issue',
+    this.canRetry = true,
+  });
 
   final double amount;
+  final String idempotencyKey;
+  final String bankLabel;
+  final String message;
+  final bool canRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -272,7 +323,7 @@ class WithdrawFailedScreen extends StatelessWidget {
                     color: _red,
                     icon: Icons.priority_high_rounded,
                     title: 'Payment Failed',
-                    message: 'Due to network issue',
+                    message: message,
                   ),
                 ),
               ),
@@ -285,18 +336,25 @@ class WithdrawFailedScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    PayoutButton(
-                      label: 'Try Again',
-                      onTap: () => Navigator.of(context).pushReplacement(
-                        MaterialPageRoute<void>(
-                          builder: (_) =>
-                              WithdrawProcessingScreen(amount: amount),
+                    if (canRetry) ...[
+                      PayoutButton(
+                        label: 'Try Again',
+                        // Same key: the server treats it as a retry of this
+                        // withdrawal, never a second one.
+                        onTap: () => Navigator.of(context).pushReplacement(
+                          MaterialPageRoute<void>(
+                            builder: (_) => WithdrawProcessingScreen(
+                              amount: amount,
+                              idempotencyKey: idempotencyKey,
+                              bankLabel: bankLabel,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: context.h(12)),
+                      SizedBox(height: context.h(12)),
+                    ],
                     PayoutButton(
-                      label: 'Cancel',
+                      label: canRetry ? 'Cancel' : 'Back',
                       outline: true,
                       onTap: () => _backToPayouts(context),
                     ),

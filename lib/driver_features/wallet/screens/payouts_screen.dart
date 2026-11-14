@@ -5,155 +5,260 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
-import 'package:rider_app/driver_features/wallet/payouts/payout_mock.dart';
+import 'package:rider_app/driver_features/wallet/payouts/payout_item_row.dart';
+import 'package:rider_app/driver_features/wallet/screens/settlement_screen.dart';
+import 'package:rider_app/driver_features/wallet/screens/statement_screen.dart';
+import 'package:rider_app/driver_features/wallet/wallet_payout_api.dart';
 import 'package:rider_app/driver_features/wallet/payouts/withdraw_screen.dart';
 import 'package:rider_app/driver_features/wallet/screens/bank_account_screen.dart';
-import 'package:rider_app/driver_features/wallet/screens/transaction_history_screen.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Payouts home: balance, withdraw, quick links and recent payout history.
-/// Figures come from [PayoutMock] until the payout APIs are ready.
-class PayoutsScreen extends StatelessWidget {
+/// Figures come from GET /api/driver/payouts/summary.
+class PayoutsScreen extends StatefulWidget {
   const PayoutsScreen({super.key});
 
+  @override
+  State<PayoutsScreen> createState() => _PayoutsScreenState();
+}
+
+class _PayoutsScreenState extends State<PayoutsScreen> {
+  PayoutSummary? _summary;
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  /// GET /api/driver/payouts/summary: balance, this week, pending payouts,
+  /// bank account and the recent transactions.
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    debugPrint('PAYOUT_01 | calling GET /api/driver/payouts/summary');
+    try {
+      final summary = await WalletPayoutApi.fetchSummary();
+      if (!mounted) return;
+      setState(() {
+        _summary = summary;
+        _loading = false;
+      });
+    } catch (e) {
+      debugPrint('PAYOUT_03 | summary failed: $e');
+      if (!mounted) return;
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
+    }
+  }
+
   void _open(BuildContext context, Widget screen, {String? name}) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => screen,
-        settings: RouteSettings(name: name),
-      ),
-    );
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute<void>(
+            builder: (_) => screen,
+            settings: RouteSettings(name: name),
+          ),
+        )
+        // Coming back from a withdrawal / bank change: refresh the figures.
+        .then((_) {
+          if (mounted) _load();
+        });
   }
 
   void _withdraw(BuildContext context) => _open(
     context,
-    const WithdrawScreen(balance: PayoutMock.availableBalance),
+    WithdrawScreen(
+      balance: _summary?.balance ?? 0,
+      bankLabel: _summary?.bankLabel ?? '',
+    ),
     name: 'withdraw',
   );
 
-  void _history(BuildContext context) =>
-      _open(context, const TransactionHistoryScreen());
+  void _statement(BuildContext context) =>
+      _open(context, const StatementScreen());
+
+  void _settlement(BuildContext context) =>
+      _open(context, const SettlementScreen());
 
   @override
   Widget build(BuildContext context) {
-    return ProfilePage(
-      title: AppStrings.payouts,
-      child: ListView(
-        padding: EdgeInsets.fromLTRB(
-          context.w(20),
-          context.h(8),
-          context.w(20),
-          context.h(24),
-        ),
-        children: [
-          _BalanceCard(onWithdraw: () => _withdraw(context)),
-          SizedBox(height: context.h(14)),
-          Row(
-            children: [
-              Expanded(
-                child: _StatCard(
-                  label: 'This Week',
-                  value: rupees(PayoutMock.thisWeek),
-                  icon: Icons.calendar_month_rounded,
-                  color: profileAccent(context),
-                ),
-              ),
-              SizedBox(width: context.w(12)),
-              Expanded(
-                child: _StatCard(
-                  label: 'Pending Payouts',
-                  value: rupees(PayoutMock.pendingPayouts),
-                  icon: Icons.pending_actions_rounded,
-                  color: const Color(0xFFF59E0B),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: context.h(14)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _Action(
-                'Statement',
-                Icons.swap_horiz_rounded,
-                const Color(0xFF0891B2),
-                () => _history(context),
-              ),
-              _Action(
-                'Settlement',
-                Icons.arrow_circle_right_outlined,
-                const Color(0xFF2563EB),
-                () => _history(context),
-              ),
-              _Action(
-                'Withdraw',
-                Icons.credit_card_rounded,
-                const Color(0xFFDC2626),
-                () => _withdraw(context),
-              ),
-              _Action(
-                'Bank\nAccount',
-                Icons.account_balance_rounded,
-                const Color(0xFF7C3AED),
-                () => _open(context, const BankAccountScreen()),
-              ),
-            ],
-          ),
-          SizedBox(height: context.h(36)),
-          Row(
-            children: [
-              Expanded(
-                child: TText(
-                  'Payout Transaction History',
-                  style: AppTypography.bold.copyWith(
-                    fontSize: 16,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () => _history(context),
-                behavior: HitTestBehavior.opaque,
-                child: TText(
-                  'view all',
+    if (_loading && _summary == null) {
+      return ProfilePage(
+        title: AppStrings.payouts,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (_summary == null) {
+      return ProfilePage(
+        title: AppStrings.payouts,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: context.w(32)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TText(
+                  _error ?? 'Could not load payouts',
+                  textAlign: TextAlign.center,
                   style: AppTypography.regular.copyWith(
                     fontSize: 13,
                     color: context.torkk.textSecondary,
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: context.h(14)),
-          TText(
-            'Today , 12 June',
-            style: AppTypography.bold.copyWith(fontSize: 14),
-          ),
-          SizedBox(height: context.h(10)),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(context.r(16)),
-              border: Border.all(color: context.torkk.border),
-            ),
-            child: Column(
-              children: [
-                for (var i = 0; i < PayoutMock.today.length; i++) ...[
-                  if (i > 0) Divider(height: 1, color: context.torkk.border),
-                  _EntryRow(entry: PayoutMock.today[i]),
-                ],
+                TextButton(onPressed: _load, child: const TText('Retry')),
               ],
             ),
           ),
-        ],
+        ),
+      );
+    }
+    final summary = _summary!;
+    return ProfilePage(
+      title: AppStrings.payouts,
+      child: RefreshIndicator(
+        onRefresh: _load,
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            context.w(20),
+            context.h(8),
+            context.w(20),
+            context.h(24),
+          ),
+          children: [
+            _BalanceCard(
+              balance: summary.balance,
+              onWithdraw: () => _withdraw(context),
+            ),
+            SizedBox(height: context.h(14)),
+            Row(
+              children: [
+                Expanded(
+                  child: _StatCard(
+                    label: 'This Week',
+                    value: rupees(summary.thisWeek),
+                    icon: Icons.calendar_month_rounded,
+                    color: profileAccent(context),
+                  ),
+                ),
+                SizedBox(width: context.w(12)),
+                Expanded(
+                  child: _StatCard(
+                    label: 'Pending Payouts',
+                    value: rupees(summary.pending),
+                    icon: Icons.pending_actions_rounded,
+                    color: const Color(0xFFF59E0B),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: context.h(14)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _Action(
+                  'Statement',
+                  Icons.swap_horiz_rounded,
+                  const Color(0xFF0891B2),
+                  () => _statement(context),
+                ),
+                _Action(
+                  'Settlement',
+                  Icons.arrow_circle_right_outlined,
+                  const Color(0xFF2563EB),
+                  () => _settlement(context),
+                ),
+                _Action(
+                  'Withdraw',
+                  Icons.credit_card_rounded,
+                  const Color(0xFFDC2626),
+                  () => _withdraw(context),
+                ),
+                _Action(
+                  'Bank\nAccount',
+                  Icons.account_balance_rounded,
+                  const Color(0xFF7C3AED),
+                  () => _open(context, const BankAccountScreen()),
+                ),
+              ],
+            ),
+            SizedBox(height: context.h(36)),
+            Row(
+              children: [
+                Expanded(
+                  child: TText(
+                    'Payout Transaction History',
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 16,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _statement(context),
+                  behavior: HitTestBehavior.opaque,
+                  child: TText(
+                    'view all',
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 13,
+                      color: context.torkk.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: context.h(14)),
+            if (summary.recent.isEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: context.h(24)),
+                child: Center(
+                  child: TText(
+                    'No transactions yet',
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 13,
+                      color: context.torkk.textSecondary,
+                    ),
+                  ),
+                ),
+              )
+            else
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(context.r(16)),
+                  border: Border.all(color: context.torkk.border),
+                ),
+                child: Column(
+                  children: [
+                    for (
+                      var i = 0;
+                      i < summary.recent.length && i < 5;
+                      i++
+                    ) ...[
+                      if (i > 0)
+                        Divider(height: 1, color: context.torkk.border),
+                      PayoutItemRow(item: summary.recent[i]),
+                    ],
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class _BalanceCard extends StatelessWidget {
-  const _BalanceCard({required this.onWithdraw});
+  const _BalanceCard({required this.balance, required this.onWithdraw});
 
+  final double balance;
   final VoidCallback onWithdraw;
 
   @override
@@ -206,7 +311,7 @@ class _BalanceCard extends StatelessWidget {
             ],
           ),
           TText(
-            rupees(PayoutMock.availableBalance, decimals: 0),
+            rupees(balance, decimals: 0),
             style: AppTypography.bold.copyWith(
               fontSize: 30,
               height: 1.15,
@@ -350,65 +455,6 @@ class _Action extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _EntryRow extends StatelessWidget {
-  const _EntryRow({required this.entry});
-
-  final PayoutEntry entry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.w(14),
-        vertical: context.h(14),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: context.w(40),
-            height: context.w(40),
-            decoration: BoxDecoration(
-              color: context.torkk.surfaceMuted,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.person_rounded,
-              color: AppColors.slate400,
-              size: context.w(22),
-            ),
-          ),
-          SizedBox(width: context.w(12)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TText(
-                  entry.title,
-                  style: AppTypography.bold.copyWith(fontSize: 14),
-                ),
-                TText(
-                  entry.time,
-                  style: AppTypography.regular.copyWith(
-                    fontSize: 12,
-                    color: context.torkk.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TText(
-            '- ${rupees(entry.amount)}',
-            style: AppTypography.bold.copyWith(
-              fontSize: 14,
-              color: const Color(0xFF16A34A),
-            ),
-          ),
-        ],
       ),
     );
   }
