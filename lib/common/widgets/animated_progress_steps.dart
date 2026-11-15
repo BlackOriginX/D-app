@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ProgressStep {
   const ProgressStep({required this.title, this.subtitle});
@@ -99,7 +101,7 @@ class _ProgressStepRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleColor = done || active
-        ? AppColors.textPrimary
+        ? context.torkk.textPrimary
         : AppColors.slate400;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,7 +120,7 @@ class _ProgressStepRow extends StatelessWidget {
                   duration: const Duration(milliseconds: 350),
                   width: 2,
                   height: context.h(56),
-                  color: done ? AppColors.green600 : AppColors.slate200,
+                  color: done ? AppColors.green600 : context.torkk.border,
                 ),
             ],
           ),
@@ -130,7 +132,7 @@ class _ProgressStepRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   step.title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 13,
@@ -141,7 +143,7 @@ class _ProgressStepRow extends StatelessWidget {
                 ),
                 if (step.subtitle != null) ...[
                   SizedBox(height: context.h(4)),
-                  Text(
+                  TText(
                     step.subtitle!,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,
@@ -181,8 +183,8 @@ class _ProgressStepRow extends StatelessWidget {
           width: context.w(28),
           height: context.w(28),
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Color(0xFFDCFCE7),
+          decoration: BoxDecoration(
+            color: context.adaptiveTint(Color(0xFFDCFCE7)),
             shape: BoxShape.circle,
           ),
           child: Container(
@@ -200,7 +202,7 @@ class _ProgressStepRow extends StatelessWidget {
       width: context.w(22),
       height: context.w(22),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.torkk.surface,
         shape: BoxShape.circle,
         border: Border.all(color: AppColors.slate300, width: 2),
       ),

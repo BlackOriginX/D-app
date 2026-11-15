@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SubscriptionPage extends StatelessWidget {
   const SubscriptionPage({
@@ -22,7 +24,8 @@ class SubscriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      floatingActionButton: const AiChatButton(size: 48),
+      backgroundColor: context.torkk.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -31,10 +34,10 @@ class SubscriptionPage extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: IconButton(
                   onPressed: onBack,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new,
                     size: 18,
-                    color: AppColors.textPrimary,
+                    color: context.torkk.textPrimary,
                   ),
                 ),
               ),
@@ -79,12 +82,12 @@ class SubscriptionButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(context.r(14)),
             ),
           ),
-          child: Text(
+          child: TText(
             label,
             style: AppTypography.bold.copyWith(
               fontSize: 15,
               height: 1,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
               letterSpacing: -0.2,
             ),
           ),

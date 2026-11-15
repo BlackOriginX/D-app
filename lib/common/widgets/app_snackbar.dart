@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 enum AppSnackBarType { success, error, info }
 
@@ -117,7 +119,7 @@ class AppSnackBarBanner extends StatelessWidget {
         context.h(12),
       ),
       decoration: BoxDecoration(
-        color: AppColors.snackBarBackground,
+        color: context.torkk.surface,
         borderRadius: BorderRadius.circular(context.r(12)),
         border: Border.all(color: _accent),
         boxShadow: [
@@ -146,21 +148,21 @@ class AppSnackBarBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 13,
                     height: 1.2,
-                    color: AppColors.textPrimary,
+                    color: context.torkk.textPrimary,
                   ),
                 ),
                 SizedBox(height: context.h(4)),
-                Text(
+                TText(
                   message,
                   style: AppTypography.regular.copyWith(
                     fontSize: 11,
                     height: 1.4,
-                    color: AppColors.secondaryTextColor,
+                    color: context.torkk.textSecondary,
                   ),
                 ),
               ],
@@ -174,7 +176,7 @@ class AppSnackBarBanner extends StatelessWidget {
             icon: Icon(
               Icons.close,
               size: context.sp(16),
-              color: AppColors.secondaryTextColor,
+              color: context.torkk.textSecondary,
             ),
           ),
         ],

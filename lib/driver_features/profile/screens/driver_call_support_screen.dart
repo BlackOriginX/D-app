@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- CALL SUPPORT SCREEN ---
 class DriverCallSupportScreen extends StatelessWidget {
@@ -7,13 +9,13 @@ class DriverCallSupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       appBar: AppBar(
-        title: const Text(
+        title: const TText(
           'Call Support',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: context.torkk.background,
         foregroundColor: Colors.black,
         elevation: 0,
       ),
@@ -36,19 +38,19 @@ class DriverCallSupportScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
+              TText(
                 'Speak to Support Representative',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
+                  color: context.torkk.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+              TText(
                 'Our Partner Support hotline is available 24/7 to resolve operations and billing inquiries.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: context.torkk.textSecondary),
               ),
               const SizedBox(height: 32),
               Container(
@@ -57,16 +59,16 @@ class DriverCallSupportScreen extends StatelessWidget {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
+                  color: context.torkk.surfaceMuted,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.black12),
+                  border: Border.all(color: context.torkk.border),
                 ),
-                child: const Text(
+                child: TText(
                   '+1 (800) 555-0199',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF1E293B),
+                    color: context.torkk.textPrimary,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -78,14 +80,14 @@ class DriverCallSupportScreen extends StatelessWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(
+                        content: TText(
                           'Simulating telephone dialer initiation...',
                         ),
                       ),
                     );
                   },
                   icon: const Icon(Icons.call, color: Colors.white),
-                  label: const Text(
+                  label: const TText(
                     'Call Helpline Now',
                     style: TextStyle(
                       color: Colors.white,
@@ -93,6 +95,7 @@ class DriverCallSupportScreen extends StatelessWidget {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
+                    foregroundColor: onColorFor(Colors.green),
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(

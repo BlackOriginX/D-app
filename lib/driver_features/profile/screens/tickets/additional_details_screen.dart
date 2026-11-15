@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+
+import 'package:rider_app/common/constants/app_colors.dart';
+import 'package:rider_app/common/theme/app_typography.dart';
+import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/driver_features/profile/screens/tickets/issue_submitted_screen.dart';
+import 'package:rider_app/driver_features/profile/screens/tickets/ticket_widgets.dart';
+import 'package:rider_app/service/support_api_service.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+
+class AdditionalDetailsScreen extends StatefulWidget {
+  const AdditionalDetailsScreen({
+    super.key,
+    required this.category,
+    required this.problem,
+    required this.photos,
+    this.rideId,
+  });
+
+  final SupportOption category;
+  final SupportOption problem;
+  final List<String> photos;
+  final String? rideId;
+
+  @override
+  State<AdditionalDetailsScreen> createState() =>
+      _AdditionalDetailsScreenState();
+}
+
+class _AdditionalDetailsScreenState extends State<AdditionalDetailsScreen> {
+  final _note = TextEditingController();
+  int? _selected;
+  bool _submitting = false;
+  static const _notes = [
+    'Sender not picking up the call',
+    'Parcel has not been delivered',
+    'Wrong drop location',
+    'Payment is still pending',
+  ];
+
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final note = _selected == null ? '' : _notes[_selected!];
+    if (_note.text.trim().isEmpty && note.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: TText('Please select a note or add details.')),
+      );
+      return;
+    }
+    final text = _note.text.trim();
+    setState(() => _submitting = true);
+    print("ticket 01 ==> Submitting ticket with category:===========> ${widget.category.name}, problem: ${widget.problem.name}, note: $note, text: $text, photos: ${widget.photos.length}, rideId: ${widget.rideId}");
+    try {
+      final ticket = await SupportApiService.createTicket(
+        categoryId: widget.category.id,
+        categoryName: widget.category.name,
+        problemId: widget.problem.id,
+        problemName: widget.problem.name,
+        description: text.isEmpty ? note : text,
+        quickNote: note,
+       
+        rideId: widget.rideId ?? '',
+         photoPaths: widget.photos,
+      );
+      print("ticket 02 ==> Ticket created successfully: ${ticket.ticketId}, ${ticket.ticketNumber}");
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => IssueSubmittedScreen(ticket: ticket),
+        ),
+      );
+    } catch (e) {
+      print("ticket 03 ==> Error creating ticket: $e");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: TText(e.toString().replaceFirst('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ProfilePage(
+      title: 'Additional Details',
+      bottom: ticketFilled(
+        context,
+        'Submit Issue',
+        _submit,
+        loading: _submitting,
+      ),
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          context.w(20),
+          0,
+          context.w(20),
+          context.h(12),
+        ),
+        children: [
+          TText(
+            'Add any additional information to help us resolve the issue.',
+            style: AppTypography.regular.copyWith(
+              fontSize: 13,
+              color: context.torkk.textSecondary,
+            ),
+          ),
+          SizedBox(height: context.h(14)),
+          TText(
+            'Quick notes (optional)',
+            style: AppTypography.regular.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: context.h(8)),
+          for (var i = 0; i < _notes.length; i++)
+            GestureDetector(
+              onTap: () =>
+                  setState(() => _selected = _selected == i ? null : i),
+              child: Container(
+                margin: EdgeInsets.only(bottom: context.h(8)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.w(14),
+                  vertical: context.h(14),
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(context.r(12)),
+                  border: Border.all(color: context.torkk.border),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TText(
+                        _notes[i],
+                        style: AppTypography.regular.copyWith(fontSize: 14),
+                      ),
+                    ),
+                    Icon(
+                      _selected == i
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_off,
+                      color: _selected == i
+                          ? profileAccent(context)
+                          : AppColors.slate400,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          SizedBox(height: context.h(8)),
+          TText(
+            'Add more details (optional)',
+            style: AppTypography.regular.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: context.h(8)),
+          ticketCommentBox(context, _note, () => setState(() {})),
+        ],
+      ),
+    );
+  }
+}

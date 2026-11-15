@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER DOCUMENTS SCREEN (Figma Docs) ---
 class DriverDocumentsScreen extends StatefulWidget {
@@ -37,9 +40,8 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final subTextColor = isDark ? Colors.grey.shade400 : const Color(0xFF64748B);
+    final textColor = context.torkk.textPrimary;
+    final subTextColor = context.torkk.textSecondary;
 
     return Column(
       children: [
@@ -53,7 +55,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       title,
                       style: TextStyle(
                         fontSize: 18,
@@ -62,7 +64,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    TText(
                       subtitle,
                       style: TextStyle(
                         fontSize: 12.5,
@@ -72,11 +74,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
                     ),
                   ],
                 ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: textColor,
-                  size: 26,
-                ),
+                Icon(Icons.chevron_right_rounded, color: textColor, size: 26),
               ],
             ),
           ),
@@ -84,7 +82,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
         Divider(
           height: 1,
           thickness: 1,
-          color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+          color: context.torkk.border,
           indent: 24,
           endIndent: 24,
         ),
@@ -94,11 +92,11 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColor = context.torkk.textPrimary;
 
     return Scaffold(
+      floatingActionButton: const AiChatButton(size: 48),
       backgroundColor: bgColor,
       appBar: AppBar(
         backgroundColor: bgColor,
@@ -117,7 +115,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             ),
           ),
         ),
-        title: Text(
+        title: TText(
           'Profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -133,7 +131,7 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
+              child: TText(
                 'Documents',
                 style: TextStyle(
                   fontSize: 26,
@@ -146,11 +144,11 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
             const SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
+              child: TText(
                 'Uploaded Documents',
                 style: TextStyle(
                   fontSize: 13,
-                  color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
+                  color: context.torkk.textSecondary,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -184,4 +182,3 @@ class _DriverDocumentsScreenState extends State<DriverDocumentsScreen> {
     );
   }
 }
-

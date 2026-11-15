@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:rider_app/service/api_client.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 void showReportCustomerDialog({
   required BuildContext context,
@@ -13,15 +16,10 @@ void showReportCustomerDialog({
     context: context,
     builder: (dialogContext) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28),
-        ),
-        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        backgroundColor: context.torkk.surface,
         elevation: 16,
-        insetPadding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 24,
-        ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Padding(
           padding: const EdgeInsets.all(22.0),
           child: Column(
@@ -43,24 +41,24 @@ void showReportCustomerDialog({
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           'Report Issue',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF0F172A),
+                            color: context.torkk.textPrimary,
                           ),
                         ),
                         SizedBox(height: 2),
-                        Text(
+                        TText(
                           'Passenger misconduct or dispute',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF64748B),
+                            color: context.torkk.textSecondary,
                           ),
                         ),
                       ],
@@ -71,25 +69,25 @@ void showReportCustomerDialog({
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFF1F5F9),
+                      decoration: BoxDecoration(
+                        color: context.torkk.surfaceMuted,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.close_rounded,
                         size: 18,
-                        color: Color(0xFF64748B),
+                        color: context.torkk.textSecondary,
                       ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              const Text(
+              TText(
                 'Please describe the issue with this passenger (e.g. misconduct, unpaid fare dispute, safety concern):',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF475569),
+                  color: context.torkk.textBody,
                   height: 1.4,
                 ),
               ),
@@ -97,31 +95,31 @@ void showReportCustomerDialog({
               TextField(
                 controller: descCtrl,
                 maxLines: 4,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF0F172A),
+                  color: context.torkk.textPrimary,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Provide details about the incident...',
+                  hintText: AppTranslations.t('Provide details about the incident...'),
                   hintStyle: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF94A3B8),
                   ),
                   filled: true,
-                  fillColor: const Color(0xFFF8FAFC),
+                  fillColor: context.torkk.surfaceMuted,
                   contentPadding: const EdgeInsets.all(14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    borderSide: BorderSide(color: context.torkk.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    borderSide: BorderSide(color: context.torkk.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF6366F1),
+                    borderSide: BorderSide(
+                      color: context.legible(Color(0xFF6366F1)),
                       width: 1.8,
                     ),
                   ),
@@ -142,9 +140,9 @@ void showReportCustomerDialog({
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        foregroundColor: const Color(0xFF475569),
+                        foregroundColor: context.legible(Color(0xFF475569)),
                       ),
-                      child: const Text(
+                      child: const TText(
                         'Cancel',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -159,14 +157,10 @@ void showReportCustomerDialog({
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                        ),
+                        gradient: LinearGradient(colors: [context.brandColor, context.brandColor]),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(
-                              0xFF6366F1,
-                            ).withValues(alpha: 0.35),
+                            color: context.brandColor.withValues(alpha: 0.35),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -179,12 +173,12 @@ void showReportCustomerDialog({
                           Navigator.pop(dialogContext);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Report filed successfully.'),
+                              content: TText('Report filed successfully.'),
                               backgroundColor: Color(0xFF10B981),
                             ),
                           );
                           try {
-                            await http.post(
+                            await apiClient.post(
                               Uri.parse(AppUrls.reportIssue),
                               headers: {'Content-Type': 'application/json'},
                               body: jsonEncode({
@@ -201,7 +195,7 @@ void showReportCustomerDialog({
                           color: Colors.white,
                           size: 16,
                         ),
-                        label: const Text(
+                        label: const TText(
                           'Submit Report',
                           style: TextStyle(
                             color: Colors.white,

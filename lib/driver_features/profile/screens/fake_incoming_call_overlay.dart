@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- FAKE INCOMING CALL OVERLAY SCREEN ---
 class FakeIncomingCallOverlay extends StatefulWidget {
@@ -60,7 +61,7 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
+                  const TText(
                     'Security Operations',
                     style: TextStyle(
                       fontSize: 28,
@@ -69,7 +70,7 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  TText(
                     _formatDuration(),
                     style: const TextStyle(fontSize: 16, color: Colors.white70),
                   ),
@@ -95,7 +96,7 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
                     child: Icon(Icons.security, size: 72, color: Colors.white),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
+                  const TText(
                     'Security Operations',
                     style: TextStyle(
                       fontSize: 28,
@@ -104,7 +105,7 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  const TText(
                     'Torkk Safety Check',
                     style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
@@ -131,7 +132,7 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
+                            const TText(
                               'Decline',
                               style: TextStyle(
                                 color: Colors.white70,
@@ -153,7 +154,7 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
+                            const TText(
                               'Accept',
                               style: TextStyle(
                                 color: Colors.white70,
@@ -171,4 +172,3 @@ class _FakeIncomingCallOverlayState extends State<FakeIncomingCallOverlay> {
     );
   }
 }
-

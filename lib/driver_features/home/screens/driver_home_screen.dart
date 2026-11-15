@@ -1,16 +1,24 @@
 import 'dart:ui' as ui;
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io' show Platform;
+import 'package:http/http.dart' as http;
+import 'package:rider_app/common/constants/app_urls.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rider_app/driver_features/profile/screens/profile_notifications_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/profile_screen.dart';
+import 'package:rider_app/driver_features/wallet/screens/driver_wallet_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:rider_app/service/fcm_service.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/service/ride_alert_service.dart';
+import 'package:rider_app/service/location_permission_flow.dart';
 import 'package:rider_app/common/widgets/online_location_consent_dialog.dart';
 import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,16 +28,19 @@ import 'package:rider_app/driver_features/dashboard/availability_dialog.dart';
 import 'package:rider_app/driver_features/home/driver_home_view.dart';
 import 'package:rider_app/driver_features/dashboard/ride_details_loading_dialog.dart';
 import 'package:rider_app/driver_features/orders/orders_screen.dart';
-import 'package:rider_app/driver_features/parcels/parcel_tab.dart';
+// import 'package:rider_app/driver_features/parcels/parcel_tab.dart';
 import 'package:rider_app/driver_features/rides/ride_flow_screen.dart';
-import 'package:rider_app/driver_features/profile/screens/sos_screen.dart';
 import 'package:rider_app/driver_features/rides/screens/online_ride_search_view.dart';
 import 'package:rider_app/driver_features/trips/screens/driver_history_screen.dart';
 import 'package:rider_app/driver_features/wallet/wallet_screen.dart';
+import 'package:rider_app/driver_features/chat/screens/driver_live_chat_screen.dart';
 import 'package:rider_app/driver_features/notifications/screens/driver_notifications_screen.dart';
+import 'package:rider_app/driver_features/parcels/parcel_coming_soon_screen.dart';
 import '../widgets/widgets.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
 
 export '../widgets/widgets.dart';
+part 'driver_home_screen_sections.dart';
 
 // --- CUSTOMER HOME SCREEN (Dashboard & Ride state machine - Steps 10 to 24) ---
 
@@ -48,8 +59,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   Timer? _pollingTimer;
   List<dynamic> _rides = [];
   bool _fetchingRides = false;
+
   bool _loadingRideDetails = false;
   bool _showRideFlow = false;
+  Map<String, dynamic>? _flowRide;
   String _driverPhone = '';
   String _driverName = 'Driver Partner';
   String _driverCity = '';
@@ -65,11 +78,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   String _profilePhotoUrl = '';
   String _driverVehicleType = '';
   int _currentIndex = 0;
+  int _profileOpenCount = 0;
   Position? _currentPosition;
+  String _currentAddress = '';
+  Position? _addressPosition;
+  bool _updatingLocation = false;
+  Position? _addressAttemptedFor;
   StreamSubscription<Position>? _realtimePositionSubscription;
   BitmapDescriptor? _homeNavPuckIcon;
   GoogleMapController? _homeMapController;
-  Offset _mapPanOffset = Offset.zero;
+  final Offset _mapPanOffset = Offset.zero;
 
   void _startRealtimeLocationStream() {
     _realtimePositionSubscription?.cancel();
@@ -84,6 +102,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               setState(() {
                 _currentPosition = position;
               });
+              _resolveAddress(position);
               if (_homeMapController != null) {
                 try {
                   _homeMapController!.animateCamera(
@@ -106,12 +125,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           },
         );
   }
-
-  void _stopRealtimeLocationStream() {
-    _realtimePositionSubscription?.cancel();
-    _realtimePositionSubscription = null;
-  }
-
 
   Future<void> _initHomePuckIcon() async {
     if (_homeNavPuckIcon != null) return;
@@ -181,6 +194,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       _driverVehicleType = prefs.getString('vehicle_type') ?? '';
       _driverGender = prefs.getString('user_gender') ?? 'Male';
       _isOnline = shouldBeOnline;
+      // Restored online state must also show the ride flow, otherwise
+      // _syncFlowRide never picks up a requested ride.
+      _showRideFlow = shouldBeOnline;
     });
     _applyGenderTheme(_driverGender);
     if (shouldBeOnline) {
@@ -191,7 +207,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           permission == LocationPermission.always;
       if (!canUseLocation) {
         await prefs.setBool('driver_is_online', false);
-        if (mounted) setState(() => _isOnline = false);
+        if (mounted) {
+          setState(() {
+            _isOnline = false;
+            _showRideFlow = false;
+          });
+        }
       } else {
         _startPolling();
         _startRealtimeLocationStream();
@@ -207,11 +228,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           );
           if (mounted) {
             setState(() => _currentPosition = pos);
+            _resolveAddress(pos);
           }
         } catch (_) {
           final pos = await Geolocator.getLastKnownPosition();
           if (mounted && pos != null) {
             setState(() => _currentPosition = pos);
+            _resolveAddress(pos);
           }
         }
       }
@@ -220,43 +243,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     _fetchLastTrips();
     _fetchProfile();
     _checkActiveRide();
-  }
-
-  /// Resume an accepted / in-progress ride after app restart or crash.
-  Future<void> _checkActiveRide() async {
-    if (_driverPhone.isEmpty) return;
-    final prefs = await SharedPreferences.getInstance();
-    int? rideId = prefs.getInt('active_ride_id');
-
-    try {
-      final rides = await DriverApiService.fetchActiveRides(
-        driverPhone: _driverPhone,
-      );
-      for (final ride in rides) {
-        if (ride is! Map) continue;
-        final status = (ride['status'] ?? '').toString();
-        if (status == 'accepted' || status == 'in_progress') {
-          final idVal = ride['id'];
-          final parsed = idVal is int ? idVal : int.tryParse('$idVal');
-          if (parsed != null) {
-            rideId = parsed;
-            await prefs.setInt('active_ride_id', parsed);
-            break;
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint('[DEBUG HOME] Error fetching active rides for restore: $e');
-      // Fall through and still try prefs-based restore.
-    }
-
-    if (rideId == null || !mounted) return;
-
-    debugPrint('[DEBUG HOME] Restoring active ride $rideId');
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.push(AppRoutes.navigation);
-    });
   }
 
   Future<void> _fetchProfile() async {
@@ -327,31 +313,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       }
     }
   }
-
-  Future<void> _forceLogoutDueToMissingProfile() async {
-    debugPrint(
-      'WARNING: Backend returned 404 for driver profile/earnings. Auto-logout is temporarily disabled for UI testing.',
-    );
-    /*
-    if (_driverPhone == '9999999999') {
-      // Do not auto-logout the test/bypass account
-      return;
-    }
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Your account was not found on the server. Please register again.',
-          ),
-        ),
-      );
-      context.go(AppRoutes.startup);
-    }
-    */
-  }
-
 
   Future<void> _fetchLastTrips() async {
     if (_driverPhone.isEmpty) return;
@@ -427,35 +388,30 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     }
   }
 
-  void _startPolling() {
-    _pollingTimer?.cancel();
-    _fetchRides();
-    _pollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (mounted && _isOnline) {
-        _fetchRides();
-      }
-    });
-  }
-
-  void _stopPolling() {
-    _pollingTimer?.cancel();
-    _pollingTimer = null;
-  }
-
   Future<void> _fetchRides() async {
-    if (_fetchingRides || !mounted || _driverPhone.isEmpty) return;
+    if (_fetchingRides || !mounted || _driverPhone.isEmpty) {
+      debugPrint(
+        'RIDE_FLOW_01 | fetch skipped: fetching=$_fetchingRides mounted=$mounted phone="$_driverPhone"',
+      );
+      return;
+    }
     _fetchingRides = true;
     try {
       final data = await DriverApiService.fetchActiveRides(
         driverPhone: _driverPhone,
       );
-      debugPrint('[DEBUG ACTIVE RIDES PAYLOAD] Received ${data.length} rides: $data');
+      debugPrint('RIDE_FLOW_04 | rides after parsing (${data.length}): $data');
 
       final needsDetail = data.any((ride) {
         if (ride is! Map) return false;
-        final name = (ride['customer_name'] ?? ride['user_name'] ?? ride['passenger_name'] ?? ride['name'] ?? '')
-            .toString()
-            .trim();
+        final name =
+            (ride['customer_name'] ??
+                    ride['user_name'] ??
+                    ride['passenger_name'] ??
+                    ride['name'] ??
+                    '')
+                .toString()
+                .trim();
         return name.isEmpty && ride['id'] != null;
       });
       if (needsDetail && mounted) {
@@ -466,7 +422,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       for (int i = 0; i < data.length; i++) {
         if (data[i] is Map<String, dynamic> || data[i] is Map) {
           final rideMap = Map<String, dynamic>.from(data[i] as Map);
-          var existingName = (rideMap['customer_name'] ?? rideMap['user_name'] ?? rideMap['passenger_name'] ?? rideMap['name'] ?? '').toString().trim();
+          var existingName =
+              (rideMap['customer_name'] ??
+                      rideMap['user_name'] ??
+                      rideMap['passenger_name'] ??
+                      rideMap['name'] ??
+                      '')
+                  .toString()
+                  .trim();
           final idVal = rideMap['id'];
           final rideId = idVal is int ? idVal : int.tryParse('$idVal');
           if (existingName.isEmpty && rideId != null) {
@@ -476,14 +439,30 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 driverPhone: _driverPhone,
               );
               rideMap.addAll(Map<String, dynamic>.from(detail));
-              existingName = (rideMap['customer_name'] ?? rideMap['user_name'] ?? rideMap['passenger_name'] ?? rideMap['name'] ?? '').toString().trim();
-                        } catch (err) {
-              debugPrint('[DEBUG RIDE DETAIL ENRICHMENT] Failed for #$rideId: $err');
+              existingName =
+                  (rideMap['customer_name'] ??
+                          rideMap['user_name'] ??
+                          rideMap['passenger_name'] ??
+                          rideMap['name'] ??
+                          '')
+                      .toString()
+                      .trim();
+            } catch (err) {
+              debugPrint(
+                '[DEBUG RIDE DETAIL ENRICHMENT] Failed for #$rideId: $err',
+              );
             }
           }
 
           if (existingName.isEmpty) {
-            final rawPhone = (rideMap['customer_phone'] ?? rideMap['user_phone'] ?? rideMap['phone'] ?? rideMap['rider_phone'] ?? '').toString().replaceAll(RegExp(r'\D'), '');
+            final rawPhone =
+                (rideMap['customer_phone'] ??
+                        rideMap['user_phone'] ??
+                        rideMap['phone'] ??
+                        rideMap['rider_phone'] ??
+                        '')
+                    .toString()
+                    .replaceAll(RegExp(r'\D'), '');
             if (rawPhone.contains('9896566810')) {
               rideMap['customer_name'] = 'Nishant Chauhan';
             } else if (rawPhone.contains('9119070717')) {
@@ -520,6 +499,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       if (mounted) {
         setState(() {
           _rides = data;
+          _syncFlowRide();
         });
       }
     } catch (e) {
@@ -532,86 +512,153 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     }
   }
 
-  Future<void> _playNewRideAlert() async {
-    try {
-      await _rideAlertPlayer.stop();
-      await _rideAlertPlayer.play(AssetSource('sounds/ride_alert.wav'));
-      final pickup = _rides
-          .cast<dynamic>()
-          .where((r) {
-            if (r is! Map) return false;
-            return (r['status'] ?? '').toString() == 'requested';
-          })
-          .map((r) => (r['pickup_address'] ?? '').toString())
-          .firstWhere((a) => a.isNotEmpty, orElse: () => '');
-      unawaited(
-        RideAlertService.showNewRideNotification(
-          title: 'New ride request',
-          body: pickup.isEmpty
-              ? 'Open TORKK Driver to accept the ride'
-              : 'Pickup: $pickup',
-        ),
-      );
-    } catch (e) {
-      debugPrint('Error playing ride alert: $e');
-    }
-  }
-
-  void _applyGenderTheme(String gender) {
-    final female = gender.toLowerCase() == 'female';
-    context.read<ThemeBloc>().add(AccentChanged(isPink: female));
-  }
-
-  int _jobsFrom(List<dynamic> trips) {
-    final now = DateTime.now();
-    var today = 0;
-    var dated = false;
-    var completed = 0;
-    for (final trip in trips) {
-      if (trip is! Map) continue;
-      final status = (trip['status'] ?? '').toString().toLowerCase();
-      final done = status.isEmpty ||
-          status == 'completed' ||
-          status == 'complete' ||
-          status == 'finished';
-      if (done && status.isNotEmpty) completed++;
-      final raw = trip['completed_at'] ?? trip['created_at'] ?? trip['date'] ?? trip['trip_date'];
-      final parsed = DateTime.tryParse('${raw ?? ''}');
-      if (parsed != null) {
-        dated = true;
-        final sameDay = parsed.year == now.year && parsed.month == now.month && parsed.day == now.day;
-        if (done && sameDay) today++;
-      }
-    }
-    if (dated) return today;
-    if (completed > 0) return completed;
-    return trips.length;
+  void _closeRideFlow() {
+    final id = _flowRide == null ? null : _rideIdOf(_flowRide!);
+    setState(() {
+      if (id != null) _rejectedRideIds.add(id);
+      _flowRide = null;
+    });
   }
 
   Future<void> _confirmAvailability() async {
     final goingOnline = !_isOnline;
-    final confirmed = await showAvailabilityDialog(context, goingOnline: goingOnline);
+    final confirmed = await showAvailabilityDialog(
+      context,
+      goingOnline: goingOnline,
+    );
     if (!confirmed || !mounted) return;
     await _toggleOnline();
     if (goingOnline && _isOnline && mounted) {
+      print('_showRideFlow set to true after going online');
       setState(() => _showRideFlow = true);
+      print('_showRideFlow set to true after going online $_showRideFlow');
     } else if (!goingOnline && mounted) {
-      setState(() => _showRideFlow = false);
+      print('_showRideFlow set to false after going offline');
+      setState(() {
+        _showRideFlow = false;
+        _flowRide = null;
+      });
     }
   }
 
-  Future<void> _refreshLocation() async {
+  void _showLocationMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  /// Turns lat/lng into a readable address for the location card. Skips the
+  /// lookup if the driver has barely moved since the last one.
+  Future<void> _resolveAddress(Position position, {bool force = false}) async {
+    final last = _addressPosition;
+    if (!force &&
+        _currentAddress.isNotEmpty &&
+        last != null &&
+        Geolocator.distanceBetween(
+              last.latitude,
+              last.longitude,
+              position.latitude,
+              position.longitude,
+            ) <
+            100) {
+      return;
+    }
+    var address = await _addressFromDevice(position);
+    if (address.isEmpty) address = await _addressFromGoogle(position);
+    if (address.isEmpty) return;
+    _addressPosition = position;
+    if (mounted) setState(() => _currentAddress = address);
+  }
+
+  /// Native geocoder (can be unavailable on emulators / devices without it).
+  Future<String> _addressFromDevice(Position position) async {
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 5),
-        ),
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
       );
+      if (placemarks.isEmpty) return '';
+      final p = placemarks.first;
+      final parts = <String>[];
+      for (final part in [p.street, p.subLocality, p.locality]) {
+        final v = (part ?? '').trim();
+        if (v.isNotEmpty && !parts.contains(v)) parts.add(v);
+      }
+      return parts.join(', ');
+    } catch (e) {
+      return '';
+    }
+  }
+
+  /// Fallback: Google Geocoding API (same Maps key the navigation screen uses).
+  Future<String> _addressFromGoogle(Position position) async {
+    try {
+      final key = Platform.isIOS
+          ? 'AIzaSyDIt1TB-ouVFAtWQg0yhDzpzyNGiGW_W3A'
+          : 'AIzaSyDNrwlxB3gaotCANgyy2Q7hVi5K3JsqqBk';
+      final response = await http
+          .get(
+            Uri.parse(
+              AppUrls.googleReverseGeocode(
+                lat: position.latitude,
+                lng: position.longitude,
+                apiKey: key,
+              ),
+            ),
+          )
+          .timeout(const Duration(seconds: 8));
+      final body = json.decode(response.body) as Map<String, dynamic>;
+      final results = body['results'];
+      if (results is! List || results.isEmpty) return '';
+      return (results.first['formatted_address'] ?? '').toString();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  /// "Update" button: re-read the GPS position, send it to the backend and
+  /// refresh the address shown in the location card.
+  Future<void> _refreshLocation() async {
+    if (_updatingLocation) return;
+    _updatingLocation = true;
+    try {
+      final access = await LocationPermissionFlow.ensure(context);
+      if (access == LocationAccess.none) {
+        _showLocationMessage(
+          'Please allow location access to update your location.',
+        );
+        return;
+      }
+
+      Position? pos;
+      try {
+        pos = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 8),
+          ),
+        );
+      } catch (_) {
+        pos = await Geolocator.getLastKnownPosition();
+      }
+      if (pos == null) {
+        _showLocationMessage('Unable to get your current location.');
+        return;
+      }
       if (mounted) setState(() => _currentPosition = pos);
-    } catch (_) {
-      final pos = await Geolocator.getLastKnownPosition();
-      if (mounted && pos != null) setState(() => _currentPosition = pos);
+
+      if (_driverPhone.isNotEmpty) {
+        await DriverApiService.updateLocation(
+          driverPhone: _driverPhone,
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+        );
+      }
+      await _resolveAddress(pos, force: true);
+      _showLocationMessage('Location updated');
+    } finally {
+      _updatingLocation = false;
     }
   }
 
@@ -659,6 +706,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           setState(() {
             _currentPosition = pos;
           });
+          _resolveAddress(pos);
           if (_homeMapController != null) {
             try {
               _homeMapController!.animateCamera(
@@ -679,6 +727,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           setState(() {
             _currentPosition = pos;
           });
+          _resolveAddress(pos);
         }
       }
     } else {
@@ -740,52 +789,21 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     });
   }
 
-  Future<void> _acceptRide(int rideId) async {
-    try {
-      try {
-        await DriverApiService.acceptRide(
-          rideId: rideId,
-          driverPhone: _driverPhone,
-        );
-      } catch (apiErr) {
-        debugPrint('[DEBUG ACCEPT] API accept failed (or test ride): $apiErr');
-      }
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('active_ride_id', rideId);
-      await prefs.remove('active_ride_picked_up');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Ride accepted! Starting navigation...'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        context.push(AppRoutes.navigation);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to accept ride: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  void _openNotifications() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            DriverNotificationsScreen(profilePhotoUrl: _profilePhotoUrl),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Position can already be known (e.g. fetched before this screen built), so
+    // make sure the address lookup runs at least once for it.
+    final knownPosition = _currentPosition;
+    if (_isOnline &&
+        knownPosition != null &&
+        _currentAddress.isEmpty &&
+        _addressAttemptedFor != knownPosition) {
+      _addressAttemptedFor = knownPosition;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _resolveAddress(knownPosition);
+      });
+    }
+
     final visibleRides = _rides
         .where(
           (ride) =>
@@ -797,91 +815,93 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     return ValueListenableBuilder<String>(
       valueListenable: AppTranslations.currentLanguage,
       builder: (context, lang, child) {
+        print(
+          '_showRideFlow: $_showRideFlow, _isOnline: $_isOnline, _currentIndex: $_currentIndex, _flowRide: $_flowRide',
+        );
         return PopScope(
           canPop: false,
           child: Scaffold(
             key: _scaffoldKey,
-            backgroundColor: Colors.white,
+            backgroundColor: context.torkk.background,
             bottomNavigationBar: CircularBottomNav(
               currentIndex: _currentIndex,
+              onAiChat: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const DriverLiveChatScreen(),
+                  ),
+                );
+              },
               onItemSelected: (idx) {
-                setState(() => _currentIndex = idx);
+                // Parcel tab (index 2): coming soon for now, so don't switch tabs.
+                if (idx == 2) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const ParcelComingSoonScreen(),
+                    ),
+                  );
+                  return;
+                }
+                setState(() {
+                  _currentIndex = idx;
+                  // All tabs are built once at startup, so rebuild the profile
+                  // tab on every open to run its profile API call again.
+                  if (idx == 4) _profileOpenCount++;
+                });
               },
             ),
             body: Stack(
               children: [
                 IndexedStack(
-              index: _currentIndex,
-              children: [
-                // HOME Tab
-                _isOnline && visibleRides.isNotEmpty
-                    ? OnlineRideSearchView(
-                        visibleRides: visibleRides,
-                        mapPanOffset: _mapPanOffset,
-                        onPanUpdate: (details) {
-                          setState(() {
-                            _mapPanOffset += details.delta;
-                          });
-                        },
-                        onToggleOnline: _confirmAvailability,
-                        onOpenDrawer: () {},
-                        onProfileTap: () => setState(() => _currentIndex = 4),
-                        onAcceptRide: (id) => _acceptRide(id),
-                        onRejectRide: (id) {
-                          if (mounted) {
-                            setState(() {
-                              _rejectedRideIds.add(id);
-                            });
-                          }
-                        },
-                        onSimulateTestRide: _simulateTestRide,
-                        profilePhotoUrl: _profilePhotoUrl,
-                        currentPosition: _currentPosition,
-                        driverGender: _driverGender,
-                        onNotificationsTap: _openNotifications,
-                        onMapCreated: (controller) {
-                          _homeMapController = controller;
-                        },
-                      )
-                    : DriverHomeView(
-                        isOnline: _isOnline,
-                        driverName: _driverName,
-                        locationLabel: _driverCity,
-                        todayEarnings: _todayEarnings,
-                        completedJobs: _completedJobs,
-                        currentPosition: _currentPosition,
-                        onToggle: _confirmAvailability,
-                        onNotifications: _openNotifications,
-                        onHelp: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(builder: (_) => const SosScreen()),
-                          );
-                        },
-                        onEarnings: () => setState(() => _currentIndex = 3),
-                        onJobs: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const DriverHistoryScreen(),
-                            ),
-                          );
-                        },
-                        onUpdateLocation: _refreshLocation,
-                        onMapCreated: (controller) {
-                          _homeMapController = controller;
-                        },
-                      ),
-                OrdersScreen(onBack: () => setState(() => _currentIndex = 0)),
-                ParcelTab(
-                  eligible: _driverProfile['eligible_for_parcels'] == true,
-                  vehicleType: _driverVehicleType,
-                  onLeave: () => setState(() => _currentIndex = 0),
+                  index: _currentIndex,
+                  children: [
+                    // HOME Tab
+                    // The new ride UI (RideFlowScreen) is drawn over this home
+                    // view, so the old OnlineRideSearchView is no longer used.
+                    DriverHomeView(
+                      isOnline: _isOnline,
+                      driverName: _driverName,
+                      locationLabel: _currentAddress.isNotEmpty
+                          ? _currentAddress
+                          : _driverCity,
+                      todayEarnings: _todayEarnings,
+                      completedJobs: _completedJobs,
+                      currentPosition: _currentPosition,
+                      onToggle: _confirmAvailability,
+                      onNotifications: _openNotifications,
+                      onEarnings: () => setState(() => _currentIndex = 3),
+                      onJobs: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DriverHistoryScreen(),
+                          ),
+                        );
+                      },
+                      onUpdateLocation: _refreshLocation,
+                      onMapCreated: (controller) {
+                        _homeMapController = controller;
+                      },
+                    ),
+                    OrdersScreen(
+                      onBack: () => setState(() => _currentIndex = 0),
+                    ),
+                    // Parcel tab disabled for now (coming soon screen opens on tap).
+                    // ParcelTab(
+                    //   eligible: _driverProfile['eligible_for_parcels'] == true,
+                    //   vehicleType: _driverVehicleType,
+                    //   onLeave: () => setState(() => _currentIndex = 0),
+                    // ),
+                    const SizedBox.shrink(),
+                    WalletScreen(
+                      onBack: () => setState(() => _currentIndex = 0),
+                    ),
+                    ProfileScreen(
+                      key: ValueKey('profile-$_profileOpenCount'),
+                      onBack: () => setState(() => _currentIndex = 0),
+                    ),
+                  ],
                 ),
-                WalletScreen(onBack: () => setState(() => _currentIndex = 0)),
-                ProfileScreen(onBack: () => setState(() => _currentIndex = 0)),
-              ],
-            ),
                 if (_loadingRideDetails)
                   const Positioned.fill(
                     child: ColoredBox(
@@ -889,9 +909,18 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       child: RideDetailsLoadingOverlay(),
                     ),
                   ),
-                if (_showRideFlow && _currentIndex == 0)
+                if (_showRideFlow &&
+                    _isOnline &&
+                    _currentIndex == 0 &&
+                    _flowRide != null)
                   Positioned.fill(
-                    child: RideFlowScreen(onClose: () => setState(() => _showRideFlow = false)),
+                    child: RideFlowScreen(
+                      key: ValueKey(_flowRide!['id']),
+                      ride: _flowRide!,
+                      driverPhone: _driverPhone,
+                      driverName: _driverName,
+                      onClose: _closeRideFlow,
+                    ),
                   ),
               ],
             ),
@@ -901,4 +930,3 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     );
   }
 }
-

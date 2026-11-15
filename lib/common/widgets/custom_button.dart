@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
@@ -17,15 +20,20 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: color != null ? ElevatedButton.styleFrom(backgroundColor: color) : null,
+      style: color != null
+          ? ElevatedButton.styleFrom(
+              foregroundColor: onColorFor(color!),
+              backgroundColor: color,
+            )
+          : null,
       onPressed: isLoading ? null : onTap,
       child: isLoading
           ? const SizedBox(
               height: 20,
               width: 20,
-              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Text(text),
+          : TText(text),
     );
   }
 }

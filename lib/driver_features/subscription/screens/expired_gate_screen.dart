@@ -6,9 +6,14 @@ import 'package:rider_app/driver_features/subscription/widgets/subscription_page
 import 'package:rider_app/driver_features/subscription/widgets/subscription_text.dart';
 
 import '../../../common/constants/string_constants.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ExpiredGateScreen extends StatelessWidget {
-  const ExpiredGateScreen({super.key, required this.onBack, required this.onRecharge});
+  const ExpiredGateScreen({
+    super.key,
+    required this.onBack,
+    required this.onRecharge,
+  });
 
   final VoidCallback onBack;
   final VoidCallback onRecharge;
@@ -17,18 +22,24 @@ class ExpiredGateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SubscriptionPage(
       onBack: onBack,
-      bottom: SubscriptionButton(label: AppStrings.rechargeNow, onTap: onRecharge),
+      bottom: SubscriptionButton(
+        label: AppStrings.rechargeNow,
+        onTap: onRecharge,
+      ),
       child: Column(
         children: [
           const Spacer(),
-          const SubscriptionAlertBadge(color: Color(0xFFEF4444), halo: Color(0xFFFEE2E2)),
+          const SubscriptionAlertBadge(
+            color: Color(0xFFEF4444),
+            halo: Color(0xFFFEE2E2),
+          ),
           SizedBox(height: context.h(36)),
-          Text(AppStrings.planExpiredTitle, style: subscriptionTitle()),
+          TText(AppStrings.planExpiredTitle, style: subscriptionTitle()),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             AppStrings.planExpiredSubtitle,
             textAlign: TextAlign.center,
-            style: subscriptionMuted(),
+            style: subscriptionMuted(context),
           ),
           const Spacer(),
         ],

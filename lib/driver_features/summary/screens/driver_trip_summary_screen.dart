@@ -1,9 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
 import 'package:rider_app/service/driver_api_service.dart';
@@ -11,6 +12,9 @@ import 'package:rider_app/driver_features/profile/screens/driver_support_screen.
 import 'package:rider_app/driver_features/chat/screens/driver_customer_chat_screen.dart';
 import '../widgets/trip_summary_slider.dart';
 import '../widgets/report_customer_dialog.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+part 'driver_trip_summary_screen_sections.dart';
 
 class DriverTripSummaryScreen extends StatefulWidget {
   final int rideId;
@@ -80,16 +84,14 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
   Future<void> _checkPaymentStatus() async {
     setState(() => _loading = true);
     try {
-      final response = await http.get(
-        Uri.parse(
-          AppUrls.rideDetail(
-            rideId: widget.rideId,
-            driverPhone: widget.driverPhone,
-          ),
-        ),
+      final response = await DriverApiService.fetchRideDetailResponse(
+        rideId: widget.rideId,
+        driverPhone: widget.driverPhone,
       );
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final body = jsonDecode(response.body);
+        // Detail is wrapped as {status, ride: {...}}.
+        final data = body is Map && body['ride'] is Map ? body['ride'] : body;
         final txnId = data['transaction_id'] ?? '';
         final upi = data['upi_id'] ?? '';
         final savedMethod = (data['payment_method'] ?? '')
@@ -141,7 +143,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to complete ride: $e'),
+            content: TText('Failed to complete ride: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -149,8 +151,6 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
       }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +164,8 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
           ? _upiId
           : '${widget.driverPhone}@ptsbi';
       return Scaffold(
-        backgroundColor: Colors.white,
+        floatingActionButton: const AiChatButton(size: 48),
+        backgroundColor: context.torkk.background,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -181,10 +182,10 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                       onPressed: () {
                         context.go(AppRoutes.home);
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close_rounded,
                         size: 28,
-                        color: Color(0xFF1E293B),
+                        color: context.torkk.textPrimary,
                       ),
                     ),
                     TextButton(
@@ -196,10 +197,10 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                           ),
                         );
                       },
-                      child: const Text(
+                      child: TText(
                         'Need Help?',
                         style: TextStyle(
-                          color: Color(0xFF1E293B),
+                          color: context.torkk.textPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
@@ -210,56 +211,56 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                 const SizedBox(height: 20),
 
                 // Payment & Ask for Cash
-                const Text(
+                TText(
                   'Payment',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F172A),
+                    color: context.torkk.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                TText(
                   'Ask for Cash',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF64748B),
+                    color: context.torkk.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 12),
 
                 // Giant Fare: ₹ 72.98
-                Text(
+                TText(
                   '₹ ${widget.estimatedFare.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF0F172A),
+                    color: context.torkk.textPrimary,
                     letterSpacing: -1,
                   ),
                 ),
                 const SizedBox(height: 14),
 
                 // Divider
-                const Divider(color: Color(0xFFE2E8F0), thickness: 1.2),
+                Divider(color: context.torkk.border, thickness: 1.2),
                 const SizedBox(height: 14),
 
                 // UPI ID & Show Scanner
-                const Text(
+                TText(
                   'UPI ID',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F172A),
+                    color: context.torkk.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                TText(
                   'Show Scanner',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF64748B),
+                    color: context.torkk.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -272,9 +273,9 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                     height: 200,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.torkk.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(color: context.torkk.border),
                     ),
                     child: Image.network(
                       AppUrls.upiQrCode(
@@ -283,22 +284,22 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                         amount: widget.estimatedFare,
                       ),
                       fit: BoxFit.contain,
-                      errorBuilder: (_, error, stackTrace) => const Icon(
+                      errorBuilder: (_, error, stackTrace) => Icon(
                         Icons.qr_code_2_rounded,
                         size: 160,
-                        color: Color(0xFF0F172A),
+                        color: context.torkk.textPrimary,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 12),
                 Center(
-                  child: Text(
+                  child: TText(
                     upiAddress,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0F172A),
+                      color: context.torkk.textPrimary,
                     ),
                   ),
                 ),
@@ -322,12 +323,13 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
     final firstName = widget.customerName.split(' ').first;
 
     return Scaffold(
+      floatingActionButton: const AiChatButton(size: 48),
       body: Stack(
         children: [
           // Map Background
           Positioned.fill(
             child: Container(
-              color: const Color(0xFFF1F5F9),
+              color: context.torkk.surfaceMuted,
               child: Image.asset(
                 'assets/welcome_car_city.png',
                 fit: BoxFit.cover,
@@ -370,7 +372,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                       ),
                     ],
                   ),
-                  child: const Text(
+                  child: const TText(
                     'ONLINE',
                     style: TextStyle(
                       color: Colors.white,
@@ -386,7 +388,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: const Color(0xFF2563EB),
+                      color: context.legible(Color(0xFF2563EB)),
                       width: 2.5,
                     ),
                   ),
@@ -395,12 +397,12 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                         ? Image.network(
                             _driverPhotoUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, error, stackTrace) => const Icon(
+                            errorBuilder: (_, error, stackTrace) => Icon(
                               Icons.person,
-                              color: Color(0xFF334155),
+                              color: context.torkk.textBody,
                             ),
                           )
-                        : const Icon(Icons.person, color: Color(0xFF334155)),
+                        : Icon(Icons.person, color: context.torkk.textBody),
                   ),
                 ),
               ],
@@ -413,8 +415,8 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
             left: 0,
             right: 0,
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: context.torkk.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
                 boxShadow: [
                   BoxShadow(
@@ -447,9 +449,9 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.torkk.surface,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        border: Border.all(color: context.torkk.border),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.04),
@@ -467,7 +469,7 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                               CircleAvatar(
                                 radius: 22,
                                 backgroundColor: const Color(0xFF1D4ED8),
-                                child: Text(
+                                child: TText(
                                   customerInitial,
                                   style: const TextStyle(
                                     color: Colors.white,
@@ -481,23 +483,23 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TText(
                                       widget.customerName,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w800,
-                                        color: Color(0xFF0F172A),
+                                        color: context.torkk.textPrimary,
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    const Row(
+                                    Row(
                                       children: [
-                                        Text(
+                                        TText(
                                           '+4 ',
                                           style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w600,
-                                            color: Color(0xFF64748B),
+                                            color: context.torkk.textSecondary,
                                           ),
                                         ),
                                         Icon(
@@ -531,10 +533,10 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                       color: const Color(0xFFCBD5E1),
                                     ),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.chat_bubble_outline_rounded,
                                     size: 18,
-                                    color: Color(0xFF334155),
+                                    color: context.torkk.textBody,
                                   ),
                                 ),
                               ),
@@ -556,10 +558,10 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                       color: const Color(0xFFCBD5E1),
                                     ),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.phone_outlined,
                                     size: 18,
-                                    color: Color(0xFF334155),
+                                    color: context.torkk.textBody,
                                   ),
                                 ),
                               ),
@@ -600,7 +602,9 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                               vertical: 10,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF0FDF4),
+                              color: context.adaptiveTint(
+                                const Color(0xFFF0FDF4),
+                              ),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: const Color(0xFFBBF7D0),
@@ -612,30 +616,34 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    TText(
                                       'Trip Earnings',
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF166534),
+                                        color: context.legible(
+                                          Color(0xFF166534),
+                                        ),
                                       ),
                                     ),
                                     if (_transactionId.isNotEmpty)
-                                      Text(
+                                      TText(
                                         'Txn: $_transactionId',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 10,
-                                          color: Color(0xFF15803D),
+                                          color: context.legible(
+                                            Color(0xFF15803D),
+                                          ),
                                         ),
                                       ),
                                   ],
                                 ),
-                                Text(
+                                TText(
                                   '₹${(_actualEarnings > 0 ? _actualEarnings : widget.estimatedFare).toStringAsFixed(2)}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w900,
-                                    color: Color(0xFF15803D),
+                                    color: context.legible(Color(0xFF15803D)),
                                   ),
                                 ),
                               ],
@@ -644,20 +652,20 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                           const SizedBox(height: 14),
 
                           // Leave a review for Junaid
-                          Text(
+                          TText(
                             'Leave a Review for $firstName',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF0F172A),
+                              color: context.torkk.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TText(
                             'How was $firstName?',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF64748B),
+                              color: context.torkk.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -675,11 +683,11 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                             child: TextField(
                               controller: _reviewController,
                               maxLines: 2,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'Write feedback...',
+                                hintText: AppTranslations.t('Write feedback...'),
                                 hintStyle: TextStyle(
-                                  color: Color(0xFF64748B),
+                                  color: context.torkk.textSecondary,
                                   fontSize: 13,
                                 ),
                               ),
@@ -727,14 +735,14 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
                         child: ElevatedButton(
                           onPressed: _finishAndGoHome,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1D4ED8),
+                            backgroundColor: context.brandColor,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(27),
                             ),
                             elevation: 0,
                           ),
-                          child: const Text(
+                          child: const TText(
                             'Submit Feedback',
                             style: TextStyle(
                               fontSize: 16,
@@ -754,25 +762,4 @@ class _DriverTripSummaryScreenState extends State<DriverTripSummaryScreen> {
       ),
     );
   }
-
-  void _finishAndGoHome() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('driver_is_online', true);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Trip completed and feedback submitted!'),
-        backgroundColor: Color(0xFF10B981),
-      ),
-    );
-    context.go(AppRoutes.home);
-  }
-
-  Widget _buildPaymentSlider() {
-    return TripSummarySlider(
-      completing: _completing,
-      onAction: _completeTrip,
-    );
-  }
 }
-

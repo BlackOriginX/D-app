@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Dialog shown to the driver when a customer cancels an ongoing ride.
 class RideCancelledDialog extends StatelessWidget {
   final VoidCallback onDismiss;
 
-  const RideCancelledDialog({
-    super.key,
-    required this.onDismiss,
-  });
+  const RideCancelledDialog({super.key, required this.onDismiss});
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
-      ),
-      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      backgroundColor: context.torkk.surface,
       elevation: 16,
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: 28,
-        vertical: 24,
-      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -29,9 +23,7 @@ class RideCancelledDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(
-                  0xFFEF4444,
-                ).withValues(alpha: 0.12),
+                color: const Color(0xFFEF4444).withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -41,21 +33,21 @@ class RideCancelledDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 18),
-            const Text(
+            TText(
               'Ride Cancelled',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF0F172A),
+                color: context.torkk.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            TText(
               'This ride has been cancelled by the customer. Your navigation will be closed.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Color(0xFF64748B),
+                color: context.torkk.textSecondary,
                 height: 1.4,
               ),
             ),
@@ -65,14 +57,10 @@ class RideCancelledDialog extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                  ),
+                  gradient: LinearGradient(colors: [context.brandColor, context.brandColor]),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(
-                        0xFF6366F1,
-                      ).withValues(alpha: 0.35),
+                      color: context.brandColor.withValues(alpha: 0.35),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -88,7 +76,7 @@ class RideCancelledDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text(
+                  child: const TText(
                     'Return to Home',
                     style: TextStyle(
                       color: Colors.white,

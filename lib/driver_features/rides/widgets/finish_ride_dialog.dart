@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Confirmation dialog shown before completing the trip and collecting fare.
 class FinishRideDialog extends StatelessWidget {
@@ -17,11 +19,11 @@ class FinishRideDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      title: const Text(
+      title: const TText(
         'Finish Ride?',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      content: Text(
+      content: TText(
         isGoingToPickup
             ? 'Are you sure you want to finish and complete this trip now?'
             : 'Complete ride and collect payment of ₹$estimatedFare?',
@@ -29,7 +31,15 @@ class FinishRideDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+          child: TText(
+            'Cancel',
+            style: TextStyle(
+              color: context.themed(
+                light: Colors.grey,
+                dark: context.torkk.textSecondary,
+              ),
+            ),
+          ),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -43,7 +53,7 @@ class FinishRideDialog extends StatelessWidget {
             Navigator.pop(context);
             onConfirm();
           },
-          child: const Text('Confirm Finish'),
+          child: const TText('Confirm Finish'),
         ),
       ],
     );

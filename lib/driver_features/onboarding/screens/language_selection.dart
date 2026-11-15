@@ -5,6 +5,8 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class LanguageSelectStep extends StatefulWidget {
   final String selectedLanguage;
@@ -51,14 +53,14 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppStrings.chooseLanguage, style: AppTypography.bold),
+            TText(AppStrings.chooseLanguage, style: AppTypography.bold),
             SizedBox(height: context.h(10.25)),
             SizedBox(
               width: context.w(280),
-              child: Text(
+              child: TText(
                 AppStrings.chooseLanguageSubtitle,
                 style: AppTypography.regular.copyWith(
-                  color: AppColors.secondaryTextColor,
+                  color: context.torkk.textSecondary,
                   fontSize: 14.5,
                 ),
               ),
@@ -67,7 +69,9 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
             _buildLanguageOption(
               badge: 'Aa',
               title: AppStrings.english,
-              selected: widget.selectedLanguage == 'en' || widget.selectedLanguage == 'English',
+              selected:
+                  widget.selectedLanguage == 'en' ||
+                  widget.selectedLanguage == 'English',
               onTap: () => _select('en'),
             ),
             SizedBox(height: context.h(14)),
@@ -75,7 +79,10 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
               badge: 'अ',
               title: AppStrings.hindi,
               subtitle: 'Hindi',
-              selected: widget.selectedLanguage == 'hi' || widget.selectedLanguage == 'Hindi' || widget.selectedLanguage == 'हिंदी',
+              selected:
+                  widget.selectedLanguage == 'hi' ||
+                  widget.selectedLanguage == 'Hindi' ||
+                  widget.selectedLanguage == 'हिंदी',
               onTap: () => _select('hi'),
             ),
             if (_showError) ...[
@@ -84,15 +91,15 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
                 children: [
                   Icon(
                     Icons.error,
-                    color: AppColors.error,
+                    color: context.legible(AppColors.error),
                     size: context.w(20),
                   ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.selectLanguageError,
                       style: AppTypography.regular.copyWith(
-                        color: AppColors.error,
+                        color: context.legible(AppColors.error),
                         fontSize: 13,
                       ),
                     ),
@@ -107,10 +114,10 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
             ),
             SizedBox(height: context.h(14)),
             Center(
-              child: Text(
+              child: TText(
                 AppStrings.languageChangedLater,
                 style: AppTypography.regular.copyWith(
-                  color: AppColors.secondaryTextColor,
+                  color: context.torkk.textSecondary,
                   fontSize: 12,
                 ),
               ),
@@ -136,7 +143,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
           vertical: context.h(14),
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.torkk.surface,
           borderRadius: BorderRadius.circular(context.r(16)),
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.slate200,
@@ -150,10 +157,10 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
               height: context.w(40),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: AppColors.fieldFill,
+                color: context.torkk.surfaceMuted,
                 borderRadius: BorderRadius.circular(context.r(10)),
               ),
-              child: Text(
+              child: TText(
                 badge,
                 style: AppTypography.bold.copyWith(fontSize: 16),
               ),
@@ -163,7 +170,7 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 16,
@@ -171,10 +178,10 @@ class _LanguageSelectStepState extends State<LanguageSelectStep> {
                     ),
                   ),
                   if (subtitle != null)
-                    Text(
+                    TText(
                       subtitle,
                       style: AppTypography.regular.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.torkk.textSecondary,
                         fontSize: 13,
                       ),
                     ),

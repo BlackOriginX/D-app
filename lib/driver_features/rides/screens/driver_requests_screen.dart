@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rider_app/common/widgets/custom_button.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER RIDE REQUESTS SCREEN ---
 class DriverRequestsScreen extends StatelessWidget {
@@ -10,7 +12,7 @@ class DriverRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('New Request')),
+      appBar: AppBar(title: const TText('New Request')),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -19,20 +21,20 @@ class DriverRequestsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
+                color: context.torkk.surfaceMuted,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Column(
                 children: [
-                  Text(
+                  TText(
                     'Rider: Jane Doe',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 12),
-                  Text('Pickup: Central Park, West End'),
-                  Text('Dropoff: 5th Avenue Mall'),
+                  TText('Pickup: Central Park, West End'),
+                  TText('Dropoff: 5th Avenue Mall'),
                   Divider(height: 32),
-                  Text(
+                  TText(
                     'Est. Fare: \$18.50',
                     style: TextStyle(
                       fontSize: 24,
@@ -54,7 +56,7 @@ class DriverRequestsScreen extends StatelessWidget {
                       side: const BorderSide(color: Colors.red),
                       foregroundColor: Colors.red,
                     ),
-                    child: const Text('Decline'),
+                    child: const TText('Decline'),
                   ),
                 ),
                 const SizedBox(width: 16),

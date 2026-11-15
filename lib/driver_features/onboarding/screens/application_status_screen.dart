@@ -6,6 +6,11 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/status_result.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+
+part 'application_status_screen_parts/action_clipboard.dart';
+part 'application_status_screen_parts/clipboard_painter.dart';
 
 enum ApplicationOutcome { underReview, approved, actionRequired, rejected }
 
@@ -70,7 +75,7 @@ class ApplicationStatusScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
+          TText(
             AppStrings.currentStatus,
             style: AppTypography.bold.copyWith(fontSize: 12, height: 1.3),
           ),
@@ -96,7 +101,9 @@ class ApplicationStatusScreen extends StatelessWidget {
       return const _ActionClipboard();
     }
     return Image.asset(
-      outcome == ApplicationOutcome.approved ? AppAssets.verifiedIcon : AppAssets.applicationIcon,
+      outcome == ApplicationOutcome.approved
+          ? AppAssets.verifiedIcon
+          : AppAssets.applicationIcon,
       width: context.w(200),
       fit: BoxFit.contain,
     );
@@ -179,17 +186,17 @@ class ApplicationStatusScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(fontSize: 12, height: 1.3),
                 ),
                 SizedBox(height: context.h(2)),
-                Text(
+                TText(
                   body,
                   style: AppTypography.regular.copyWith(
                     fontSize: 10,
                     height: 1.4,
-                    color: AppColors.secondaryTextColor,
+                    color: context.torkk.textSecondary,
                   ),
                 ),
               ],
@@ -210,7 +217,7 @@ class ApplicationStatusScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        TText(
           AppStrings.reason,
           style: AppTypography.bold.copyWith(fontSize: 14, height: 1.3),
         ),
@@ -237,7 +244,7 @@ class ApplicationStatusScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 14,
@@ -245,12 +252,12 @@ class ApplicationStatusScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(2)),
-                  Text(
+                  TText(
                     body,
                     style: AppTypography.regular.copyWith(
                       fontSize: 13,
                       height: 1.4,
-                      color: AppColors.secondaryTextColor,
+                      color: context.torkk.textSecondary,
                     ),
                   ),
                 ],
@@ -290,9 +297,9 @@ class ApplicationStatusScreen extends StatelessWidget {
         context.h(8),
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.torkk.surface,
         borderRadius: BorderRadius.circular(context.r(12)),
-        border: Border.all(color: AppColors.slate200),
+        border: Border.all(color: context.torkk.border),
       ),
       child: Column(
         children: [
@@ -337,7 +344,7 @@ class ApplicationStatusScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     step.title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 13,
@@ -346,7 +353,7 @@ class ApplicationStatusScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.h(2)),
-                  Text(
+                  TText(
                     step.subtitle,
                     style: AppTypography.regular.copyWith(
                       fontSize: 11,
@@ -421,110 +428,6 @@ class ApplicationStatusScreen extends StatelessWidget {
     final period = time.hour >= 12 ? 'PM' : 'AM';
     return '${time.day} ${months[time.month - 1]} ${time.year}, $hour:$minute $period';
   }
-}
-
-class _ActionClipboard extends StatelessWidget {
-  const _ActionClipboard();
-
-  @override
-  Widget build(BuildContext context) {
-    final size = context.w(84);
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CustomPaint(
-            size: Size(size, size),
-            painter: const _ClipboardPainter(AppColors.error),
-          ),
-          Positioned(
-            right: 0,
-            bottom: context.w(2),
-            child: Container(
-              width: context.w(26),
-              height: context.w(26),
-              decoration: BoxDecoration(
-                color: AppColors.error,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-              child: Icon(
-                Icons.close,
-                color: Colors.white,
-                size: context.w(16),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ClipboardPainter extends CustomPainter {
-  const _ClipboardPainter(this.color);
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final stroke = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.055
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    final body = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        size.width * 0.08,
-        size.height * 0.2,
-        size.width * 0.7,
-        size.height * 0.72,
-      ),
-      Radius.circular(size.width * 0.1),
-    );
-    canvas.drawRRect(body, stroke);
-
-    final clip = RRect.fromRectAndRadius(
-      Rect.fromLTWH(
-        size.width * 0.24,
-        size.height * 0.08,
-        size.width * 0.38,
-        size.height * 0.16,
-      ),
-      Radius.circular(size.width * 0.04),
-    );
-    canvas.drawRRect(clip, stroke);
-
-    final hole = Paint()..color = color;
-    for (var i = 0; i < 3; i++) {
-      canvas.drawCircle(
-        Offset(size.width * (0.32 + i * 0.11), size.height * 0.16),
-        size.width * 0.02,
-        hole,
-      );
-    }
-
-    final line = Paint()
-      ..color = color
-      ..strokeWidth = size.width * 0.05
-      ..strokeCap = StrokeCap.round;
-    for (var i = 0; i < 3; i++) {
-      final y = size.height * (0.4 + i * 0.14);
-      canvas.drawLine(
-        Offset(size.width * 0.22, y),
-        Offset(size.width * (i == 2 ? 0.42 : 0.58), y),
-        line,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _ClipboardPainter oldDelegate) =>
-      oldDelegate.color != color;
 }
 
 enum _Mark { done, current, pending }

@@ -1,284 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import '../constants/colors.dart';
 import 'package:rider_app/service/location_consent_service.dart';
+import 'package:rider_app/service/location_permission_flow.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
-enum OnlineLocationChoice { always, whileInUse, thisTime }
-
-/// Shown every time a driver toggles Online, before the OS location prompt.
-/// Returns the selected choice, or null if the driver stays offline.
-
-Future<OnlineLocationChoice?> showOnlineLocationConsentDialog(
-  BuildContext context,
-) async {
-  return showModalBottomSheet<OnlineLocationChoice>(
-    context: context,
-    isScrollControlled: true,
-    isDismissible: false,
-    enableDrag: false,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (ctx) => const _OnlineLocationConsentSheet(),
-  );
-}
-
-class _OnlineLocationConsentSheet extends StatefulWidget {
-  const _OnlineLocationConsentSheet();
-
-  @override
-  State<_OnlineLocationConsentSheet> createState() =>
-      _OnlineLocationConsentSheetState();
-}
-
-class _OnlineLocationConsentSheetState
-    extends State<_OnlineLocationConsentSheet> {
-  OnlineLocationChoice _selected = OnlineLocationChoice.always;
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.circular(99),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.location_on_rounded,
-                  size: 34,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Location needed to go online',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Choose how TORKK Driver can use your location while you are online. '
-              'You can change this every time you go online.',
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.45,
-                color: Colors.blueGrey.shade600,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _ChoiceOption(
-              title: 'Allow all the time',
-              subtitle:
-                  'Best for drivers — get rides even when the app is in the background',
-              recommended: true,
-              selected: _selected == OnlineLocationChoice.always,
-              onTap: () =>
-                  setState(() => _selected = OnlineLocationChoice.always),
-            ),
-            const SizedBox(height: 8),
-            _ChoiceOption(
-              title: 'While using the app',
-              subtitle: 'Location only when TORKK Driver is open',
-              selected: _selected == OnlineLocationChoice.whileInUse,
-              onTap: () =>
-                  setState(() => _selected = OnlineLocationChoice.whileInUse),
-            ),
-            const SizedBox(height: 8),
-            _ChoiceOption(
-              title: 'Only this time',
-              subtitle: 'Ask again the next time you go online',
-              selected: _selected == OnlineLocationChoice.thisTime,
-              onTap: () =>
-                  setState(() => _selected = OnlineLocationChoice.thisTime),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Next, your phone may show the system location permission so Android '
-                'can confirm your choice.',
-                style: TextStyle(
-                  fontSize: 12.5,
-                  height: 1.4,
-                  color: Colors.blue.shade900,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(_selected),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Center(
-              child: TextButton(
-                onPressed: () => Navigator.of(context).pop(null),
-                child: const Text(
-                  'Cancel (Stay Offline)',
-                  style: TextStyle(
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChoiceOption extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool recommended;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _ChoiceOption({
-    required this.title,
-    required this.subtitle,
-    this.recommended = false,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withValues(alpha: 0.06)
-              : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: selected ? AppColors.primary : Colors.grey.shade200,
-            width: selected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Radio<bool>(
-              value: true,
-              groupValue: selected,
-              onChanged: (_) => onTap(),
-              activeColor: AppColors.primary,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: selected
-                                ? AppColors.primary
-                                : const Color(0xFF0F172A),
-                          ),
-                        ),
-                      ),
-                      if (recommended) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFDCFCE7),
-                            borderRadius: BorderRadius.circular(99),
-                          ),
-                          child: const Text(
-                            'RECOMMENDED',
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF166534),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      height: 1.35,
-                      color: Colors.blueGrey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// In-app online consent + OS location permission based on the driver's choice.
+/// Go Online: prominent disclosure + OS location permission (foreground, then
+/// background as a separate step). Returns true when the driver may go online.
 Future<bool> requestOnlineLocationPermission(BuildContext context) async {
   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
@@ -301,9 +29,16 @@ Future<bool> requestOnlineLocationPermission(BuildContext context) async {
 
   var permission = await Geolocator.checkPermission();
 
-  // If location permission is ALREADY granted, skip all modal sheets and return true immediately!
-  if (permission == LocationPermission.whileInUse ||
-      permission == LocationPermission.always) {
+  // Already allowed "all the time": nothing to ask.
+  if (permission == LocationPermission.always) {
+    await LocationConsentService.accept();
+    return true;
+  }
+
+  // Allowed "while using": offer the background step once (never blocks).
+  if (permission == LocationPermission.whileInUse) {
+    if (!context.mounted) return true;
+    await LocationPermissionFlow.ensure(context, background: true);
     await LocationConsentService.accept();
     return true;
   }
@@ -326,19 +61,17 @@ Future<bool> requestOnlineLocationPermission(BuildContext context) async {
     return false;
   }
 
-  // OS permission is denied: show in-app disclosure modal ONCE before OS prompt
-  final choice = await showOnlineLocationConsentDialog(context);
-  if (choice == null) return false;
+  // Disclosure screen -> foreground permission, then a separate disclosure ->
+  // background permission. Going online only needs foreground; a "Deny" on the
+  // background step still lets the driver go online.
   if (!context.mounted) return false;
+  final access = await LocationPermissionFlow.ensure(context, background: true);
 
-  permission = await Geolocator.requestPermission();
-
-  if (permission == LocationPermission.denied ||
-      permission == LocationPermission.deniedForever) {
+  if (access == LocationAccess.none) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Location permission is required to go online.'),
+          content: TText('Location permission is required to go online.'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -347,8 +80,7 @@ Future<bool> requestOnlineLocationPermission(BuildContext context) async {
   }
 
   await LocationConsentService.accept();
-  return permission == LocationPermission.whileInUse ||
-      permission == LocationPermission.always;
+  return true;
 }
 
 Future<bool?> _showLocationActionDialog({
@@ -366,7 +98,7 @@ Future<bool?> _showLocationActionDialog({
     context: context,
     builder: (ctx) => Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.surface,
       surfaceTintColor: Colors.transparent,
       elevation: 12,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -384,22 +116,22 @@ Future<bool?> _showLocationActionDialog({
               child: Icon(icon, color: iconColor, size: 32),
             ),
             const SizedBox(height: 18),
-            Text(
+            TText(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF0F172A),
+                color: context.torkk.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            TText(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13.5,
-                color: Color(0xFF64748B),
+                color: context.torkk.textSecondary,
                 height: 1.45,
               ),
             ),
@@ -412,12 +144,10 @@ Future<bool?> _showLocationActionDialog({
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                    ),
+                    gradient: LinearGradient(colors: [context.brandColor, context.brandColor]),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF6366F1).withValues(alpha: 0.3),
+                        color: context.brandColor.withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),
@@ -433,7 +163,7 @@ Future<bool?> _showLocationActionDialog({
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: Text(
+                    child: TText(
                       confirmText,
                       style: const TextStyle(
                         color: Colors.white,
@@ -452,16 +182,13 @@ Future<bool?> _showLocationActionDialog({
                   onPressed: () => Navigator.pop(ctx, false),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    side: const BorderSide(
-                      color: Color(0xFFCBD5E1),
-                      width: 1.2,
-                    ),
+                    side: BorderSide(color: context.torkk.border, width: 1.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    foregroundColor: const Color(0xFF475569),
+                    foregroundColor: context.torkk.textBody,
                   ),
-                  child: Text(
+                  child: TText(
                     cancelText,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -488,9 +215,9 @@ Future<bool?> _showLocationActionDialog({
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          foregroundColor: const Color(0xFF475569),
+                          foregroundColor: context.torkk.textBody,
                         ),
-                        child: Text(
+                        child: TText(
                           cancelText,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -509,14 +236,10 @@ Future<bool?> _showLocationActionDialog({
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                          ),
+                          gradient: LinearGradient(colors: [context.brandColor, context.brandColor]),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(
-                                0xFF6366F1,
-                              ).withValues(alpha: 0.3),
+                              color: context.brandColor.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             ),
@@ -532,7 +255,7 @@ Future<bool?> _showLocationActionDialog({
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: Text(
+                          child: TText(
                             confirmText,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

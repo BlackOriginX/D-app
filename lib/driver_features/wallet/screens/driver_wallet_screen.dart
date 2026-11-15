@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER WALLET SCREEN ---
 class DriverWalletScreen extends StatefulWidget {
@@ -65,7 +68,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
               ),
             ),
             SizedBox(width: 12),
-            Text('Generating Earnings Statement...'),
+            TText('Generating Earnings Statement...'),
           ],
         ),
         duration: Duration(seconds: 2),
@@ -75,7 +78,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Earnings Statement downloaded successfully! (PDF)'),
+          content: TText('Earnings Statement downloaded successfully! (PDF)'),
           backgroundColor: Colors.green,
         ),
       );
@@ -86,23 +89,23 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.torkk.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12),
+        border: Border.all(color: context.torkk.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              color: Colors.black54,
+              color: context.torkk.textSecondary,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 6),
-          Text(
+          TText(
             amount,
             style: TextStyle(
               fontSize: 18,
@@ -117,15 +120,18 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color(0xFF4F46E5);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = context.brandColor;
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
-    final textColor = isDark ? Colors.white : Colors.black;
+    final textColor = context.themed(
+      light: Colors.black,
+      dark: context.torkk.textPrimary,
+    );
 
     return Scaffold(
+      floatingActionButton: const AiChatButton(size: 48),
       backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text(
+        title: TText(
           'Wallet & Earnings',
           style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
         ),
@@ -165,7 +171,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          const TText(
                             'TOTAL EARNINGS',
                             style: TextStyle(
                               fontSize: 13,
@@ -175,7 +181,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          Text(
+                          TText(
                             '₹${_totalEarnings.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 38,
@@ -190,12 +196,12 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                     const SizedBox(height: 24),
 
                     // Earnings Breakdown grid (Daily, Weekly, Monthly)
-                    const Text(
+                    TText(
                       'EARNINGS BREAKDOWN',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
-                        color: Colors.black54,
+                        color: context.torkk.textSecondary,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -253,7 +259,7 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                                         color: primaryColor,
                                       ),
                                       const SizedBox(width: 4),
-                                      Text(
+                                      TText(
                                         'STATEMENT',
                                         style: TextStyle(
                                           fontSize: 11,
@@ -264,12 +270,12 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 6),
-                                  const Text(
+                                  TText(
                                     'Download PDF',
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
+                                      color: context.torkk.textPrimary,
                                     ),
                                   ),
                                 ],
@@ -282,12 +288,12 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                     const SizedBox(height: 28),
 
                     // Ride-wise Earnings
-                    const Text(
+                    TText(
                       'RIDE-WISE EARNINGS',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
-                        color: Colors.black54,
+                        color: context.torkk.textSecondary,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -297,15 +303,18 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                             width: double.infinity,
                             padding: const EdgeInsets.all(32),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.torkk.surface,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.black12),
+                              border: Border.all(color: context.torkk.border),
                             ),
-                            child: const Center(
-                              child: Text(
+                            child: Center(
+                              child: TText(
                                 'No completed rides recorded yet.',
                                 style: TextStyle(
-                                  color: Colors.black38,
+                                  color: context.themed(
+                                    light: Colors.black38,
+                                    dark: context.torkk.textSecondary,
+                                  ),
                                   fontSize: 13,
                                 ),
                               ),
@@ -323,9 +332,11 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 12),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: context.torkk.surface,
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: Colors.black12),
+                                  border: Border.all(
+                                    color: context.torkk.border,
+                                  ),
                                 ),
                                 child: ListTile(
                                   contentPadding: const EdgeInsets.symmetric(
@@ -342,18 +353,18 @@ class _DriverWalletScreenState extends State<DriverWalletScreen> {
                                       size: 20,
                                     ),
                                   ),
-                                  title: Text(
+                                  title: TText(
                                     'Ride #${trip['id']} - ${trip['customer_name'] ?? 'Customer'}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
                                     ),
                                   ),
-                                  subtitle: Text(
+                                  subtitle: TText(
                                     date,
                                     style: const TextStyle(fontSize: 11),
                                   ),
-                                  trailing: Text(
+                                  trailing: TText(
                                     '₹${(trip['earnings'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,

@@ -42,6 +42,12 @@ class AppStrings {
   static String get ordersOngoing => AppTranslations.tr('ordersOngoing');
   static String get ordersOnline => AppTranslations.tr('ordersOnline');
   static String get ordersEmpty => AppTranslations.tr('ordersEmpty');
+  static String get ordersEmptyCurrent => AppTranslations.tr('ordersEmptyCurrent');
+  static String get ordersEmptyCompleted => AppTranslations.tr('ordersEmptyCompleted');
+  static String get ordersEmptyCancelled => AppTranslations.tr('ordersEmptyCancelled');
+  static String get ordersEmptyScheduled => AppTranslations.tr('ordersEmptyScheduled');
+  static String get ordersLoadFailed => AppTranslations.tr('ordersLoadFailed');
+  static String get orderDetailsLoadFailed => AppTranslations.tr('orderDetailsLoadFailed');
   static String get ordersRide => AppTranslations.tr('ordersRide');
   static String get ordersParcel => AppTranslations.tr('ordersParcel');
   static String get ordersCoinsHint => AppTranslations.tr('ordersCoinsHint');
@@ -75,7 +81,7 @@ class AppStrings {
   static String get notification => AppTranslations.tr('notification');
   static String get settings => AppTranslations.tr('settings');
   static String get termsConditions => AppTranslations.tr('termsConditions');
-  static String get faq => AppTranslations.tr('faq');
+  static String get sosandemergency => AppTranslations.tr('sosandemergency');
   static String get faqs => AppTranslations.tr('faqs');
   static String get helpSupport => AppTranslations.tr('helpSupport');
   static String get aboutTorkk => AppTranslations.tr('aboutTorkk');
@@ -558,4 +564,68 @@ class AppStrings {
   static String get documentsNeedAttentionHint => AppTranslations.tr('documentsNeedAttentionHint');
   static String get uploadAndResubmit => AppTranslations.tr('uploadAndResubmit');
   static String get makeCorrections => AppTranslations.tr('makeCorrections');
+
+  // ── Ride Payment ──────────────────────────────────────────────
+  static String get payCollectPayment => AppTranslations.tr('payCollectPayment');
+  static String get payTotalAmount => AppTranslations.tr('payTotalAmount');
+  static String get payScanQr => AppTranslations.tr('payScanQr');
+  static String get payScanQrHint => AppTranslations.tr('payScanQrHint');
+  static String get payWaiting => AppTranslations.tr('payWaiting');
+  static String get payCollectCash => AppTranslations.tr('payCollectCash');
+  static String get payPaidPartUpi => AppTranslations.tr('payPaidPartUpi');
+  static String get payPaymentConfirmation => AppTranslations.tr('payPaymentConfirmation');
+  static String get payTotalCollected => AppTranslations.tr('payTotalCollected');
+  static String get payRiderId => AppTranslations.tr('payRiderId');
+  static String get payPaymentId => AppTranslations.tr('payPaymentId');
+  static String get payCashCollection => AppTranslations.tr('payCashCollection');
+  static String get payCashReceived => AppTranslations.tr('payCashReceived');
+  static String get payChangeReturned => AppTranslations.tr('payChangeReturned');
+  static String get payCashOutstanding => AppTranslations.tr('payCashOutstanding');
+  static String get payNetCollection => AppTranslations.tr('payNetCollection');
+  static String get payChangeSettlement => AppTranslations.tr('payChangeSettlement');
+  static String payCreditWallet(String amount) =>
+      AppTranslations.tr('payCreditWallet').replaceAll('{amount}', amount);
+  static String get payCashReturnedNow => AppTranslations.tr('payCashReturnedNow');
+  static String get payUpiMadeNow => AppTranslations.tr('payUpiMadeNow');
+  static String get payChangeWalletNote => AppTranslations.tr('payChangeWalletNote');
+  static String get payRemainingAmount => AppTranslations.tr('payRemainingAmount');
+  static String get payCarryTitle => AppTranslations.tr('payCarryTitle');
+  static String get payCarryHint => AppTranslations.tr('payCarryHint');
+  static String payRiderAgrees(String amount) =>
+      AppTranslations.tr('payRiderAgrees').replaceAll('{amount}', amount);
+  static String get payConfirmCash => AppTranslations.tr('payConfirmCash');
+  static String get payAdjustment => AppTranslations.tr('payAdjustment');
+  static String get payAdjustmentHint => AppTranslations.tr('payAdjustmentHint');
+  static String get payCashCollected => AppTranslations.tr('payCashCollected');
+  static String get payOutstanding => AppTranslations.tr('payOutstanding');
+  static String get payContinue => AppTranslations.tr('payContinue');
+  static String get payConfirmDetails => AppTranslations.tr('payConfirmDetails');
+  static String get payPaymentSuccessful => AppTranslations.tr('payPaymentSuccessful');
+  static String get payPaymentDetails => AppTranslations.tr('payPaymentDetails');
+  static String get payUpiPayment => AppTranslations.tr('payUpiPayment');
+  static String get payCashPayment => AppTranslations.tr('payCashPayment');
+  static String get payPaymentOutstanding => AppTranslations.tr('payPaymentOutstanding');
+  static String get payCarriedNote => AppTranslations.tr('payCarriedNote');
+  static String get payRidePayment => AppTranslations.tr('payRidePayment');
+  static String get payConfirmed => AppTranslations.tr('payConfirmed');
+  static String get payConfirmedHint => AppTranslations.tr('payConfirmedHint');
+  static String get payMethod => AppTranslations.tr('payMethod');
+  static String get payStatus => AppTranslations.tr('payStatus');
+  static String get payRideDistance => AppTranslations.tr('payRideDistance');
+  static String get payBreakdown => AppTranslations.tr('payBreakdown');
+  static String get payAmountPaid => AppTranslations.tr('payAmountPaid');
+  static String get payChangeToRider => AppTranslations.tr('payChangeToRider');
+  static String get payYourEarning => AppTranslations.tr('payYourEarning');
+  static String get payStatusSettled => AppTranslations.tr('payStatusSettled');
+  static String get payStatusChangeSettled => AppTranslations.tr('payStatusChangeSettled');
+  static String get payMethodUpi => AppTranslations.tr('payMethodUpi');
+  static String get payMethodCash => AppTranslations.tr('payMethodCash');
+  static String get payMethodUpiCash => AppTranslations.tr('payMethodUpiCash');
+  static String get payPaid => AppTranslations.tr('payPaid');
+  static String get payUnpaid => AppTranslations.tr('payUnpaid');
+  static String payDue(String amount) =>
+      AppTranslations.tr('payDue').replaceAll('{amount}', amount);
+  static String get payBackBlocked => AppTranslations.tr('payBackBlocked');
+  static String get payQrLoading => AppTranslations.tr('payQrLoading');
+  static String get payQrFailed => AppTranslations.tr('payQrFailed');
 }

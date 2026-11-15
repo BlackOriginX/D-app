@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
-
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
     super.key,
     required this.driverName,
     required this.onNotifications,
-    required this.onHelp,
   });
 
   final String driverName;
   final VoidCallback onNotifications;
-  final VoidCallback onHelp;
 
   String get _greeting {
     final hour = DateTime.now().hour;
@@ -29,7 +27,12 @@ class HomeHeader extends StatelessWidget {
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(context.w(40), context.h(20), context.w(30), 0),
+        padding: EdgeInsets.fromLTRB(
+          context.w(40),
+          context.h(20),
+          context.w(30),
+          0,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,14 +40,17 @@ class HomeHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TText(
                     _greeting,
                     style: AppTypography.regular.copyWith(
-                      fontSize: 12,
-                      color: AppColors.gray500,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: context.isDarkTheme
+                          ? context.torkk.textBody
+                          : const Color(0xFF334155),
                     ),
                   ),
-                  Text(
+                  TText(
                     driverName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -52,12 +58,30 @@ class HomeHeader extends StatelessWidget {
                       fontSize: 16,
                       height: 1.3,
                       letterSpacing: -0.4,
+                      color: context.isDarkTheme
+                          ? context.torkk.textPrimary
+                          : null,
                     ),
                   ),
                 ],
               ),
             ),
-            
+            // Plain bell icon (no glass box); tap opens the notifications.
+            GestureDetector(
+              onTap: onNotifications,
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox(
+                width: context.w(36),
+                height: context.w(36),
+                child: Icon(
+                  Icons.notifications_none_rounded,
+                  size: context.w(26),
+                  color: context.isDarkTheme
+                      ? context.torkk.textPrimary
+                      : const Color(0xFF334155),
+                ),
+              ),
+            ),
           ],
         ),
       ),

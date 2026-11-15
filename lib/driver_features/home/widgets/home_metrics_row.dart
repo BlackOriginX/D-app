@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Reusable row containing Incentives card and Driver Rating card.
 class HomeMetricsRow extends StatelessWidget {
@@ -15,11 +17,19 @@ class HomeMetricsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtextColor = isDark ? Colors.grey.shade400 : const Color(0xFF6B7280);
-    final cardBg = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final borderColor = isDark ? Colors.white12 : const Color(0xFFE5E7EB);
+    final textColor = context.themed(
+      light: const Color(0xFF111827),
+      dark: context.torkk.textPrimary,
+    );
+    final subtextColor = context.themed(
+      light: const Color(0xFF6B7280),
+      dark: context.torkk.textSecondary,
+    );
+    final cardBg = context.torkk.surface;
+    final borderColor = context.themed(
+      light: const Color(0xFFE5E7EB),
+      dark: context.torkk.border,
+    );
 
     return Row(
       children: [
@@ -35,10 +45,7 @@ class HomeMetricsRow extends StatelessWidget {
               decoration: BoxDecoration(
                 color: cardBg,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: borderColor,
-                  width: 1.5,
-                ),
+                border: Border.all(color: borderColor, width: 1.5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -49,7 +56,7 @@ class HomeMetricsRow extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
+                  TText(
                     'Incentives',
                     style: TextStyle(
                       color: subtextColor,
@@ -58,7 +65,7 @@ class HomeMetricsRow extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
+                  TText(
                     '₹ ${incentives.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: textColor,
@@ -83,10 +90,7 @@ class HomeMetricsRow extends StatelessWidget {
             decoration: BoxDecoration(
               color: cardBg,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: borderColor,
-                width: 1.5,
-              ),
+              border: Border.all(color: borderColor, width: 1.5),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.04),
@@ -97,7 +101,7 @@ class HomeMetricsRow extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text(
+                TText(
                   'Rating',
                   style: TextStyle(
                     color: subtextColor,
@@ -109,7 +113,7 @@ class HomeMetricsRow extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    TText(
                       driverRating.toStringAsFixed(1),
                       style: TextStyle(
                         color: textColor,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/asset_constants.dart';
@@ -12,6 +13,14 @@ import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/driver_features/onboarding/kyc_documents_api.dart';
+import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+
+part 'bank_payout_screen_parts/bank_step.dart';
+part 'bank_payout_screen_parts/reason.dart';
+part 'bank_payout_screen_sections.dart';
 
 enum _BankPage { form, verifying, verified, failed }
 
@@ -35,6 +44,33 @@ class _BankPayoutScreenState extends State<BankPayoutScreen> {
   _BankPage _page = _BankPage.form;
   int _bankDone = 0;
   String _submittedAt = '';
+  String _branch = '';
+  String? _error;
+  bool _findingIfsc = false;
+
+  /// Rebuilds so the error messages follow what is typed.
+  void _refresh() => setState(() {});
+
+  ({int min, int max}) get _limits => accountNumberLimits(_ifsc.text);
+
+  /// Shown under the account number field while it is the wrong length.
+  String? get _accountError {
+    final length = _account.text.trim().length;
+    if (length == 0) return null;
+    // Only the longest allowed length is enforced while typing; too short is
+    // flagged below 9 digits (no Indian bank uses fewer).
+    if (length < 9) return 'Account number must be at least 9 digits';
+    return null;
+  }
+
+  /// Shown under the confirm field when the two numbers differ.
+  String? get _confirmError {
+    if (_confirm.text.isEmpty) return null;
+    return _confirm.text == _account.text
+        ? null
+        : 'Account numbers do not match';
+  }
+
   Timer? _bankTimer;
   final _name = TextEditingController();
   final _account = TextEditingController();
@@ -55,31 +91,138 @@ class _BankPayoutScreenState extends State<BankPayoutScreen> {
 
   void _go(_BankPage page) => setState(() => _page = page);
 
-  void _startVerifying() {
-    _bankTimer?.cancel();
+  String _submittedStamp() {
     final now = DateTime.now();
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     final hour = now.hour % 12 == 0 ? 12 : now.hour % 12;
     final minute = now.minute.toString().padLeft(2, '0');
     final period = now.hour >= 12 ? 'PM' : 'AM';
+    return '${now.day} ${months[now.month - 1]} ${now.year}, $hour:$minute $period';
+  }
+
+  /// "Find IFSC": looks the code up and fills the bank name and branch.
+  /// "Find IFSC": sends the account holder name and account number (and the
+  /// IFSC if typed) and fills the IFSC, bank name and branch from the reply.
+  Future<void> _findIfsc() async {
+    final holder = _name.text.trim();
+    final account = _account.text.trim();
+    final typedIfsc = _ifsc.text.trim().toUpperCase();
+    final ready = holder.isNotEmpty && account.isNotEmpty;
+    debugPrint(
+      'ONB_API | FIND IFSC | BUTTON PRESSED | holder="$holder" account="$account" '
+      'ifsc="$typedIfsc" -> ${ready ? 'calling API' : 'API NOT called (holder name or account number is empty)'}',
+    );
+    if (!ready) {
+      _snack('Enter the account holder name and account number first');
+      return;
+    }
+    setState(() => _findingIfsc = true);
+    try {
+      final found = await KycDocumentsApi.findIfsc(
+        ifsc: typedIfsc,
+        accountHolderName: holder,
+        accountNumber: account,
+      );
+      if (!mounted) return;
+      setState(() {
+        if (found.ifsc.isNotEmpty) _ifsc.text = found.ifsc.toUpperCase();
+        if (found.bankName.isNotEmpty) _bank.text = found.bankName;
+        _branch = found.branchName;
+      });
+    } on KycApiException catch (e) {
+      if (mounted) _snack(e.message);
+    } finally {
+      if (mounted) setState(() => _findingIfsc = false);
+    }
+  }
+
+  void _snack(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: TText(message)));
+  }
+
+  /// "Save & Verify": checks the form, then POSTs the bank details.
+  Future<void> _submit() async {
+    final error = _validate();
+    debugPrint(
+      'ONB_API | BANK DETAILS SAVE | SAVE & VERIFY PRESSED | '
+      'holder="${_name.text.trim()}" account="${_account.text.trim()}" '
+      'ifsc="${_ifsc.text.trim()}" bank="${_bank.text.trim()}" branch="$_branch" -> '
+      '${error == null ? 'calling API' : 'API NOT called: $error'}',
+    );
+    if (error != null) {
+      setState(() {
+        _error = error;
+        _page = _BankPage.failed;
+      });
+      return;
+    }
+    _bankTimer?.cancel();
     setState(() {
-      _submittedAt = '${now.day} ${months[now.month - 1]} ${now.year}, $hour:$minute $period';
+      _error = null;
+      _submittedAt = _submittedStamp();
       _bankDone = 1;
       _page = _BankPage.verifying;
     });
+    // Moves the progress rows along while the server call runs (stops at 2).
     _bankTimer = Timer.periodic(const Duration(milliseconds: 900), (timer) {
-      if (!mounted) {
+      if (!mounted || _bankDone >= 2) {
         timer.cancel();
         return;
       }
-      setState(() {
-        if (_bankDone < 3) _bankDone += 1;
-        if (_bankDone >= 3) timer.cancel();
-      });
+      setState(() => _bankDone += 1);
     });
+    try {
+      final ifsc = _ifsc.text.trim().toUpperCase();
+      await DriverApiService.saveBankDetails(
+        accountHolderName: _name.text.trim(),
+        accountNumber: _account.text.trim(),
+        ifscCode: ifsc,
+        bankName: _bank.text.trim(),
+        branchName: _branch.isEmpty ? _bank.text.trim() : _branch,
+      );
+      if (!mounted) return;
+      _bankTimer?.cancel();
+      setState(() => _bankDone = 3);
+    } catch (e) {
+      if (!mounted) return;
+      debugPrint('ONB_API | BANK DETAILS SAVE | ERROR | $e');
+      _bankTimer?.cancel();
+      setState(() {
+        _error = e.toString().replaceFirst('Exception: ', '');
+        _page = _BankPage.failed;
+      });
+    }
   }
 
-  bool get _matches => _account.text.isNotEmpty && _account.text == _confirm.text && _ifsc.text.isNotEmpty;
+  String? _validate() {
+    if (_name.text.trim().isEmpty) return 'Enter the account holder name.';
+    if (_account.text.trim().isEmpty) return 'Enter the account number.';
+    final accountError = _accountError;
+    if (accountError != null) return '$accountError.';
+    if (_account.text.trim() != _confirm.text.trim()) {
+      return 'Account numbers do not match.';
+    }
+    if (_ifsc.text.trim().length != 11) {
+      return 'Enter a valid 11 character IFSC code.';
+    }
+    if (_bank.text.trim().isEmpty) return 'Enter the bank name.';
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,295 +233,31 @@ class _BankPayoutScreenState extends State<BankPayoutScreen> {
       _BankPage.failed => _failed(context),
     };
   }
+}
 
-  Widget _form(BuildContext context) {
-    return OnboardingStepScaffold(
-      title: AppStrings.bankPayoutDetails,
-      onBack: widget.onBack,
-      onHelp: widget.onHelp,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(context.w(24), context.h(8), context.w(24), context.h(16)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: context.w(12), vertical: context.h(10)),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0FDF4),
-                borderRadius: BorderRadius.circular(context.r(12)),
-                border: Border.all(color: const Color(0xFFBBF7D0)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.lock_outline, color: AppColors.green600, size: context.w(16)),
-                  SizedBox(width: context.w(8)),
-                  Text(
-                    AppStrings.informationSecure,
-                    style: AppTypography.regular.copyWith(fontSize: 12, color: AppColors.green600),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: context.h(16)),
-            KycRequiredLabel(AppStrings.accountHolderName),
-            SizedBox(height: context.h(8)),
-            AppTextField(controller: _name),
-            SizedBox(height: context.h(14)),
-            KycRequiredLabel(AppStrings.accountNumber),
-            SizedBox(height: context.h(8)),
-            AppTextField(
-              controller: _account,
-              keyboardType: TextInputType.number,
-              obscureText: true,
-            ),
-            SizedBox(height: context.h(14)),
-            KycRequiredLabel(AppStrings.confirmAccountNumber),
-            SizedBox(height: context.h(8)),
-            AppTextField(
-              controller: _confirm,
-              keyboardType: TextInputType.number,
-              obscureText: true,
-            ),
-            SizedBox(height: context.h(14)),
-            Row(
-              children: [
-                Expanded(child: KycRequiredLabel(AppStrings.ifscCode)),
-                Text(AppStrings.findIfsc, style: AppTypography.bold.copyWith(fontSize: 12, color: AppColors.green600)),
-              ],
-            ),
-            SizedBox(height: context.h(8)),
-            AppTextField(controller: _ifsc),
-            SizedBox(height: context.h(14)),
-            KycRequiredLabel(AppStrings.bankName),
-            SizedBox(height: context.h(8)),
-            AppTextField(controller: _bank),
-            SizedBox(height: context.h(14)),
-            KycPendingBanner(title: AppStrings.verificationPending),
-            SizedBox(height: context.h(24)),
-            UnifiedButton(
-              label: AppStrings.saveAndVerify,
-              onPressed: () => _matches ? _startVerifying() : _go(_BankPage.failed),
-            ),
-          ],
-        ),
-      ),
-    );
+/// Account number length limits (min, max) for the bank in [ifsc]. The first 4
+/// letters of an IFSC are the bank code. Banks not listed use 9 to 18 digits,
+/// which covers every bank in India.
+({int min, int max}) accountNumberLimits(String ifsc) {
+  const byBank = <String, ({int min, int max})>{
+    'HDFC': (min: 12, max: 14),
+    'ICIC': (min: 12, max: 12),
+    'SBIN': (min: 9, max: 17),
+    'UTIB': (min: 15, max: 15),
+    'KKBK': (min: 10, max: 14),
+    'PUNB': (min: 14, max: 16),
+    'BARB': (min: 14, max: 14),
+    'CNRB': (min: 13, max: 13),
+    'UBIN': (min: 15, max: 15),
+    'YESB': (min: 9, max: 15),
+    'IDIB': (min: 9, max: 15),
+  };
+  final code = ifsc.trim().toUpperCase();
+  if (code.length >= 4) {
+    final hit = byBank[code.substring(0, 4)];
+    if (hit != null) return hit;
   }
-
-  Widget _verifying(BuildContext context) {
-    return OnboardingStepScaffold(
-      title: AppStrings.bankPayoutDetails,
-      onBack: () => _go(_BankPage.form),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(context.w(24), context.h(24), context.w(24), context.h(16)),
-        child: Column(
-          children: [
-            SizedBox(
-              width: context.w(84),
-              height: context.w(84),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: context.w(36),
-                    backgroundColor: const Color(0xFFF5F3FF),
-                    child: Icon(Icons.account_balance, color: AppColors.primary, size: context.w(32)),
-                  ),
-                  if (_bankDone < 3)
-                    Positioned(
-                      right: context.w(6),
-                      bottom: context.w(6),
-                      child: SizedBox(
-                        width: context.w(18),
-                        height: context.w(18),
-                        child: const CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            SizedBox(height: context.h(16)),
-            Text(AppStrings.verifyingBank, style: AppTypography.bold.copyWith(fontSize: 18, height: 1.2)),
-            SizedBox(height: context.h(6)),
-            Text(
-              AppStrings.verifyingBankSubtitle,
-              textAlign: TextAlign.center,
-              style: AppTypography.regular.copyWith(fontSize: 13, color: AppColors.secondaryTextColor),
-            ),
-            SizedBox(height: context.h(24)),
-            _BankStep(
-              label: AppStrings.bankDetailsSubmitted,
-              note: _submittedAt,
-              done: _bankDone >= 1,
-              active: false,
-            ),
-            _BankStep(
-              label: AppStrings.verifyingAccountWithBank,
-              note: _bankDone == 1 ? AppStrings.bankVerifyWait : null,
-              done: _bankDone >= 2,
-              active: _bankDone == 1,
-            ),
-            _BankStep(
-              label: AppStrings.confirmingAccountDetails,
-              note: _bankDone == 2 ? AppStrings.bankVerifyWait : null,
-              done: _bankDone >= 3,
-              active: _bankDone == 2,
-              last: true,
-            ),
-            const Spacer(),
-            OnboardingInfoBanner(message: AppStrings.bankEncryptedHint),
-            SizedBox(height: context.h(16)),
-            UnifiedButton(
-              label: AppStrings.continueAction,
-              enabled: _bankDone >= 3,
-              onPressed: () {
-                _bankTimer?.cancel();
-                _go(_BankPage.verified);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _verified(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(context.w(24), context.h(36), context.w(24), context.h(16)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Image.asset(
-                  AppAssets.verifiedIcon,
-                  width: context.w(96),
-                  height: context.w(96),
-                ),
-              ),
-              SizedBox(height: context.h(12)),
-              Center(
-                child: Text(AppStrings.bankDetailsVerified, style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2)),
-              ),
-              SizedBox(height: context.h(8)),
-              Text(
-                AppStrings.bankDetailsVerifiedSubtitle,
-                textAlign: TextAlign.center,
-                style: AppTypography.regular.copyWith(fontSize: 14, color: AppColors.secondaryTextColor),
-              ),
-              SizedBox(height: context.h(20)),
-              Text(AppStrings.bankAccountDetails, style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2)),
-              SizedBox(height: context.h(8)),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(context.r(12)),
-                  border: Border.all(color: AppColors.fieldBorder),
-                ),
-                child: Column(
-                  children: [
-                    KycDetailRow(icon: Icons.person_outline, label: AppStrings.accountHolderName, value: _name.text),
-                    KycDetailRow(
-                      icon: Icons.credit_card,
-                      label: AppStrings.accountNumber,
-                      value: '*' * _account.text.length,
-                    ),
-                    KycDetailRow(icon: Icons.account_balance_outlined, label: AppStrings.ifscCode, value: _ifsc.text),
-                    KycDetailRow(icon: Icons.account_balance, label: AppStrings.bankName, value: _bank.text),
-                  ],
-                ),
-              ),
-              SizedBox(height: context.h(14)),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(context.w(12)),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0FDF4),
-                  borderRadius: BorderRadius.circular(context.r(12)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.check_circle, color: AppColors.green600, size: context.w(16)),
-                    SizedBox(width: context.w(8)),
-                    Expanded(
-                      child: Text(
-                        AppStrings.bankReadyHint,
-                        style: AppTypography.regular.copyWith(fontSize: 12, color: AppColors.green600),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              UnifiedButton(
-                label: AppStrings.continueAction,
-                onPressed: () => widget.onFinished(
-                  BankPayoutDetails(
-                    holderName: _name.text.trim(),
-                    accountNumber: _account.text.trim(),
-                    ifsc: _ifsc.text.trim(),
-                    bankName: _bank.text.trim(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _failed(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(context.w(24), context.h(48), context.w(24), context.h(16)),
-          child: Column(
-            children: [
-              Image.asset(
-                AppAssets.failedIcon,
-                width: context.w(96),
-                height: context.w(96),
-              ),
-              SizedBox(height: context.h(16)),
-              Text(AppStrings.bankVerificationFailed, style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2)),
-              SizedBox(height: context.h(8)),
-              Text(
-                AppStrings.bankVerificationFailedSubtitle,
-                textAlign: TextAlign.center,
-                style: AppTypography.regular.copyWith(fontSize: 14, color: AppColors.secondaryTextColor),
-              ),
-              SizedBox(height: context.h(20)),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(context.w(14)),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFEF2F2),
-                  borderRadius: BorderRadius.circular(context.r(12)),
-                  border: Border.all(color: const Color(0xFFFECACA)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(AppStrings.reason, style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2)),
-                    SizedBox(height: context.h(8)),
-                    _Reason(AppStrings.incorrectAccountOrIfsc),
-                    SizedBox(height: context.h(6)),
-                    _Reason(AppStrings.accountInactive),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              UnifiedButton(label: AppStrings.retryVerification, onPressed: () => _go(_BankPage.form)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  return (min: 9, max: 18);
 }
 
 class BankPayoutDetails {
@@ -393,84 +272,4 @@ class BankPayoutDetails {
   final String accountNumber;
   final String ifsc;
   final String bankName;
-}
-
-class _BankStep extends StatelessWidget {
-  const _BankStep({
-    required this.label,
-    required this.done,
-    required this.active,
-    this.note,
-    this.last = false,
-  });
-
-  final String label;
-  final String? note;
-  final bool done;
-  final bool active;
-  final bool last;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = done ? AppColors.green600 : (active ? AppColors.primary : AppColors.slate300);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            Icon(
-              done ? Icons.check_circle : (active ? Icons.circle : Icons.circle_outlined),
-              color: color,
-              size: context.w(18),
-            ),
-            if (!last)
-              Container(width: 2, height: context.h(36), color: done ? AppColors.green600 : AppColors.slate200),
-          ],
-        ),
-        SizedBox(width: context.w(10)),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(top: context.h(1)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: AppTypography.regular.copyWith(
-                    fontSize: 13,
-                    fontWeight: active || done ? FontWeight.w700 : FontWeight.w400,
-                    color: done || active ? AppColors.textPrimary : AppColors.secondaryTextColor,
-                  ),
-                ),
-                if (note != null)
-                  Text(
-                    note!,
-                    style: AppTypography.regular.copyWith(fontSize: 12, color: AppColors.secondaryTextColor),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Reason extends StatelessWidget {
-  const _Reason(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(Icons.cancel, color: AppColors.error, size: context.w(16)),
-        SizedBox(width: context.w(8)),
-        Expanded(
-          child: Text(text, style: AppTypography.regular.copyWith(fontSize: 13, color: AppColors.error)),
-        ),
-      ],
-    );
-  }
 }

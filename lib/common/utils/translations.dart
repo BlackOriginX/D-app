@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:rider_app/common/utils/translations_hi_text.dart';
+
 class AppTranslations {
   // Global value notifier for language state
   static final ValueNotifier<String> currentLanguage = ValueNotifier<String>(
@@ -21,7 +23,93 @@ class AppTranslations {
 
   static const Map<String, Map<String, String>> _translations = {
     'en': {
+
+      // --- Ride payment flow ---
+      'payQrLoading': 'Generating QR...',
+      'payQrFailed': 'Could not create the QR',
+      'payCollectPayment': 'Collect Payment',
+      'payTotalAmount': 'Total Amount',
+      'payScanQr': 'Scan QR Code to Pay',
+      'payScanQrHint': 'Customer can scan using any supported UPI app',
+      'payWaiting': 'Waiting for payment confirmation...',
+      'payCollectCash': 'Collect cash',
+      'payPaidPartUpi': 'Paid part by UPI',
+      'payPaymentConfirmation': 'Payment Confirmation',
+      'payTotalCollected': 'Total Amount Collected',
+      'payRiderId': 'Rider ID',
+      'payPaymentId': 'Payment ID',
+      'payCashCollection': 'Cash Collection',
+      'payCashReceived': 'Cash Received',
+      'payChangeReturned': 'Change Returned',
+      'payCashOutstanding': 'Cash outstanding',
+      'payNetCollection': 'Net collection',
+      'payChangeSettlement': 'Change Settlement',
+      'payCreditWallet': 'Credit {amount} to rider wallet. (Rider Agrees)',
+      'payCashReturnedNow': 'Cash returned, immediately.',
+      'payUpiMadeNow': 'Made UPI payment, immediately.',
+      'payChangeWalletNote': 'Rider must agree to receive change in their wallet',
+      'payRemainingAmount': 'Remaining Amount',
+      'payCarryTitle': 'Carry remaining amount to customer wallet',
+      'payCarryHint': 'Rider must explicitly approve this outstanding balance.',
+      'payRiderAgrees': 'Rider agrees to {amount} wallet outstanding balance',
+      'payConfirmCash': 'Confirm Cash Collections',
+      'payAdjustment': 'Payment Adjustment',
+      'payAdjustmentHint': 'Choose how the remaining amount was handled.',
+      'payCashCollected': 'Cash Collected',
+      'payOutstanding': 'Outstanding',
+      'payContinue': 'Continue',
+      'payConfirmDetails': 'Confirm Payment Details',
+      'payPaymentSuccessful': 'Payment Successful',
+      'payPaymentDetails': 'Payment Details',
+      'payUpiPayment': 'UPI Payment',
+      'payCashPayment': 'Cash Payment',
+      'payPaymentOutstanding': 'Payment outstanding',
+      'payCarriedNote': 'Carried to customer wallet as outstanding balance.',
+      'payRidePayment': 'Ride Payment',
+      'payConfirmed': 'Payment Confirm !',
+      'payConfirmedHint': 'You have successfully collected the payment.',
+      'payMethod': 'Payment Method',
+      'payStatus': 'Payment Status',
+      'payRideDistance': 'Ride Distance',
+      'payBreakdown': 'Payment Breakdown',
+      'payAmountPaid': 'Amount Paid',
+      'payChangeToRider': 'Change Return to Rider',
+      'payYourEarning': 'Your Earning',
+      'payStatusSettled': 'Settled',
+      'payStatusChangeSettled': 'Change settled',
+      'payMethodUpi': 'UPI',
+      'payMethodCash': 'Cash',
+      'payMethodUpiCash': 'UPI + Cash',
+      'payPaid': 'Paid',
+      'payUnpaid': 'Unpaid',
+      'payDue': '{amount} due',
+      'payBackBlocked': 'Collect the payment to finish the ride',
       'app_name': 'Torkk Driver',
+      // --- Location prominent disclosure (Google Play) ---
+      'locAccept': 'Accept',
+      'locDeny': 'Deny',
+      'locDiscTitleFg': 'Allow Torkk Driver to use your location?',
+      'locDiscTitleBg': 'Allow location access in the background?',
+      'locDiscIntroFg':
+          'Please read this before continuing. Torkk Driver needs your permission to collect your location.',
+      'locDiscIntroBg':
+          'To keep you visible for ride requests while you are online, Torkk Driver needs to collect your location even when the app is closed or not in use.',
+      'locDiscCollectTitle': 'What we collect',
+      'locDiscCollectFg':
+          'Your precise device location (GPS) while the app is open on your screen.',
+      'locDiscCollectBg':
+          'Your precise device location (GPS) in the background, including when the app is closed or not in use, for as long as you are online or on an active trip.',
+      'locDiscWhyTitle': 'Why we collect it',
+      'locDiscWhyFg':
+          'To check that Torkk is available in your area, show your position on the map, match you with nearby ride requests, guide navigation during trips and send your location in an SOS alert.',
+      'locDiscWhyBg':
+          'To keep matching you with nearby ride requests, update your live position for the passenger and track trip progress while the app is in the background.',
+      'locDiscShareTitle': 'Who it is shared with',
+      'locDiscShareBody':
+          'Your location is sent to Torkk servers and shown to the passenger on your trip and to our support team. Map and address lookups use Google Maps services. We do not sell your location to advertisers.',
+      'locDiscControlTitle': 'You stay in control',
+      'locDiscControlBody':
+          'You can go offline or change location access any time in your phone Settings. If you tap Deny, the app stays usable, but you will not be able to go online and receive rides.',
       'save': 'Save',
       'cancel': 'Cancel',
       'confirm': 'Confirm',
@@ -114,7 +202,13 @@ class AppTranslations {
       'ordersScheduled': 'Scheduled',
       'ordersOngoing': 'Ongoing',
       'ordersOnline': 'Online',
-      'ordersEmpty': 'No orders in this tab',
+      'ordersEmpty': 'No orders Yet',
+      'ordersEmptyCurrent': 'Orders you accept will show up here while they are in progress.',
+      'ordersEmptyCompleted': 'Your finished trips and deliveries will appear here.',
+      'ordersEmptyCancelled': 'Good news! You have no cancelled orders.',
+      'ordersEmptyScheduled': 'Upcoming scheduled rides and parcels will be listed here.',
+      'ordersLoadFailed': 'Could not load orders',
+      'orderDetailsLoadFailed': 'Could not load order details',
       'ordersRide': 'Ride',
       'ordersParcel': 'Parcel',
       'ordersCoinsHint': 'Complete more orders to get more benefits',
@@ -142,11 +236,11 @@ class AppTranslations {
       'documentKycStatus': 'Document / KYC Status',
       'documentKyc': 'Document/KYC',
       'bankInformation': 'Bank Information',
-      'subscriptionRecharge': 'Subscription/recharge',
+      'subscriptionRecharge': 'Subscription',
       'torkkCoins': 'Torkk Coins',
       'notification': 'Notification',
       'termsConditions': 'Terms & Conditions',
-      'faq': 'FAQ',
+      'sosandemergency': 'Sos & Emergency',
       'faqs': 'FAQs',
       'helpSupport': 'Help & Support',
       'aboutTorkk': 'About Torkk',
@@ -459,7 +553,7 @@ class AppTranslations {
       'countryCodeIndia': '+91',
       'phoneHint': '00000 00000',
       'agreeWith': 'I agree with ',
-      'privacyPolicy': 'Privacy Policy',
+      'privacyPolicy': 'Privacy Security',
       'termsAndConditions': 'Terms & Conditions',
       'driverAgreement': 'Driver Agreement',
 
@@ -573,7 +667,7 @@ class AppTranslations {
       'transactionHistory': 'Transaction History',
       'payouts': 'Payouts',
       'BankAccount': 'Bank\nAccount',
-      'rechargeSubscription': 'Recharge /\nSubscription',
+      'rechargeSubscription': 'Subscription',
       'earnings': 'Earnings',
       'bankAccount': 'Bank Account',
       'howToEarnCoins': 'How to Earn Coins',
@@ -603,7 +697,100 @@ class AppTranslations {
       'drop': 'Drop',
     },
     'hi': {
+      'sosandemergency': 'SOS और आपातकाल',
+      'availableCash': 'उपलब्ध नकद',
+      'todaysCompletedJobs': 'आज की पूरी हुई जॉब',
+      'activePlan': 'चालू प्लान',
+      'standardDriverPlan': 'स्टैंडर्ड ड्राइवर प्लान',
+      'perMonth': '₹299 प्रति माह',
+      'validTill24Aug': '24 अगस्त तक मान्य',
+
+      // --- Ride payment flow ---
+      'payQrLoading': 'QR बन रहा है...',
+      'payQrFailed': 'QR नहीं बन सका',
+      'payCollectPayment': 'पेमेंट लें',
+      'payTotalAmount': 'कुल राशि',
+      'payScanQr': 'पेमेंट के लिए QR कोड स्कैन करें',
+      'payScanQrHint': 'ग्राहक किसी भी UPI ऐप से स्कैन कर सकता है',
+      'payWaiting': 'पेमेंट कन्फर्मेशन का इंतज़ार...',
+      'payCollectCash': 'कैश लें',
+      'payPaidPartUpi': 'आंशिक UPI पेमेंट',
+      'payPaymentConfirmation': 'पेमेंट कन्फर्मेशन',
+      'payTotalCollected': 'कुल प्राप्त राशि',
+      'payRiderId': 'राइडर ID',
+      'payPaymentId': 'पेमेंट ID',
+      'payCashCollection': 'कैश कलेक्शन',
+      'payCashReceived': 'प्राप्त कैश',
+      'payChangeReturned': 'लौटाई गई चिल्लर',
+      'payCashOutstanding': 'बकाया कैश',
+      'payNetCollection': 'कुल कलेक्शन',
+      'payChangeSettlement': 'चिल्लर सेटलमेंट',
+      'payCreditWallet': '{amount} राइडर के वॉलेट में जमा करें। (राइडर सहमत)',
+      'payCashReturnedNow': 'कैश तुरंत लौटा दिया।',
+      'payUpiMadeNow': 'UPI पेमेंट तुरंत किया।',
+      'payChangeWalletNote': 'चिल्लर वॉलेट में लेने के लिए राइडर की सहमति ज़रूरी है',
+      'payRemainingAmount': 'बाकी राशि',
+      'payCarryTitle': 'बाकी राशि ग्राहक के वॉलेट में ले जाएँ',
+      'payCarryHint': 'राइडर को इस बकाया राशि की स्पष्ट मंज़ूरी देनी होगी।',
+      'payRiderAgrees': 'राइडर {amount} वॉलेट बकाया के लिए सहमत है',
+      'payConfirmCash': 'कैश कलेक्शन कन्फर्म करें',
+      'payAdjustment': 'पेमेंट एडजस्टमेंट',
+      'payAdjustmentHint': 'चुनें कि बाकी राशि कैसे ली गई।',
+      'payCashCollected': 'कैश लिया गया',
+      'payOutstanding': 'बकाया',
+      'payContinue': 'आगे बढ़ें',
+      'payConfirmDetails': 'पेमेंट डिटेल्स कन्फर्म करें',
+      'payPaymentSuccessful': 'पेमेंट सफल',
+      'payPaymentDetails': 'पेमेंट डिटेल्स',
+      'payUpiPayment': 'UPI पेमेंट',
+      'payCashPayment': 'कैश पेमेंट',
+      'payPaymentOutstanding': 'पेमेंट बकाया',
+      'payCarriedNote': 'बकाया राशि के रूप में ग्राहक के वॉलेट में ले जाई गई।',
+      'payRidePayment': 'राइड पेमेंट',
+      'payConfirmed': 'पेमेंट कन्फर्म !',
+      'payConfirmedHint': 'आपने पेमेंट सफलतापूर्वक ले लिया है।',
+      'payMethod': 'पेमेंट का तरीका',
+      'payStatus': 'पेमेंट स्थिति',
+      'payRideDistance': 'राइड की दूरी',
+      'payBreakdown': 'पेमेंट ब्रेकडाउन',
+      'payAmountPaid': 'भुगतान की गई राशि',
+      'payChangeToRider': 'राइडर को लौटाई चिल्लर',
+      'payYourEarning': 'आपकी कमाई',
+      'payStatusSettled': 'सेटल',
+      'payStatusChangeSettled': 'चिल्लर सेटल',
+      'payMethodUpi': 'UPI',
+      'payMethodCash': 'कैश',
+      'payMethodUpiCash': 'UPI + कैश',
+      'payPaid': 'भुगतान',
+      'payUnpaid': 'अवैतनिक',
+      'payDue': '{amount} बकाया',
+      'payBackBlocked': 'राइड पूरी करने के लिए पेमेंट लें',
       'app_name': 'टॉर्क ड्राइवर',
+      // --- Location prominent disclosure (Google Play) ---
+      'locAccept': 'स्वीकार करें',
+      'locDeny': 'अस्वीकार करें',
+      'locDiscTitleFg': 'क्या टॉर्क ड्राइवर को आपकी लोकेशन इस्तेमाल करने दें?',
+      'locDiscTitleBg': 'क्या बैकग्राउंड में लोकेशन की अनुमति दें?',
+      'locDiscIntroFg':
+          'आगे बढ़ने से पहले इसे पढ़ें। टॉर्क ड्राइवर को आपकी लोकेशन इकट्ठा करने के लिए आपकी अनुमति चाहिए।',
+      'locDiscIntroBg':
+          'ऑनलाइन रहते हुए आपको राइड रिक्वेस्ट मिलती रहें, इसके लिए टॉर्क ड्राइवर को ऐप बंद होने या इस्तेमाल में न होने पर भी आपकी लोकेशन इकट्ठा करनी होगी।',
+      'locDiscCollectTitle': 'हम क्या इकट्ठा करते हैं',
+      'locDiscCollectFg':
+          'ऐप आपकी स्क्रीन पर खुला होने के दौरान आपके फ़ोन की सटीक लोकेशन (GPS)।',
+      'locDiscCollectBg':
+          'बैकग्राउंड में आपके फ़ोन की सटीक लोकेशन (GPS), जिसमें ऐप बंद होने या इस्तेमाल में न होने का समय भी शामिल है, जब तक आप ऑनलाइन हैं या ट्रिप चल रही है।',
+      'locDiscWhyTitle': 'हम इसे क्यों इकट्ठा करते हैं',
+      'locDiscWhyFg':
+          'यह जाँचने के लिए कि आपके इलाके में टॉर्क उपलब्ध है, नक्शे पर आपकी स्थिति दिखाने, पास की राइड रिक्वेस्ट से मिलाने, ट्रिप में नेविगेशन देने और SOS अलर्ट में आपकी लोकेशन भेजने के लिए।',
+      'locDiscWhyBg':
+          'पास की राइड रिक्वेस्ट से मिलाते रहने, यात्री के लिए आपकी लाइव स्थिति अपडेट करने और ऐप बैकग्राउंड में होने पर भी ट्रिप की प्रगति ट्रैक करने के लिए।',
+      'locDiscShareTitle': 'यह किसके साथ साझा की जाती है',
+      'locDiscShareBody':
+          'आपकी लोकेशन टॉर्क के सर्वर पर भेजी जाती है और आपकी ट्रिप के यात्री तथा हमारी सपोर्ट टीम को दिखती है। नक्शे और पते की खोज में Google Maps सेवाएँ इस्तेमाल होती हैं। हम आपकी लोकेशन विज्ञापनदाताओं को नहीं बेचते।',
+      'locDiscControlTitle': 'नियंत्रण आपके हाथ में है',
+      'locDiscControlBody':
+          'आप कभी भी ऑफ़लाइन हो सकते हैं या फ़ोन की सेटिंग में लोकेशन की अनुमति बदल सकते हैं। "अस्वीकार करें" दबाने पर भी ऐप चलता रहेगा, लेकिन आप ऑनलाइन होकर राइड नहीं ले पाएँगे।',
       'save': 'सहेजें',
       'cancel': 'रद्द करें',
       'confirm': 'पुष्टि करें',
@@ -697,6 +884,12 @@ class AppTranslations {
       'ordersOngoing': 'जारी',
       'ordersOnline': 'ऑनलाइन',
       'ordersEmpty': 'इस टैब में कोई ऑर्डर नहीं है',
+      'ordersEmptyCurrent': 'आपके द्वारा स्वीकार किए गए ऑर्डर चलने के दौरान यहाँ दिखेंगे।',
+      'ordersEmptyCompleted': 'आपकी पूरी की गई राइड और डिलीवरी यहाँ दिखाई देंगी।',
+      'ordersEmptyCancelled': 'अच्छी बात है! आपका कोई ऑर्डर रद्द नहीं हुआ है।',
+      'ordersEmptyScheduled': 'आने वाली शेड्यूल्ड राइड और पार्सल यहाँ दिखाई देंगे।',
+      'ordersLoadFailed': 'ऑर्डर लोड नहीं हो सके',
+      'orderDetailsLoadFailed': 'ऑर्डर विवरण लोड नहीं हो सका',
       'ordersRide': 'राइड',
       'ordersParcel': 'पार्सल',
       'ordersCoinsHint': 'अधिक लाभ पाने के लिए और ऑर्डर पूरे करें',
@@ -1192,4 +1385,67 @@ class AppTranslations {
     final lang = currentLanguage.value;
     return _translations[lang]?[key] ?? _translations['en']?[key] ?? key;
   }
+
+  /// Translates a UI string that is written directly in a screen (not an
+  /// AppStrings key). Looks the exact English text up in [hiTextByEnglish];
+  /// text with numbers in it (like "5 mins away") goes through [_patterns].
+  /// Unknown text (names, addresses, server messages) is returned unchanged.
+  static String t(String text) {
+    if (currentLanguage.value != 'hi' || text.isEmpty) return text;
+    final exact = hiTextByEnglish[text];
+    if (exact != null) return exact;
+    for (final rule in _patterns) {
+      final match = rule.$1.firstMatch(text);
+      if (match != null) return rule.$2(match);
+    }
+    return text;
+  }
+
+  static final List<(RegExp, String Function(RegExpMatch))> _patterns = [
+    (RegExp(r'^(\d+) mins? away$'), (m) => '${m[1]} मिनट दूर'),
+    (RegExp(r'^(\d+) minutes? away$'), (m) => '${m[1]} मिनट दूर'),
+    (RegExp(r'^(\d+) mins?$'), (m) => '${m[1]} मिनट'),
+    (RegExp(r'^(\d+) min ago$'), (m) => '${m[1]} मिनट पहले'),
+    (RegExp(r'^(\d+) hr ago$'), (m) => '${m[1]} घंटे पहले'),
+    (RegExp(r'^(\d+) d ago$'), (m) => '${m[1]} दिन पहले'),
+    (RegExp(r'^(\d+) days? ago$'), (m) => '${m[1]} दिन पहले'),
+    (RegExp(r'^(\d+) passengers?$'), (m) => '${m[1]} यात्री'),
+    (RegExp(r'^(\d+) rides?$'), (m) => '${m[1]} राइड'),
+    (RegExp(r'^(\d+) Coins?$'), (m) => '${m[1]} कॉइन्स'),
+    (RegExp(r'^(\d+) Seater$'), (m) => '${m[1]} सीटर'),
+    (RegExp(r'^([\d.]+) [Kk]m$'), (m) => '${m[1]} किमी'),
+    (RegExp(r'^([\d.]+) kg$'), (m) => '${m[1]} किलो'),
+    (RegExp(r'^(.+) • (\d+) Seater$'), (m) => '${t(m[1]!)} • ${m[2]} सीटर'),
+    (RegExp(r'^Customer \((.+)\)$'), (m) => 'ग्राहक (${m[1]})'),
+    (RegExp(r'^Received Cash \((.+)\)$'), (m) => 'नकद मिला (${m[1]})'),
+    (
+      RegExp(r'^Received via (.+) \((.+)\)$'),
+      (m) => '${t(m[1]!)} से मिला (${m[2]})',
+    ),
+    (
+      RegExp(r'^Ride payment from (.+?)( • .+)?$'),
+      (m) => '${m[1]} से राइड भुगतान${m[2] ?? ''}',
+    ),
+    (
+      RegExp(
+        r'^(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(.*)$',
+      ),
+      (m) => '${m[1]} ${t(m[2]!)}${m[3]}',
+    ),
+    (
+      RegExp(r'^(Today|Yesterday|Tomorrow)(,| at) (.+)$'),
+      (m) => '${t(m[1]!)}${m[2] == ',' ? ',' : ' को'} ${m[3]}',
+    ),
+    (RegExp(r'^Pickup: (.+)$'), (m) => 'पिकअप: ${m[1]}'),
+    (RegExp(r'^Dropoff: (.+)$'), (m) => 'ड्रॉप: ${m[1]}'),
+    (RegExp(r'^Rider: (.+)$'), (m) => 'राइडर: ${m[1]}'),
+    (RegExp(r'^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) Earnings: (.+)$'), (m) => '${t(m[1]!)} की कमाई: ${m[2]}'),
+    (RegExp(r'^(.+) \((.+)\) has been saved as your driving hours\.$'), (m) => '${t(m[1]!)} (${m[2]}) आपके ड्राइविंग घंटों के रूप में सहेजा गया।'),
+    (RegExp(r'^(\d{1,2}:\d{2}) (AM|PM)$'), (m) => '${m[1]} ${m[2] == 'AM' ? 'पूर्वाह्न' : 'अपराह्न'}'),
+    (RegExp(r'^Valid till (.+)$'), (m) => '${m[1]} तक मान्य'),
+    (
+      RegExp(r'^Your plan expired on (.+)$'),
+      (m) => 'आपका प्लान ${m[1]} को समाप्त हुआ',
+    ),
+  ];
 }

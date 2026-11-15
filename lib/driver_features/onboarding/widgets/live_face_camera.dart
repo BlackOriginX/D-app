@@ -10,6 +10,8 @@ import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Front camera with the face-frame overlay drawn on top.
 /// A face held inside the frame is captured, then [onCaptured] runs.
@@ -56,9 +58,9 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
     try {
       final cameras = await availableCameras();
       final front = cameras.cast<CameraDescription?>().firstWhere(
-            (camera) => camera?.lensDirection == CameraLensDirection.front,
-            orElse: () => cameras.isEmpty ? null : cameras.first,
-          );
+        (camera) => camera?.lensDirection == CameraLensDirection.front,
+        orElse: () => cameras.isEmpty ? null : cameras.first,
+      );
       if (front == null) {
         if (mounted) setState(() => _error = 'No camera found');
         return;
@@ -67,7 +69,9 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
         front,
         ResolutionPreset.medium,
         enableAudio: false,
-        imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
+        imageFormatGroup: Platform.isAndroid
+            ? ImageFormatGroup.nv21
+            : ImageFormatGroup.bgra8888,
       );
       await controller.initialize();
       await controller.startImageStream(_onFrame);
@@ -99,7 +103,9 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
       final faces = await _detector.processImage(input);
       if (!mounted || _capturing) return;
       final upright = _uprightSize(image, input.metadata!.rotation);
-      final inside = faces.any((face) => _faceInsideOval(face.boundingBox, upright));
+      final inside = faces.any(
+        (face) => _faceInsideOval(face.boundingBox, upright),
+      );
       if (inside) {
         _inside++;
         if (!_detected && mounted) setState(() => _detected = true);
@@ -122,9 +128,13 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
   }
 
   bool _faceInsideOval(Rect box, Size imageSize) {
-    final previewBox = _previewKey.currentContext?.findRenderObject() as RenderBox?;
+    final previewBox =
+        _previewKey.currentContext?.findRenderObject() as RenderBox?;
     final frameBox = _frameKey.currentContext?.findRenderObject() as RenderBox?;
-    if (previewBox == null || frameBox == null || !previewBox.hasSize || !frameBox.hasSize) {
+    if (previewBox == null ||
+        frameBox == null ||
+        !previewBox.hasSize ||
+        !frameBox.hasSize) {
       return false;
     }
     final preview = previewBox.localToGlobal(Offset.zero) & previewBox.size;
@@ -141,8 +151,16 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
     return nx * nx + ny * ny <= 1 && faceLargeEnough;
   }
 
-  Offset _mapPoint(Offset point, Size imageSize, Rect preview, {required bool mirror}) {
-    final scale = math.max(preview.width / imageSize.width, preview.height / imageSize.height);
+  Offset _mapPoint(
+    Offset point,
+    Size imageSize,
+    Rect preview, {
+    required bool mirror,
+  }) {
+    final scale = math.max(
+      preview.width / imageSize.width,
+      preview.height / imageSize.height,
+    );
     final fittedWidth = imageSize.width * scale;
     final fittedHeight = imageSize.height * scale;
     final dx = preview.left + (preview.width - fittedWidth) / 2;
@@ -175,7 +193,9 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
       _capturing = false;
       _pending = false;
       _inside = 0;
-      if (mounted && controller.value.isInitialized && !controller.value.isStreamingImages) {
+      if (mounted &&
+          controller.value.isInitialized &&
+          !controller.value.isStreamingImages) {
         await controller.startImageStream(_onFrame);
       }
     }
@@ -195,26 +215,40 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
   Widget build(BuildContext context) {
     final statusColor = _detected ? AppColors.green600 : AppColors.error;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.themed(
+        light: Colors.black,
+        dark: context.torkk.textPrimary,
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: [
           KeyedSubtree(key: _previewKey, child: _preview()),
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(context.w(24), context.h(28), context.w(24), context.h(24)),
+              padding: EdgeInsets.fromLTRB(
+                context.w(24),
+                context.h(28),
+                context.w(24),
+                context.h(24),
+              ),
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: context.w(16), vertical: context.h(8)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.w(16),
+                      vertical: context.h(8),
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.torkk.surface,
                       borderRadius: BorderRadius.circular(context.r(24)),
                       border: Border.all(color: const Color(0xFFE9D5FF)),
                     ),
-                    child: Text(
+                    child: TText(
                       AppStrings.faceInFrame,
-                      style: AppTypography.regular.copyWith(fontSize: 13, color: const Color(0xFF6B21A8)),
+                      style: AppTypography.regular.copyWith(
+                        fontSize: 13,
+                        color: const Color(0xFF6B21A8),
+                      ),
                     ),
                   ),
                   const Spacer(),
@@ -229,11 +263,20 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
                   ),
                   SizedBox(height: context.h(20)),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: context.w(14), vertical: context.h(8)),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.w(14),
+                      vertical: context.h(8),
+                    ),
                     decoration: BoxDecoration(
-                      color: _detected ? const Color(0xFFF0FDF4) : Colors.white,
+                      color: _detected
+                          ? context.adaptiveTint(Color(0xFFF0FDF4))
+                          : context.torkk.surface,
                       borderRadius: BorderRadius.circular(context.r(20)),
-                      border: Border.all(color: _detected ? const Color(0xFFBBF7D0) : const Color(0xFFFECACA)),
+                      border: Border.all(
+                        color: _detected
+                            ? const Color(0xFFBBF7D0)
+                            : const Color(0xFFFECACA),
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -244,9 +287,15 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
                           size: context.w(16),
                         ),
                         SizedBox(width: context.w(6)),
-                        Text(
-                          _detected ? AppStrings.faceDetected : AppStrings.noFaceDetected,
-                          style: AppTypography.bold.copyWith(fontSize: 13, height: 1.2, color: statusColor),
+                        TText(
+                          _detected
+                              ? AppStrings.faceDetected
+                              : AppStrings.noFaceDetected,
+                          style: AppTypography.bold.copyWith(
+                            fontSize: 13,
+                            height: 1.2,
+                            color: statusColor,
+                          ),
                         ),
                       ],
                     ),
@@ -266,7 +315,9 @@ class _LiveFaceCameraState extends State<LiveFaceCamera> {
     if (_error != null) {
       return ColoredBox(
         color: Colors.black,
-        child: Center(child: Text(_error!, style: const TextStyle(color: Colors.white))),
+        child: Center(
+          child: TText(_error!, style: const TextStyle(color: Colors.white)),
+        ),
       );
     }
     if (!_ready || controller == null || !controller.value.isInitialized) {
@@ -333,7 +384,9 @@ InputImageRotation? _rotation(CameraController controller) {
 }
 
 Size _uprightSize(CameraImage image, InputImageRotation rotation) {
-  final swap = rotation == InputImageRotation.rotation90deg || rotation == InputImageRotation.rotation270deg;
+  final swap =
+      rotation == InputImageRotation.rotation90deg ||
+      rotation == InputImageRotation.rotation270deg;
   return swap
       ? Size(image.height.toDouble(), image.width.toDouble())
       : Size(image.width.toDouble(), image.height.toDouble());
@@ -366,5 +419,6 @@ class _FaceFramePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _FaceFramePainter oldDelegate) => oldDelegate.detected != detected;
+  bool shouldRepaint(covariant _FaceFramePainter oldDelegate) =>
+      oldDelegate.detected != detected;
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rider_app/common/widgets/bouncing_widget.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Top header row of the driver dashboard containing:
 /// - Notification Bell button
@@ -28,13 +30,13 @@ class HomeHeaderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String cleanGender = driverGender.trim().toLowerCase();
-    final bool isFemale = cleanGender == 'female' ||
+    final bool isFemale =
+        cleanGender == 'female' ||
         cleanGender == 'f' ||
         cleanGender.contains('female');
-    final Color avatarRingColor =
-        isFemale ? const Color(0xFFEC4899) : const Color(0xFF1D4ED8);
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color avatarRingColor = isFemale
+        ? const Color(0xFFEC4899)
+        : const Color(0xFF1D4ED8);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,10 +69,7 @@ class HomeHeaderRow extends StatelessWidget {
         BouncingWidget(
           onTap: onToggleOnline,
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 36,
-              vertical: 12,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 12),
             decoration: BoxDecoration(
               color: isOnline
                   ? const Color(0xFF16A34A) // Green Online
@@ -78,16 +77,17 @@ class HomeHeaderRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: (isOnline
-                          ? const Color(0xFF16A34A)
-                          : const Color(0xFFDC2626))
-                      .withValues(alpha: 0.3),
+                  color:
+                      (isOnline
+                              ? const Color(0xFF16A34A)
+                              : const Color(0xFFDC2626))
+                          .withValues(alpha: 0.3),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
               ],
             ),
-            child: Text(
+            child: TText(
               isOnline ? 'ONLINE' : 'OFFLINE',
               style: const TextStyle(
                 color: Colors.white,
@@ -111,7 +111,10 @@ class HomeHeaderRow extends StatelessWidget {
                 color: avatarRingColor, // Dynamic ring color
                 width: 2.5,
               ),
-              color: isDark ? const Color(0xFF334155) : Colors.grey.shade200,
+              color: context.themed(
+                light: Colors.grey.shade200,
+                dark: context.torkk.surfaceMuted,
+              ),
             ),
             child: ClipOval(
               child: profileImageUrl.isNotEmpty

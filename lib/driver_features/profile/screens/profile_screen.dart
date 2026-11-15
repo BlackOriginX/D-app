@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rider_app/driver_features/parcels/new_feature_coming_soon_screen.dart';
+import 'package:rider_app/driver_features/profile/screens/sos_screen.dart';
+import 'package:rider_app/driver_features/settings/legal/privacy_policy_screen.dart';
+import 'package:rider_app/driver_features/settings/legal/terms_conditions_users_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:rider_app/common/widgets/app_confirm_dialog.dart';
@@ -11,16 +15,12 @@ import 'package:rider_app/driver_features/coins/screens/coins_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/about_torkk_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/bank_information_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/document_kyc_screen.dart';
-import 'package:rider_app/driver_features/profile/screens/faq_screen.dart';
-import 'package:rider_app/driver_features/profile/screens/help_support_screen.dart';
+import 'package:rider_app/driver_features/profile/screens/help_support_hub_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/personal_information_screen.dart';
-import 'package:rider_app/driver_features/profile/screens/privacy_policy_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/profile_notifications_screen.dart';
-import 'package:rider_app/driver_features/profile/screens/terms_conditions_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/vehicle_information_screen.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_header.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
-import 'package:rider_app/driver_features/subscription/screens/subscription_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onBack});
@@ -35,6 +35,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProfilePage(
       title: AppStrings.profile,
+      showAiChat: false,
       onBack: onBack,
       child: ListView(
         padding: EdgeInsets.fromLTRB(
@@ -50,32 +51,38 @@ class ProfileScreen extends StatelessWidget {
             items: [
               ProfileMenuItem(
                 icon: Icons.person_outline,
+                iconColor: const Color(0xFF6366F1),
                 label: AppStrings.personalInformation,
                 accent: true,
                 onTap: () => _open(context, const PersonalInformationScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.directions_car_outlined,
+                iconColor: const Color(0xFF0EA5E9),
                 label: AppStrings.vehicleInformation,
                 onTap: () => _open(context, const VehicleInformationScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.description_outlined,
+                iconColor: const Color(0xFFF59E0B),
                 label: AppStrings.documentKycStatus,
                 onTap: () => _open(context, const DocumentKycScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.account_balance_outlined,
+                iconColor: const Color(0xFF10B981),
                 label: AppStrings.bankInformation,
                 onTap: () => _open(context, const BankInformationScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.verified_outlined,
+                iconColor: const Color(0xFF8B5CF6),
                 label: AppStrings.subscriptionRecharge,
-                onTap: () => _open(context, const SubscriptionScreen()),
+                onTap: () => _open(context, const NewFeatureComingSoonScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.toll_outlined,
+                iconColor: const Color(0xFFEAB308),
                 label: AppStrings.torkkCoins,
                 onTap: () => _open(context, const CoinsScreen()),
               ),
@@ -86,36 +93,32 @@ class ProfileScreen extends StatelessWidget {
             items: [
               ProfileMenuItem(
                 icon: Icons.notifications_none_rounded,
+                iconColor: const Color(0xFFEF4444),
                 label: AppStrings.notifications,
                 onTap: () => _open(context, const ProfileNotificationsScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.settings_outlined,
+                iconColor: const Color(0xFF64748B),
                 label: AppStrings.settings,
                 onTap: () => context.push(AppRoutes.settings),
               ),
-              ProfileMenuItem(
-                icon: Icons.shield_outlined,
-                label: AppStrings.privacyPolicy,
-                onTap: () => _open(context, const PrivacyPolicyScreen()),
-              ),
-              ProfileMenuItem(
-                icon: Icons.article_outlined,
-                label: AppStrings.termsConditions,
-                onTap: () => _open(context, const TermsConditionsScreen()),
-              ),
+            
               ProfileMenuItem(
                 icon: Icons.help_outline_rounded,
-                label: AppStrings.faq,
-                onTap: () => _open(context, const FaqScreen()),
+                iconColor: const Color(0xFF3B82F6),
+                label: AppStrings.sosandemergency,
+                onTap: () => _open(context, const SosScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.support_agent_rounded,
+                iconColor: const Color(0xFFEC4899),
                 label: AppStrings.helpSupport,
-                onTap: () => _open(context, const HelpSupportScreen()),
+                onTap: () => _open(context, const HelpSupportHubScreen()),
               ),
               ProfileMenuItem(
                 icon: Icons.info_outline_rounded,
+                iconColor: const Color(0xFF06B6D4),
                 label: AppStrings.aboutTorkk,
                 onTap: () => _open(context, const AboutTorkkScreen()),
               ),

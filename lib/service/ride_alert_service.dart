@@ -5,8 +5,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rider_app/service/api_client.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
 
 /// Keeps polling for rides while the driver is online, even if the UI is closed.
@@ -22,7 +22,13 @@ class RideAlertService {
 
   static Future<void> initialize() async {
     const androidInit = AndroidInitializationSettings('@mipmap/launcher_icon');
-    const iosInit = DarwinInitializationSettings();
+    // Permission prompts are NOT shown here: StartupPermissions asks for
+    // notifications first and location second, after the first frame.
+    const iosInit = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
     await _notifications.initialize(
       settings: const InitializationSettings(
         android: androidInit,
@@ -39,7 +45,6 @@ class RideAlertService {
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
-    await androidPlugin?.requestNotificationsPermission();
     await androidPlugin?.createNotificationChannel(
       const AndroidNotificationChannel(
         rideChannelId,
@@ -164,7 +169,7 @@ Future<void> _onBackgroundStart(ServiceInstance service) async {
       }
 
       final uri = Uri.parse(AppUrls.activeRides(driverPhone: phone));
-      final response = await http.get(uri).timeout(const Duration(seconds: 5));
+      final response = await apiClient.get(uri).timeout(const Duration(seconds: 5));
       if (response.statusCode != 200) return;
 
       final data = json.decode(response.body);

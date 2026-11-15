@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../common/widgets/bouncing_widget.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
 
 class VehicleSelectStep extends StatelessWidget {
   final Color primaryColor;
@@ -18,31 +19,11 @@ class VehicleSelectStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> vehicles = [
-      {
-        'name': 'Bike',
-        'subtitle': '2 Wheeler',
-        'image': 'assets/bike.png',
-      },
-      {
-        'name': 'Auto',
-        'subtitle': '3 Wheeler',
-        'image': 'assets/auto.png',
-      },
-      {
-        'name': 'Cab',
-        'subtitle': '4 Wheeler',
-        'image': 'assets/cab.png',
-      },
-      {
-        'name': 'Cab EV',
-        'subtitle': '4 Wheeler',
-        'image': 'assets/ev_cab.png',
-      },
-      {
-        'name': 'Cab XL',
-        'subtitle': '4 Wheeler',
-        'image': 'assets/xl_cab.png',
-      },
+      {'name': 'Bike', 'subtitle': '2 Wheeler', 'image': 'assets/bike.png'},
+      {'name': 'Auto', 'subtitle': '3 Wheeler', 'image': 'assets/auto.png'},
+      {'name': 'Cab', 'subtitle': '4 Wheeler', 'image': 'assets/cab.png'},
+      {'name': 'Cab EV', 'subtitle': '4 Wheeler', 'image': 'assets/ev_cab.png'},
+      {'name': 'Cab XL', 'subtitle': '4 Wheeler', 'image': 'assets/xl_cab.png'},
     ];
 
     return Padding(
@@ -51,23 +32,23 @@ class VehicleSelectStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 12),
-          const Text(
+          Text(
             'Select your Vehicle',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF111827),
+              color: context.torkk.textPrimary,
               height: 1.1,
               letterSpacing: -0.4,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Choose a vehicle you want to drive',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,
-              color: Color(0xFF6B7280),
+              color: context.torkk.textSecondary,
             ),
           ),
           const SizedBox(height: 24),
@@ -92,11 +73,11 @@ class VehicleSelectStep extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFFF8FAFC)
-                            : Colors.white,
+                            ? context.torkk.surfaceMuted
+                            : context.torkk.surface,
                         border: Border.all(
                           color: isSelected
-                              ? const Color(0xFF2563EB)
+                              ? context.legible(Color(0xFF2563EB))
                               : const Color(0xFFE5E7EB),
                           width: isSelected ? 1.5 : 1.0,
                         ),
@@ -111,11 +92,12 @@ class VehicleSelectStep extends StatelessWidget {
                             child: Image.asset(
                               vehicle['image']!,
                               fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) => const Icon(
-                                Icons.directions_car_rounded,
-                                size: 36,
-                                color: Color(0xFF6B7280),
-                              ),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(
+                                    Icons.directions_car_rounded,
+                                    size: 36,
+                                    color: context.torkk.textSecondary,
+                                  ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -125,19 +107,19 @@ class VehicleSelectStep extends StatelessWidget {
                               children: [
                                 Text(
                                   vehicle['name']!,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF111827),
+                                    color: context.torkk.textPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   vehicle['subtitle']!,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w400,
-                                    color: Color(0xFF6B7280),
+                                    color: context.torkk.textSecondary,
                                   ),
                                 ),
                               ],
@@ -217,7 +199,7 @@ class SelectVehicleFaqBottomSheet extends StatelessWidget {
     ];
 
     return Material(
-      color: Colors.white,
+      color: context.torkk.surface,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
@@ -232,17 +214,17 @@ class SelectVehicleFaqBottomSheet extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_back_ios_new,
-                      color: Color(0xFF111827),
+                      color: context.torkk.textPrimary,
                       size: 20,
                     ),
                     onPressed: () => Navigator.pop(context),
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.chat_bubble_outline_rounded,
-                      color: Color(0xFF111827),
+                      color: context.torkk.textPrimary,
                     ),
                     onPressed: () {},
                   ),
@@ -251,26 +233,28 @@ class SelectVehicleFaqBottomSheet extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 8,
+                ),
                 children: [
-                  const Text(
+                  Text(
                     'FAQ',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF111827),
+                      color: context.torkk.textPrimary,
                       height: 1.2,
                       letterSpacing: 0.0,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     'Solution to frequent asked questions',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF6B7280),
+                      color: context.torkk.textSecondary,
                       height: 1.0,
                       letterSpacing: 0.0,
                     ),
@@ -280,19 +264,19 @@ class SelectVehicleFaqBottomSheet extends StatelessWidget {
                     return Column(
                       children: [
                         Theme(
-                          data: Theme.of(context).copyWith(
-                            dividerColor: Colors.transparent,
-                          ),
+                          data: Theme.of(
+                            context,
+                          ).copyWith(dividerColor: Colors.transparent),
                           child: ExpansionTile(
                             tilePadding: EdgeInsets.zero,
                             iconColor: const Color(0xFF111827),
                             collapsedIconColor: const Color(0xFF6B7280),
                             title: Text(
                               item['q']!,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 21,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF111827),
+                                color: context.torkk.textPrimary,
                                 height: 1.1,
                                 letterSpacing: 0.0,
                               ),
@@ -302,10 +286,10 @@ class SelectVehicleFaqBottomSheet extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: Text(
                                   item['a']!,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
-                                    color: Color(0xFF6B7280),
+                                    color: context.torkk.textSecondary,
                                     height: 1.5,
                                     letterSpacing: 0.0,
                                   ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 void showRideOtpBottomSheet({
   required BuildContext context,
@@ -24,8 +26,8 @@ void showRideOtpBottomSheet({
               top: 14,
               bottom: MediaQuery.of(context).viewInsets.bottom + 28,
             ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: context.torkk.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
             ),
             child: Column(
@@ -43,18 +45,21 @@ void showRideOtpBottomSheet({
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                TText(
                   'Enter OTP',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E293B),
+                    color: context.torkk.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
+                TText(
                   subtitle ?? 'Ask the Passenger for OTP',
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: context.torkk.textSecondary,
+                  ),
                 ),
                 if ((rideCode ?? '').isNotEmpty) ...[
                   const SizedBox(height: 12),
@@ -67,7 +72,7 @@ void showRideOtpBottomSheet({
                       color: const Color(0xFF10B981).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
+                    child: TText(
                       'Test tip: passenger ride code is $rideCode',
                       style: const TextStyle(
                         fontSize: 12,
@@ -95,22 +100,24 @@ void showRideOtpBottomSheet({
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: isFilled
-                                  ? const Color(0xFFEFF6FF)
-                                  : const Color(0xFFCBD5E1),
+                                  ? context.adaptiveTint(
+                                      const Color(0xFFEFF6FF),
+                                    )
+                                  : context.torkk.border,
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
                                 color: isFilled
-                                    ? const Color(0xFF1142BC)
+                                    ? context.legible(Color(0xFF1142BC))
                                     : const Color(0xFF94A3B8),
                                 width: 1.0,
                               ),
                             ),
-                            child: Text(
+                            child: TText(
                               char,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF0F172A),
+                                color: context.torkk.textPrimary,
                               ),
                             ),
                           ),
@@ -135,7 +142,7 @@ void showRideOtpBottomSheet({
                 ),
                 if (errorText != null) ...[
                   const SizedBox(height: 10),
-                  Text(
+                  TText(
                     errorText!,
                     style: const TextStyle(
                       color: Colors.red,
@@ -160,7 +167,7 @@ void showRideOtpBottomSheet({
                       onVerify(otpController.text.trim());
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1142BC),
+                      backgroundColor: context.brandColor,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(28),
@@ -170,7 +177,7 @@ void showRideOtpBottomSheet({
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        TText(
                           'Continue',
                           style: TextStyle(
                             fontSize: 16,

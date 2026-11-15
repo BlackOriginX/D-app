@@ -5,6 +5,8 @@ import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Bike and auto can take parcels. Cars cannot.
 bool parcelAllowedForVehicle(String vehicleType) {
@@ -13,7 +15,11 @@ bool parcelAllowedForVehicle(String vehicleType) {
 }
 
 class ParcelVehiclesScreen extends StatelessWidget {
-  const ParcelVehiclesScreen({super.key, required this.onBack, required this.onStart});
+  const ParcelVehiclesScreen({
+    super.key,
+    required this.onBack,
+    required this.onStart,
+  });
 
   final VoidCallback onBack;
   final VoidCallback onStart;
@@ -22,46 +28,76 @@ class ParcelVehiclesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = Theme.of(context).colorScheme.primary;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(context.w(8), context.h(4), context.w(16), 0),
+              padding: EdgeInsets.fromLTRB(
+                context.w(8),
+                context.h(4),
+                context.w(16),
+                0,
+              ),
               child: Row(
                 children: [
                   IconButton(
                     onPressed: onBack,
-                    icon: const Icon(Icons.arrow_back_ios_new, size: 18, color: AppColors.textPrimary),
+                    icon: Icon(
+                      Icons.arrow_back_ios_new,
+                      size: 18,
+                      color: context.torkk.textPrimary,
+                    ),
                   ),
-                  Text(
+                  TText(
                     AppStrings.navParcel,
-                    style: AppTypography.bold.copyWith(fontSize: 18, height: 1.2, letterSpacing: -0.3),
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 18,
+                      height: 1.2,
+                      letterSpacing: -0.3,
+                    ),
                   ),
                 ],
               ),
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.fromLTRB(context.w(20), context.h(8), context.w(20), context.h(12)),
+                padding: EdgeInsets.fromLTRB(
+                  context.w(20),
+                  context.h(8),
+                  context.w(20),
+                  context.h(12),
+                ),
                 children: [
                   const _ParcelBadge(),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     AppStrings.parcelDelivery,
                     textAlign: TextAlign.center,
-                    style: AppTypography.bold.copyWith(fontSize: 22, height: 1.25, letterSpacing: -0.4),
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 22,
+                      height: 1.25,
+                      letterSpacing: -0.4,
+                    ),
                   ),
                   SizedBox(height: context.h(6)),
-                  Text(
+                  TText(
                     AppStrings.earnByDeliveringParcels,
                     textAlign: TextAlign.center,
-                    style: AppTypography.regular.copyWith(fontSize: 14, height: 1.4, color: AppColors.slate500),
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: context.torkk.textSecondary,
+                    ),
                   ),
                   SizedBox(height: context.h(22)),
-                  Text(
+                  TText(
                     AppStrings.yourVehicles,
-                    style: AppTypography.bold.copyWith(fontSize: 14, height: 1.2, letterSpacing: -0.2),
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 14,
+                      height: 1.2,
+                      letterSpacing: -0.2,
+                    ),
                   ),
                   SizedBox(height: context.h(10)),
                   _VehicleTile(
@@ -91,7 +127,12 @@ class ParcelVehiclesScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(context.w(20), context.h(8), context.w(20), context.h(12)),
+              padding: EdgeInsets.fromLTRB(
+                context.w(20),
+                context.h(8),
+                context.w(20),
+                context.h(12),
+              ),
               child: SizedBox(
                 width: double.infinity,
                 height: context.h(52),
@@ -99,11 +140,18 @@ class ParcelVehiclesScreen extends StatelessWidget {
                   onPressed: onStart,
                   style: FilledButton.styleFrom(
                     backgroundColor: accent,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.r(14))),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(context.r(14)),
+                    ),
                   ),
-                  child: Text(
+                  child: TText(
                     AppStrings.startReceivingParcelRequests,
-                    style: AppTypography.bold.copyWith(fontSize: 16, height: 1.2, color: Colors.white, letterSpacing: -0.2),
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 16,
+                      height: 1.2,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      letterSpacing: -0.2,
+                    ),
                   ),
                 ),
               ),
@@ -150,11 +198,14 @@ class _VehicleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = enabled ? accent : AppColors.slate400;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: context.w(14), vertical: context.h(14)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.w(14),
+        vertical: context.h(14),
+      ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.torkk.surface,
         borderRadius: BorderRadius.circular(context.r(16)),
-        border: Border.all(color: const Color(0xFFF1F5F9)),
+        border: Border.all(color: context.torkk.border),
       ),
       child: Row(
         children: [
@@ -162,7 +213,9 @@ class _VehicleTile extends StatelessWidget {
             width: context.w(40),
             height: context.w(40),
             decoration: BoxDecoration(
-              color: enabled ? accent.withValues(alpha: 0.1) : const Color(0xFFF1F5F9),
+              color: enabled
+                  ? accent.withValues(alpha: 0.1)
+                  : context.adaptiveTint(Color(0xFFF1F5F9)),
               borderRadius: BorderRadius.circular(context.r(12)),
             ),
             child: Icon(icon, color: color, size: context.w(20)),
@@ -172,18 +225,24 @@ class _VehicleTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   title,
                   style: AppTypography.bold.copyWith(
                     fontSize: 15,
                     height: 1.2,
                     letterSpacing: -0.2,
-                    color: enabled ? AppColors.textPrimary : AppColors.slate400,
+                    color: enabled
+                        ? context.legible(AppColors.textPrimary)
+                        : AppColors.slate400,
                   ),
                 ),
-                Text(
+                TText(
                   subtitle,
-                  style: AppTypography.regular.copyWith(fontSize: 12, height: 1.3, color: AppColors.slate500),
+                  style: AppTypography.regular.copyWith(
+                    fontSize: 12,
+                    height: 1.3,
+                    color: context.torkk.textSecondary,
+                  ),
                 ),
               ],
             ),

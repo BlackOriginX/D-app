@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared result layout.
 ///
@@ -35,7 +36,7 @@ class StatusResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -45,7 +46,7 @@ class StatusResult extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 24),
+                    icon: Icon(Icons.arrow_back_ios_new, color: context.themed(light: Colors.black, dark: context.torkk.textPrimary), size: 24),
                     onPressed: onBack,
                   ),
                 ),
@@ -55,7 +56,7 @@ class StatusResult extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(context.w(20), 0, context.w(20), context.h(16)),
                 children: [
                   _hero(context),
-                  Text(
+                  TText(
                     title,
                     textAlign: TextAlign.center,
                     style: AppTypography.bold.copyWith(fontSize: 20, height: 1.25),
@@ -63,13 +64,13 @@ class StatusResult extends StatelessWidget {
                   SizedBox(height: context.h(8)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: context.w(20)),
-                    child: Text(
+                    child: TText(
                       subtitle,
                       textAlign: TextAlign.center,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
                         height: 1.45,
-                        color: AppColors.secondaryTextColor,
+                        color: context.torkk.textSecondary,
                       ),
                     ),
                   ),

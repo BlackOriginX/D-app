@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared confirm dialog used for logout, delete, online/offline, SOS, and notices.
 ///
@@ -104,7 +106,7 @@ class AppConfirmCard extends StatelessWidget {
       width: context.w(321),
       padding: EdgeInsets.fromLTRB(context.w(16), context.h(28), context.w(16), context.h(28)),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
+        color: context.torkk.surface,
         borderRadius: BorderRadius.circular(context.r(27.17)),
         boxShadow: const [
           BoxShadow(color: Color(0x1A000000), offset: Offset(0, 2), blurRadius: 10.2),
@@ -115,25 +117,25 @@ class AppConfirmCard extends StatelessWidget {
         children: [
           icon,
           SizedBox(height: context.h(18)),
-          Text(
+          TText(
             title,
             textAlign: TextAlign.center,
             style: AppTypography.bold.copyWith(
               fontSize: 20,
               height: 28 / 20,
               letterSpacing: -0.5,
-              color: const Color(0xFF0F172A),
+              color: context.torkk.textPrimary,
             ),
           ),
           SizedBox(height: context.h(4)),
-          Text(
+          TText(
             subtitle,
             textAlign: TextAlign.center,
             style: AppTypography.regular.copyWith(
               fontSize: 12,
               height: 19.5 / 12,
               letterSpacing: 0,
-              color: const Color(0xFF6B7280),
+              color: context.torkk.textSecondary,
             ),
           ),
           SizedBox(height: context.h(18)),
@@ -171,7 +173,7 @@ class AppDialogBadge extends StatelessWidget {
       height: context.w(62),
       alignment: Alignment.center,
       decoration: BoxDecoration(color: background, shape: BoxShape.circle),
-      child: Icon(icon, color: color, size: context.w(28)),
+      child: Icon(icon, color: context.legible(color), size: context.w(28)),
     );
     if (badge == null) return mark;
     return SizedBox(
@@ -206,22 +208,24 @@ class _DialogAction extends StatelessWidget {
     return SizedBox(
       height: context.h(48),
       child: Material(
-        color: filled ? color : Colors.white,
+        color: filled ? color : context.torkk.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(context.r(14)),
-          side: BorderSide(color: color, width: 1.4),
+          side: BorderSide(color: context.legible(color), width: 1.4),
         ),
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(context.r(14)),
           child: Center(
-            child: Text(
+            child: TText(
               label,
               textAlign: TextAlign.center,
               style: AppTypography.bold.copyWith(
                 fontSize: 14,
                 height: 1.2,
-                color: filled ? Colors.white : color,
+                color: filled
+                    ? (context.isDarkTheme ? onColorFor(color) : Colors.white)
+                    : context.legible(color),
               ),
             ),
           ),

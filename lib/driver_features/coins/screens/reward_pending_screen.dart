@@ -4,6 +4,7 @@ import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/coins/widgets/coins_text.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class RewardPendingScreen extends StatelessWidget {
   const RewardPendingScreen({super.key, required this.onBack});
@@ -18,15 +19,19 @@ class RewardPendingScreen extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          Image.asset(AppAssets.rewardPending, width: context.w(140), height: context.w(140)),
+          Image.asset(
+            AppAssets.rewardPending,
+            width: context.w(140),
+            height: context.w(140),
+          ),
           SizedBox(height: context.h(16)),
-          Text('Reward is Pending', style: coinsTitle()),
+          TText('Reward is Pending', style: coinsTitle()),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(36)),
-            child: Text(
+            child: TText(
               'Your reward will be credited soon. This may take a few moments',
               textAlign: TextAlign.center,
-              style: coinsMuted(),
+              style: coinsMuted(context),
             ),
           ),
           const Spacer(),

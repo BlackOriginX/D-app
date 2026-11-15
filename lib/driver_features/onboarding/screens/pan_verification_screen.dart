@@ -9,6 +9,8 @@ import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class PanVerificationScreen extends StatefulWidget {
   const PanVerificationScreen({
@@ -33,7 +35,8 @@ class _PanVerificationScreenState extends State<PanVerificationScreen> {
     super.dispose();
   }
 
-  bool get _validPan => RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(_panController.text.trim());
+  bool get _validPan =>
+      RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(_panController.text.trim());
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +44,21 @@ class _PanVerificationScreenState extends State<PanVerificationScreen> {
       title: AppStrings.panVerification,
       onBack: widget.onBack,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(context.w(24), context.h(8), context.w(24), context.h(16)),
+        padding: EdgeInsets.fromLTRB(
+          context.w(24),
+          context.h(8),
+          context.w(24),
+          context.h(16),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Center(child: _PanCardArt()),
             SizedBox(height: context.h(28)),
-            Text('${AppStrings.panNumber} *', style: AppTypography.regular.copyWith(fontSize: 13)),
+            TText(
+              '${AppStrings.panNumber} *',
+              style: AppTypography.regular.copyWith(fontSize: 13),
+            ),
             SizedBox(height: context.h(8)),
             AppTextField(
               controller: _panController,
@@ -89,7 +100,7 @@ class _PanCardArt extends StatelessWidget {
       height: context.h(120),
       padding: EdgeInsets.all(context.w(16)),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F7FB),
+        color: context.adaptiveTint(const Color(0xFFF4F7FB)),
         borderRadius: BorderRadius.circular(context.r(16)),
       ),
       child: Row(
@@ -97,8 +108,15 @@ class _PanCardArt extends StatelessWidget {
           Container(
             width: context.w(44),
             height: context.w(44),
-            decoration: const BoxDecoration(color: Color(0xFFE7EEF6), shape: BoxShape.circle),
-            child: Icon(Icons.person, color: const Color(0xFFC5D0DE), size: context.w(26)),
+            decoration: BoxDecoration(
+              color: context.adaptiveTint(Color(0xFFE7EEF6)),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.person,
+              color: const Color(0xFFC5D0DE),
+              size: context.w(26),
+            ),
           ),
           SizedBox(width: context.w(14)),
           Expanded(
@@ -125,7 +143,10 @@ class _PanCardArt extends StatelessWidget {
         widthFactor: widthFactor,
         child: Container(
           height: context.h(8),
-          decoration: BoxDecoration(color: const Color(0xFFE3EAF2), borderRadius: BorderRadius.circular(6)),
+          decoration: BoxDecoration(
+            color: context.adaptiveTint(const Color(0xFFE3EAF2)),
+            borderRadius: BorderRadius.circular(6),
+          ),
         ),
       ),
     );

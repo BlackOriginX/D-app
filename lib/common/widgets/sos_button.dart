@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SosButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -16,7 +18,7 @@ class SosButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: context.torkk.surface,
           elevation: 16,
           insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Padding(
@@ -37,21 +39,21 @@ class SosButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                const Text(
+                TText(
                   'Emergency SOS Activated',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
+                    color: context.torkk.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                TText(
                   'Your live location and emergency packet are being broadcasted to the dispatch team and your registered emergency contacts.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF64748B),
+                    color: context.torkk.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -69,7 +71,7 @@ class SosButton extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
+                    child: const TText(
                       'Dismiss & Cancel SOS',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -91,7 +93,7 @@ class SosButton extends StatelessWidget {
     return FloatingActionButton(
       onPressed: () => _triggerSos(context),
       backgroundColor: Colors.red,
-      child: const Text(
+      child: const TText(
         'SOS',
         style: TextStyle(
           color: Colors.white,

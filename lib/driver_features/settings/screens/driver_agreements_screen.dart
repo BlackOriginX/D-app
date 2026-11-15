@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- AGREEMENTS SCREEN (Figma Settings -> Agreements) ---
 class DriverAgreementsScreen extends StatelessWidget {
@@ -9,8 +12,7 @@ class DriverAgreementsScreen extends StatelessWidget {
     required String title,
     required VoidCallback onTap,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColor = context.torkk.textPrimary;
 
     return Column(
       children: [
@@ -21,7 +23,7 @@ class DriverAgreementsScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                TText(
                   title,
                   style: TextStyle(
                     fontSize: 18,
@@ -29,20 +31,12 @@ class DriverAgreementsScreen extends StatelessWidget {
                     color: textColor,
                   ),
                 ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: textColor,
-                  size: 26,
-                ),
+                Icon(Icons.chevron_right_rounded, color: textColor, size: 26),
               ],
             ),
           ),
         ),
-        Divider(
-          height: 1,
-          thickness: 1,
-          color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
-        ),
+        Divider(height: 1, thickness: 1, color: context.torkk.border),
       ],
     );
   }
@@ -52,9 +46,8 @@ class DriverAgreementsScreen extends StatelessWidget {
     String title,
     String contentText,
   ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final sheetBg = isDark ? const Color(0xFF0F172A) : Colors.white;
+    final textColor = context.torkk.textPrimary;
+    final sheetBg = context.torkk.surface;
 
     showModalBottomSheet(
       context: context,
@@ -74,13 +67,16 @@ class DriverAgreementsScreen extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                  color: context.themed(
+                    light: Colors.grey.shade300,
+                    dark: context.torkk.border,
+                  ),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
             const SizedBox(height: 18),
-            Text(
+            TText(
               title,
               style: TextStyle(
                 fontSize: 22,
@@ -91,12 +87,12 @@ class DriverAgreementsScreen extends StatelessWidget {
             const SizedBox(height: 14),
             Expanded(
               child: SingleChildScrollView(
-                child: Text(
+                child: TText(
                   contentText,
                   style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
-                    color: isDark ? Colors.grey.shade300 : const Color(0xFF475569),
+                    color: context.torkk.textBody,
                   ),
                 ),
               ),
@@ -107,13 +103,16 @@ class DriverAgreementsScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(ctx),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1D4ED8),
+                  foregroundColor: onColorFor(
+                    context.brandColor,
+                  ),
+                  backgroundColor: context.brandColor,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
+                child: const TText(
                   'I Understand & Accept',
                   style: TextStyle(
                     color: Colors.white,
@@ -131,11 +130,11 @@ class DriverAgreementsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColor = context.torkk.textPrimary;
 
     return Scaffold(
+      floatingActionButton: const AiChatButton(size: 48),
       backgroundColor: bgColor,
       appBar: AppBar(
         backgroundColor: bgColor,
@@ -146,15 +145,25 @@ class DriverAgreementsScreen extends StatelessWidget {
           child: GestureDetector(
             onTap: () => Navigator.maybePop(context),
             child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFF475569),
+              decoration: BoxDecoration(
+                color: context.themed(
+                  light: const Color(0xFF475569),
+                  dark: context.torkk.surfaceMuted,
+                ),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, color: Colors.white, size: 20),
+              child: Icon(
+                Icons.close,
+                color: context.themed(
+                  light: Colors.white,
+                  dark: context.torkk.textPrimary,
+                ),
+                size: 20,
+              ),
             ),
           ),
         ),
-        title: Text(
+        title: TText(
           'Settings',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -169,7 +178,7 @@ class DriverAgreementsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 'Agreements',
                 style: TextStyle(
                   fontSize: 26,

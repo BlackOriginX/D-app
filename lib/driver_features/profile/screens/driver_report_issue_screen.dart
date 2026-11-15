@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rider_app/service/api_client.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- REPORT ISSUE SCREEN ---
 class DriverReportIssueScreen extends StatefulWidget {
@@ -30,7 +33,7 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
     final desc = _descController.text.trim();
     if (desc.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please describe the issue.')),
+        const SnackBar(content: TText('Please describe the issue.')),
       );
       return;
     }
@@ -46,7 +49,7 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
     );
 
     try {
-      final response = await http.post(
+      final response = await apiClient.post(
         Uri.parse(urlString),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
@@ -66,7 +69,7 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
           _descController.clear();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Issue reported successfully!'),
+              content: TText('Issue reported successfully!'),
               backgroundColor: Colors.green,
             ),
           );
@@ -82,7 +85,7 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to submit issue: $e'),
+            content: TText('Failed to submit issue: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -102,15 +105,15 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF4F46E5);
+    final primaryColor = context.brandColor;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: context.torkk.surfaceMuted,
       appBar: AppBar(
-        title: const Text(
+        title: const TText(
           'Report Issue',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: context.torkk.background,
         foregroundColor: Colors.black,
         elevation: 0,
       ),
@@ -121,36 +124,39 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  TText(
                     'File a Support Ticket',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF1E293B),
+                      color: context.torkk.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  TText(
                     'Describe any problems you encountered and our team will review and resolve it.',
-                    style: TextStyle(color: Colors.black54, fontSize: 13),
+                    style: TextStyle(
+                      color: context.torkk.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                   const SizedBox(height: 24),
 
-                  const Text(
+                  TText(
                     'Issue Type',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: Colors.black87,
+                      color: context.torkk.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: context.torkk.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.black12),
+                      border: Border.all(color: context.torkk.border),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
@@ -164,7 +170,7 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
                         items: _issueTypes.map((type) {
                           return DropdownMenuItem(
                             value: type,
-                            child: Text(type),
+                            child: TText(type),
                           );
                         }).toList(),
                       ),
@@ -172,12 +178,12 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  const Text(
+                  TText(
                     'Description',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: Colors.black87,
+                      color: context.torkk.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -185,12 +191,12 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
                     controller: _descController,
                     maxLines: 6,
                     decoration: InputDecoration(
-                      hintText: 'Provide details about the issue...',
+                      hintText: AppTranslations.t('Provide details about the issue...'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: context.torkk.surface,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -206,7 +212,7 @@ class _DriverReportIssueScreenState extends State<DriverReportIssueScreen> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text(
+                      child: const TText(
                         'Submit Report',
                         style: TextStyle(
                           color: Colors.white,

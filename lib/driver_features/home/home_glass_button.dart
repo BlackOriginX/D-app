@@ -1,9 +1,10 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import 'package:rider_app/common/constants/app_colors.dart';
+import 'package:rider_app/driver_features/home/home_brand.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
 
 class HomeGlassButton extends StatelessWidget {
   const HomeGlassButton({
@@ -19,7 +20,10 @@ class HomeGlassButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = context.w(40);
+    final size = context.w(32);
+    final female =
+        Theme.of(context).colorScheme.primary == AppColors.femalePink;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -35,33 +39,26 @@ class HomeGlassButton extends StatelessWidget {
             ),
           ],
         ),
-        child: ClipOval(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0x33FFFFFF),
-                border: Border.all(
-                  color: const Color(0xFFF1F5F9),
-                  width: context.w(1.07),
-                ),
-              ),
-              child: asset != null
-                  ? Image.asset(
-                      asset!,
-                      width: context.w(20),
-                      height: context.w(20),
-                      fit: BoxFit.contain,
-                    )
-                  : Icon(
-                      icon,
-                      size: context.w(20),
-                      color: AppColors.textPrimary,
-                    ),
-            ),
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: homeHelpButtonFill(female),
+            border: Border.all(color: homeHelpButtonBorder, width: 1),
           ),
+          child: asset != null
+              ? Image.asset(
+                  asset!,
+                  width: context.w(17),
+                  height: context.w(17),
+                  fit: BoxFit.contain,
+                  color: Colors.white,
+                )
+              : Icon(
+                  icon,
+                  size: context.w(17),
+                  color: context.torkk.textPrimary,
+                ),
         ),
       ),
     );

@@ -8,11 +8,14 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/app_confirm_dialog.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/driver_features/settings/legal/legal_documents_screen.dart';
 import 'package:rider_app/driver_features/settings/screens/driver_appearance_screen.dart';
 import 'package:rider_app/driver_features/settings/screens/privacy_security_screen.dart';
 import 'package:rider_app/driver_features/settings/screens/settings_language_screen.dart';
 
 import '../../../common/constants/string_constants.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class DriverSettingsScreen extends StatelessWidget {
   const DriverSettingsScreen({super.key, this.onClose});
@@ -21,17 +24,21 @@ class DriverSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = profileAccent(context);
     return ProfilePage(
       title: AppStrings.settings,
       onBack: onClose,
       child: ListView(
-        padding: EdgeInsets.fromLTRB(context.w(20), context.h(12), context.w(20), context.h(20)),
+        padding: EdgeInsets.fromLTRB(
+          context.w(20),
+          context.h(12),
+          context.w(20),
+          context.h(20),
+        ),
         children: [
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(context.r(16)),
-              border: Border.all(color: const Color(0xFFE8EDF5)),
+              border: Border.all(color: context.torkk.border),
             ),
             child: Column(
               children: [
@@ -45,6 +52,12 @@ class DriverSettingsScreen extends StatelessWidget {
                   icon: Icons.verified_user_outlined,
                   label: AppStrings.privacyPolicy,
                   onTap: () => _open(context, const PrivacySecurityScreen()),
+                ),
+                const _SettingsDivider(),
+                _SettingsRow(
+                  icon: Icons.gavel_rounded,
+                  label: 'Legal & Policies',
+                  onTap: () => _open(context, const LegalDocumentsScreen()),
                 ),
                 const _SettingsDivider(),
                 _SettingsRow(
@@ -96,11 +109,9 @@ class _SettingsRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    this.iconColor = AppColors.textPrimary,
   });
 
   final IconData icon;
-  final Color iconColor;
   final String label;
   final VoidCallback onTap;
 
@@ -109,18 +120,28 @@ class _SettingsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: context.w(14), vertical: context.h(14)),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.w(14),
+          vertical: context.h(14),
+        ),
         child: Row(
           children: [
-            Icon(icon, color: iconColor, size: context.w(20)),
+            Icon(icon, color: context.torkk.textPrimary, size: context.w(20)),
             SizedBox(width: context.w(12)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
-                style: AppTypography.regular.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
+                style: AppTypography.regular.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: AppColors.slate400, size: context.w(22)),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.slate400,
+              size: context.w(22),
+            ),
           ],
         ),
       ),
@@ -133,6 +154,6 @@ class _SettingsDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Divider(height: 1, thickness: 1, color: Color(0xFFF1F5F9));
+    return Divider(height: 1, thickness: 1, color: context.torkk.border);
   }
 }

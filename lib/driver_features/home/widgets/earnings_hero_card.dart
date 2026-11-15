@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Reusable gradient hero card showing today's earnings on the home dashboard.
 class EarningsHeroCard extends StatelessWidget {
   final double earnings;
   final VoidCallback? onTap;
 
-  const EarningsHeroCard({
-    super.key,
-    required this.earnings,
-    this.onTap,
-  });
+  const EarningsHeroCard({super.key, required this.earnings, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,7 @@ class EarningsHeroCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
+            const TText(
               'Earnings',
               style: TextStyle(
                 color: Colors.white,
@@ -47,7 +44,7 @@ class EarningsHeroCard extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            Text(
+            TText(
               '₹ ${earnings.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: Colors.white,

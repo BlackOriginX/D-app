@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
@@ -6,14 +7,84 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/coins/screens/coins_screen.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/subscription/screens/subscription_screen.dart';
+import 'package:rider_app/driver_features/parcels/new_feature_coming_soon_screen.dart';
+import 'package:rider_app/driver_features/wallet/wallet_format.dart';
 import 'package:rider_app/driver_features/wallet/wallet_pages.dart';
+import 'package:rider_app/service/driver_api_service.dart';
 
 import '../../common/constants/string_constants.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
-class WalletScreen extends StatelessWidget {
+class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key, this.onBack});
 
   final VoidCallback? onBack;
+
+  @override
+  State<WalletScreen> createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends State<WalletScreen> {
+  VoidCallback? get onBack => widget.onBack;
+
+  bool _loading = true;
+  double _balance = 0;
+  double _todayEarnings = 0;
+  double _weekEarnings = 0;
+  int _todayTrips = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final phone =
+        prefs.getString('user_phone') ?? prefs.getString('phone') ?? '';
+    if (phone.isEmpty) {
+      if (mounted) setState(() => _loading = false);
+      return;
+    }
+
+    // Wallet and earnings are independent, so one failing doesn't block the other.
+    final results = await Future.wait<Map<String, dynamic>?>([
+      DriverApiService.fetchWallet(
+        phone,
+      ).then<Map<String, dynamic>?>((v) => v).catchError((Object e) {
+        debugPrint('Error fetching wallet: $e');
+        return null;
+      }),
+      DriverApiService.fetchEarnings(
+        phone,
+      ).then<Map<String, dynamic>?>((v) => v).catchError((Object e) {
+        debugPrint('Error fetching earnings: $e');
+        return null;
+      }),
+    ]);
+    final wallet = results[0] ?? const <String, dynamic>{};
+    final earnings = results[1] ?? const <String, dynamic>{};
+    debugPrint('[WALLET] $wallet');
+
+    if (!mounted) return;
+    setState(() {
+      _balance =
+          pickAmount(wallet, [
+            'balance',
+            'wallet_balance',
+            'available_balance',
+            'available_cash',
+            'cash_balance',
+          ]) ??
+          0;
+      _todayEarnings = pickAmount(earnings, ['today_earnings']) ?? 0;
+      _weekEarnings = pickAmount(earnings, ['week_earnings']) ?? 0;
+      _todayTrips = (pickAmount(earnings, ['today_trips']) ?? 0).round();
+      _loading = false;
+    });
+  }
 
   void _open(BuildContext context, Widget screen) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => screen));
@@ -21,50 +92,104 @@ class WalletScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return ProfilePage(
+        title: AppStrings.walletEarning,
+        showAiChat: false,
+        onBack: onBack,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
     return ProfilePage(
       title: AppStrings.walletEarning,
+      showAiChat: false,
       onBack: onBack,
-      child: ListView(
-        padding: EdgeInsets.fromLTRB(context.w(20), context.h(8), context.w(20), context.h(20)),
-        children: [
-          const _BalanceCard(),
-          SizedBox(height: context.h(12)),
-          Row(
-            children: [
-              Expanded(child: _statCard(context, "Today's Earnings", '₹680.00', Icons.account_balance_wallet_outlined, const Color(0xFFF59E0B))),
-              SizedBox(width: context.w(10)),
-              Expanded(child: _statCard(context, 'This Week', '₹3,420.00', Icons.calendar_today_outlined, const Color(0xFFF59E0B))),
-            ],
+      child: RefreshIndicator(
+        onRefresh: _load,
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            context.w(20),
+            context.h(8),
+            context.w(20),
+            context.h(20),
           ),
-          SizedBox(height: context.h(18)),
-          _actions(context),
-          SizedBox(height: context.h(18)),
-          Text(AppStrings.activePlan, style: AppTypography.regular.copyWith(fontSize: 14, fontWeight: FontWeight.w600)),
-          SizedBox(height: context.h(8)),
-          _activePlan(context),
-        ],
+          children: [
+            _BalanceCard(balance: _balance, trips: _todayTrips),
+            SizedBox(height: context.h(12)),
+            Row(
+              children: [
+                Expanded(
+                  child: _statCard(
+                    context,
+                    "Today's Earnings",
+                    rupees(_todayEarnings),
+                    Icons.account_balance_wallet_outlined,
+                    const Color(0xFFF59E0B),
+                  ),
+                ),
+                SizedBox(width: context.w(10)),
+                Expanded(
+                  child: _statCard(
+                    context,
+                    'This Week',
+                    rupees(_weekEarnings),
+                    Icons.calendar_today_outlined,
+                    const Color(0xFFF59E0B),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: context.h(18)),
+            _actions(context),
+            // SizedBox(height: context.h(18)),
+            // TText(AppStrings.activePlan, style: AppTypography.regular.copyWith(fontSize: 14, fontWeight: FontWeight.w600)),
+            // SizedBox(height: context.h(8)),
+            // _activePlan(context),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _statCard(BuildContext context, String label, String value, IconData icon, Color iconColor) {
+  Widget _statCard(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+    Color iconColor,
+  ) {
     return Container(
       padding: EdgeInsets.all(context.w(12)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.r(16)),
-        border: Border.all(color: const Color(0xFFE8EDF5)),
+        border: Border.all(color: context.torkk.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Expanded(child: Text(label, style: AppTypography.regular.copyWith(fontSize: 12, color: AppColors.slate500))),
+              Expanded(
+                child: TText(
+                  label,
+                  style: AppTypography.regular.copyWith(
+                    fontSize: 12,
+                    color: context.torkk.textSecondary,
+                  ),
+                ),
+              ),
               Icon(icon, size: context.w(16), color: iconColor),
             ],
           ),
           SizedBox(height: context.h(6)),
-          Text(value, style: AppTypography.bold.copyWith(fontSize: 18, height: 1.2, letterSpacing: -0.3)),
+          TText(
+            value,
+            style: AppTypography.bold.copyWith(
+              fontSize: 18,
+              height: 1.2,
+              letterSpacing: -0.3,
+            ),
+          ),
         ],
       ),
     );
@@ -72,12 +197,49 @@ class WalletScreen extends StatelessWidget {
 
   Widget _actions(BuildContext context) {
     final items = [
-      _Action(Icons.description_outlined, const Color(0xFF7C3AED), const Color(0xFFF3E8FF), AppStrings.transactionHistory, () => _open(context, const TransactionHistoryScreen())),
-      _Action(Icons.account_balance_outlined, const Color(0xFF7C3AED), const Color(0xFFF3E8FF), AppStrings.payouts, () => _open(context, const PayoutsScreen())),
-      _Action(Icons.account_balance_rounded, const Color(0xFFDB2777), const Color(0xFFFCE7F3), AppStrings.BankAccount, () => _open(context, const BankAccountScreen())),
-      _Action(Icons.credit_card_rounded, const Color(0xFFDB2777), const Color(0xFFFCE7F3), AppStrings.rechargeSubscription, () => _open(context, const SubscriptionScreen())),
-      _Action(Icons.currency_rupee_rounded, const Color(0xFF7C3AED), const Color(0xFFF3E8FF), AppStrings.earnings, () => _open(context, const EarningsScreen())),
-      _Action(Icons.toll_rounded, const Color(0xFFF59E0B), const Color(0xFFFEF3C7), AppStrings.torkkCoins, () => _open(context, const CoinsScreen())),
+      _Action(
+        Icons.description_outlined,
+        const Color(0xFF7C3AED),
+        const Color(0xFFF3E8FF),
+        AppStrings.transactionHistory,
+        () => _open(context, const TransactionHistoryScreen()),
+      ),
+      _Action(
+        Icons.account_balance_outlined,
+        const Color(0xFF7C3AED),
+        const Color(0xFFF3E8FF),
+        AppStrings.payouts,
+        () => _open(context, const PayoutsScreen()),
+      ),
+      _Action(
+        Icons.account_balance_rounded,
+        const Color(0xFFDB2777),
+        const Color(0xFFFCE7F3),
+        AppStrings.BankAccount,
+        () => _open(context, const BankAccountScreen()),
+      ),
+      _Action(
+        Icons.credit_card_rounded,
+        const Color(0xFFDB2777),
+        const Color(0xFFFCE7F3),
+        AppStrings.rechargeSubscription,
+        () => _open(context, const NewFeatureComingSoonScreen()),
+      ), // coming soon for now
+      // Previous navigation: () => _open(context, const SubscriptionScreen())
+      _Action(
+        Icons.currency_rupee_rounded,
+        const Color(0xFF7C3AED),
+        const Color(0xFFF3E8FF),
+        AppStrings.earnings,
+        () => _open(context, const EarningsScreen()),
+      ),
+      _Action(
+        Icons.toll_rounded,
+        const Color(0xFFF59E0B),
+        const Color(0xFFFEF3C7),
+        AppStrings.torkkCoins,
+        () => _open(context, const CoinsScreen()),
+      ),
     ];
     return GridView.count(
       crossAxisCount: 4,
@@ -98,14 +260,21 @@ class WalletScreen extends StatelessWidget {
           Container(
             width: context.w(48),
             height: context.w(48),
-            decoration: BoxDecoration(color: item.background, borderRadius: BorderRadius.circular(context.r(16))),
+            decoration: BoxDecoration(
+              color: item.background,
+              borderRadius: BorderRadius.circular(context.r(16)),
+            ),
             child: Icon(item.icon, color: item.color, size: context.w(22)),
           ),
           SizedBox(height: context.h(6)),
-          Text(
+          TText(
             item.label,
             textAlign: TextAlign.center,
-            style: AppTypography.regular.copyWith(fontSize: 11, height: 1.2, color: AppColors.textPrimary),
+            style: AppTypography.regular.copyWith(
+              fontSize: 11,
+              height: 1.2,
+              color: context.torkk.textPrimary,
+            ),
           ),
         ],
       ),
@@ -119,28 +288,58 @@ class WalletScreen extends StatelessWidget {
         padding: EdgeInsets.all(context.w(12)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(context.r(16)),
-          border: Border.all(color: const Color(0xFFE8EDF5)),
+          border: Border.all(color: context.torkk.border),
         ),
         child: Row(
           children: [
             Container(
               width: context.w(36),
               height: context.w(36),
-              decoration: BoxDecoration(color: const Color(0xFFF3E8FF), borderRadius: BorderRadius.circular(context.r(10))),
-              child: Icon(Icons.confirmation_number_outlined, color: const Color(0xFF7C3AED), size: context.w(18)),
+              decoration: BoxDecoration(
+                color: context.adaptiveTint(const Color(0xFFF3E8FF)),
+                borderRadius: BorderRadius.circular(context.r(10)),
+              ),
+              child: Icon(
+                Icons.confirmation_number_outlined,
+                color: context.legible(Color(0xFF7C3AED)),
+                size: context.w(18),
+              ),
             ),
             SizedBox(width: context.w(10)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(AppStrings.standardDriverPlan, style: AppTypography.regular.copyWith(fontSize: 14, fontWeight: FontWeight.w600)),
-                  Text(AppStrings.perMonth, style: AppTypography.bold.copyWith(fontSize: 13, height: 1.3, letterSpacing: -0.2)),
-                  Text(AppStrings.validTill24Aug, style: AppTypography.regular.copyWith(fontSize: 12, color: AppColors.slate500)),
+                  TText(
+                    AppStrings.standardDriverPlan,
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TText(
+                    AppStrings.perMonth,
+                    style: AppTypography.bold.copyWith(
+                      fontSize: 13,
+                      height: 1.3,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  TText(
+                    AppStrings.validTill24Aug,
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 12,
+                      color: context.torkk.textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: AppColors.slate400, size: context.w(20)),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.slate400,
+              size: context.w(20),
+            ),
           ],
         ),
       ),
@@ -149,7 +348,10 @@ class WalletScreen extends StatelessWidget {
 }
 
 class _BalanceCard extends StatelessWidget {
-  const _BalanceCard();
+  const _BalanceCard({required this.balance, required this.trips});
+
+  final double balance;
+  final int trips;
 
   @override
   Widget build(BuildContext context) {
@@ -168,20 +370,52 @@ class _BalanceCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(AppStrings.availableCash, style: AppTypography.regular.copyWith(fontSize: 13, color: Colors.white70))),
+              Expanded(
+                child: TText(
+                  AppStrings.availableCash,
+                  style: AppTypography.regular.copyWith(
+                    fontSize: 13,
+                    color: Colors.white70,
+                  ),
+                ),
+              ),
               Container(
                 width: context.w(32),
                 height: context.w(32),
-                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(context.r(10))),
-                child: Icon(Icons.show_chart_rounded, color: Colors.white, size: context.w(16)),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(context.r(10)),
+                ),
+                child: Icon(
+                  Icons.show_chart_rounded,
+                  color: Colors.white,
+                  size: context.w(16),
+                ),
               ),
             ],
           ),
-          Text('₹1,840', style: AppTypography.bold.copyWith(fontSize: 28, height: 1.2, color: Colors.white, letterSpacing: -0.6)),
-          Text('12 rides', style: AppTypography.regular.copyWith(fontSize: 12, color: Colors.white70)),
+          TText(
+            rupees(balance, decimals: 0),
+            style: AppTypography.bold.copyWith(
+              fontSize: 28,
+              height: 1.2,
+              color: Colors.white,
+              letterSpacing: -0.6,
+            ),
+          ),
+          TText(
+            trips == 1 ? '1 ride' : '$trips rides',
+            style: AppTypography.regular.copyWith(
+              fontSize: 12,
+              color: Colors.white70,
+            ),
+          ),
           SizedBox(height: context.h(14)),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: context.w(12), vertical: context.h(10)),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.w(12),
+              vertical: context.h(10),
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.16),
               borderRadius: BorderRadius.circular(context.r(12)),
@@ -189,11 +423,28 @@ class _BalanceCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(AppStrings.todaysCompletedJobs, style: AppTypography.regular.copyWith(fontSize: 13, color: Colors.white)),
+                  child: TText(
+                    AppStrings.todaysCompletedJobs,
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 13,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                Text('12', style: AppTypography.bold.copyWith(fontSize: 16, height: 1, color: Colors.white)),
+                TText(
+                  '$trips',
+                  style: AppTypography.bold.copyWith(
+                    fontSize: 16,
+                    height: 1,
+                    color: Colors.white,
+                  ),
+                ),
                 SizedBox(width: context.w(8)),
-                Icon(Icons.directions_car_filled_rounded, color: Colors.white, size: context.w(18)),
+                Icon(
+                  Icons.directions_car_filled_rounded,
+                  color: Colors.white,
+                  size: context.w(18),
+                ),
               ],
             ),
           ),

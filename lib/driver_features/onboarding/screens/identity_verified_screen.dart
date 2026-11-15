@@ -6,6 +6,8 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class IdentityVerifiedScreen extends StatelessWidget {
   final VoidCallback onContinue;
@@ -15,10 +17,15 @@ class IdentityVerifiedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(context.w(24), context.h(48), context.w(24), context.h(16)),
+          padding: EdgeInsets.fromLTRB(
+            context.w(24),
+            context.h(48),
+            context.w(24),
+            context.h(16),
+          ),
           child: Column(
             children: [
               Image.asset(
@@ -27,31 +34,44 @@ class IdentityVerifiedScreen extends StatelessWidget {
                 height: context.w(96),
               ),
               SizedBox(height: context.h(16)),
-              Text(
+              TText(
                 AppStrings.identityVerified,
                 style: AppTypography.bold.copyWith(fontSize: 22, height: 1.2),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 AppStrings.identityVerifiedSubtitle,
                 textAlign: TextAlign.center,
-                style: AppTypography.regular.copyWith(color: AppColors.secondaryTextColor, fontSize: 14),
+                style: AppTypography.regular.copyWith(
+                  color: context.torkk.textSecondary,
+                  fontSize: 14,
+                ),
               ),
               const Spacer(),
               Row(
                 children: [
-                  Icon(Icons.verified, color: AppColors.green600, size: context.w(18)),
+                  Icon(
+                    Icons.verified,
+                    color: AppColors.green600,
+                    size: context.w(18),
+                  ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.documentsSecurelyVerified,
-                      style: AppTypography.regular.copyWith(fontSize: 13, color: AppColors.green700),
+                      style: AppTypography.regular.copyWith(
+                        fontSize: 13,
+                        color: context.legible(AppColors.green700),
+                      ),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: context.h(16)),
-              UnifiedButton(label: AppStrings.continueAction, onPressed: onContinue),
+              UnifiedButton(
+                label: AppStrings.continueAction,
+                onPressed: onContinue,
+              ),
             ],
           ),
         ),

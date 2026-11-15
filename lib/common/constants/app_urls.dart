@@ -17,34 +17,100 @@ class AppUrls {
   static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
   // ---------------------------------------------------------------------------
-  // Authentication & Verification Endpoints
+  // ONBOARDING APIs (login, KYC, vehicle, bank, face, profile submission)
+  // Every call to these URLs prints before/after lines starting with
+  // `ONB_API` (see service/onboarding_api_log.dart). Filter the console by it.
   // ---------------------------------------------------------------------------
-  static const String sendOtp = '$apiBase/auth/send-otp';
-  static const String verifyOtp = '$apiBase/auth/verify-otp';
-  static const String verifyAuthFallback = '$apiBase/auth/verify';
-  static const String verifyDriverOtpFallback = '$apiBase/driver/verify-otp';
 
+  // 1. Login (OTP)
+  static const String sendOtp = '$apiBase/auth/send-otp';
+  static const String verifyOtp = '$apiBase/driver/auth/verify-otp';
+
+  // 2. Vehicle type selection
+  static const String updateVehicleType = '$apiBase/driver/update-vehicle';
+
+  // 3. KYC: Aadhaar + PAN, DigiLocker, Driving Licence, Vehicle RC
   static const String verifyAadhaar = '$apiBase/driver/verify-aadhaar';
-  static const String verifyAadhaarFallback = '$apiBase/verify-aadhaar';
+  static const String digilockerStart = '$apiBase/kyc/driver/digilocker/start';
+  static const String digilockerDownload =
+      '$apiBase/kyc/driver/digilocker/fetch';
   static const String verifyDl = '$apiBase/driver/verify-dl';
   static const String verifyRc = '$apiBase/driver/verify-rc';
 
+  // 4. KYC: Vehicle photos and insurance
+  static const String vehicleInfo = '$apiBase/driver/vehicle/info';
+  static const String vehiclePhotos = '$apiBase/driver/vehicle/photos';
+  static String vehiclePhotoReplace(String type) =>
+      '$vehiclePhotos/${Uri.encodeComponent(type)}';
+  static const String vehicleInsurance = '$apiBase/driver/vehicle/insurance';
+
+  // 5. KYC: Face verification
+  static const String kycLiveness = '$apiBase/kyc/liveness';
+
+  // 6. KYC: Bank details
+  static const String bankDetails = '$apiBase/driver/bank-details';
+  static const String findIfsc = '$apiBase/bank/find-ifsc';
+
+  // 7. Profile review and submission
+  static const String driverRegister = '$apiBase/driver/register';
+  static const String updateProfile = '$apiBase/driver/profile';
+  static const String uploadProfilePhoto = '$apiBase/driver/upload-photo';
+
   // ---------------------------------------------------------------------------
-  // DigiLocker KYC Endpoints
+  // Service Area (Delhi NCR launch)
   // ---------------------------------------------------------------------------
-  static const String digilockerStart = '$apiBase/kyc/digilocker/start';
-  static const String digilockerDownload = '$apiBase/kyc/digilocker/download';
+  // Service-area check (Delhi NCR launch) and the "Notify me" sign-up.
+  static const String locationCheck = '$baseUrl/api/v1/location/check';
+  static const String locationNotifyMe = '$baseUrl/api/v1/location/notify-me';
 
   // ---------------------------------------------------------------------------
   // Driver Registration & Profile Endpoints
   // ---------------------------------------------------------------------------
-  static const String driverRegister = '$apiBase/driver/register';
-  static const String updateProfile = '$apiBase/driver/update-profile';
-  static const String updateVehicleType = '$apiBase/driver/update-vehicle-type';
-  static const String uploadProfilePhoto = '$apiBase/driver/upload-profile-photo';
+  static const String driverSchedule = '$apiBase/driver/schedule';
+
+  static const String chatStart = '$apiBase/chat/start';
+  static const String chatMessage = '$apiBase/chat/message';
+  static String chatHistory(String conversationId) =>
+      '$apiBase/chat/${Uri.encodeComponent(conversationId)}/history';
+  static const String updateContact = '$apiBase/driver/profile/contact';
   static const String updateLocation = '$apiBase/driver/update-location';
   static const String onlineStatus = '$apiBase/driver/online-status';
   static const String reportIssue = '$apiBase/driver/report-issue';
+
+  // Emergency contacts
+  static String emergencyContacts(String phone) =>
+      '$apiBase/user/emergency-contacts?phone=${Uri.encodeComponent(phone)}';
+  static const String saveEmergencyContacts =
+      '$apiBase/user/emergency-contacts/save';
+
+  // Coins
+  static const String coinsAccount = '$apiBase/coins/account';
+  static String coinsLedger(String type, {int limit = 20}) =>
+      '$apiBase/coins/ledger?type=${Uri.encodeComponent(type)}&limit=$limit';
+  static const String coinsEarningRules = '$apiBase/driver/coins/earning-rules';
+  static const String coinsMilestones = '$apiBase/driver/coins/milestones';
+  static const String coinsDailyMissions =
+      '$apiBase/driver/coins/daily-missions';
+  static const String scratchCardAvailable =
+      '$apiBase/coins/scratch-cards/available';
+  static String scratchCardClaim(String cardId) =>
+      '$apiBase/coins/scratch-cards/${Uri.encodeComponent(cardId)}/claim';
+
+  // SOS
+  static const String sosStart = '$apiBase/safety/sos';
+  static const String sosStop = '$apiBase/safety/stop-sos';
+
+  // Support tickets
+  static const String supportCategories = '$apiBase/driver/support/categories';
+  static String supportProblems(String categoryId) =>
+      '$supportCategories/${Uri.encodeComponent(categoryId)}/problems';
+  static const String supportTickets = '$apiBase/driver/support/tickets';
+  static String supportTicket(String ticketId) =>
+      '$supportTickets/${Uri.encodeComponent(ticketId)}';
+  static String supportTicketFollowUp(String ticketId) =>
+      '${supportTicket(ticketId)}/follow-up';
+  static String supportTicketReopen(String ticketId) =>
+      '${supportTicket(ticketId)}/reopen';
 
   static String driverProfile(String phone) =>
       '$apiBase/driver/profile?phone=${Uri.encodeComponent(phone)}';
@@ -58,6 +124,20 @@ class AppUrls {
   static String driverTrips(String phone) =>
       '$apiBase/driver/trips?phone=${Uri.encodeComponent(phone)}';
 
+  /// `type`: current | completed | cancelled | scheduled.
+  static String driverOrders({required String type}) =>
+      '$apiBase/driver/orders?type=${Uri.encodeComponent(type)}';
+
+  /// `type`: ride | parcel.
+  static String driverOrderDetail({required Object id, required String type}) =>
+      '$apiBase/driver/orders/${Uri.encodeComponent(id.toString())}?type=${Uri.encodeComponent(type)}';
+
+  static String transactionDetails(String transactionId) =>
+      '$apiBase/driver/wallet/transactions/${Uri.encodeComponent(transactionId)}';
+
+  static String transactionHistory(String phone) =>
+      '$apiBase/driver/wallet/transactions?phone=${Uri.encodeComponent(phone)}';
+
   // ---------------------------------------------------------------------------
   // Ride Management Endpoints
   // ---------------------------------------------------------------------------
@@ -70,9 +150,9 @@ class AppUrls {
 
   static String activeRides({required String driverPhone, String city = ''}) {
     if (city.isEmpty) {
-      return '$apiBase/driver/active-rides?driver_phone=${Uri.encodeComponent(driverPhone)}';
+      return '$apiBase/driver/rides/active?driver_phone=${Uri.encodeComponent(driverPhone)}';
     }
-    return '$apiBase/driver/active-rides?driver_phone=${Uri.encodeComponent(driverPhone)}&city=${Uri.encodeComponent(city)}';
+    return '$apiBase/driver/rides/active?driver_phone=${Uri.encodeComponent(driverPhone)}&city=${Uri.encodeComponent(city)}';
   }
 
   static String rideDetail({
@@ -86,13 +166,18 @@ class AppUrls {
   // ---------------------------------------------------------------------------
   static const String fcmToken = '$apiBase/fcm-token';
 
+  // Driver notifications (list, read state and preferences).
+  static const String notificationPreferences =
+      '$apiBase/driver/notification-preferences';
+  static String driverNotifications({int page = 1, int limit = 20}) =>
+      '$apiBase/driver/notifications?page=$page&limit=$limit';
+  static String notificationRead(String id) =>
+      '$apiBase/driver/notifications/${Uri.encodeComponent(id)}/read';
+
   // ---------------------------------------------------------------------------
   // Realtime WebSocket Endpoints
   // ---------------------------------------------------------------------------
-  static String chatWebSocket({
-    required String phone,
-    String rideId = '0',
-  }) =>
+  static String chatWebSocket({required String phone, String rideId = '0'}) =>
       '$wsBase/ws/chat?phone=${Uri.encodeComponent(phone)}&ride_id=$rideId';
 
   // ---------------------------------------------------------------------------
@@ -100,6 +185,14 @@ class AppUrls {
   // ---------------------------------------------------------------------------
   static String geminiGenerateContent(String apiKey) =>
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=$apiKey';
+
+  static String googleReverseGeocode({
+    required double lat,
+    required double lng,
+    required String apiKey,
+  }) =>
+      'https://maps.googleapis.com/maps/api/geocode/json'
+      '?latlng=$lat,$lng&key=$apiKey';
 
   static String googleDirections({
     required double originLat,
@@ -131,10 +224,7 @@ class AppUrls {
   }) =>
       'https://www.google.com/maps/dir/?api=1&destination=$destLat,$destLng&travelmode=driving';
 
-  static String googleMapsSearch({
-    required double lat,
-    required double lng,
-  }) =>
+  static String googleMapsSearch({required double lat, required double lng}) =>
       'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
 
   static String upiQrCode({

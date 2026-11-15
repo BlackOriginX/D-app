@@ -6,6 +6,8 @@ import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/onboarding_step_scaffold.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class DocumentValidationScreen extends StatelessWidget {
   final String title;
@@ -30,7 +32,12 @@ class DocumentValidationScreen extends StatelessWidget {
       onBack: onBack,
       onHelp: onHelp,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(context.w(24), context.h(24), context.w(24), context.h(16)),
+        padding: EdgeInsets.fromLTRB(
+          context.w(24),
+          context.h(24),
+          context.w(24),
+          context.h(16),
+        ),
         child: Column(
           children: [
             const _DocumentSketch(),
@@ -38,19 +45,29 @@ class DocumentValidationScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.info, color: AppColors.error, size: context.w(16)),
+                Icon(
+                  Icons.info,
+                  color: context.legible(AppColors.error),
+                  size: context.w(16),
+                ),
                 SizedBox(width: context.w(6)),
-                Text(
+                TText(
                   title,
-                  style: AppTypography.regular.copyWith(color: AppColors.error, fontSize: 14),
+                  style: AppTypography.regular.copyWith(
+                    color: context.legible(AppColors.error),
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
             SizedBox(height: context.h(6)),
-            Text(
+            TText(
               message,
               textAlign: TextAlign.center,
-              style: AppTypography.regular.copyWith(color: AppColors.secondaryTextColor, fontSize: 13),
+              style: AppTypography.regular.copyWith(
+                color: context.torkk.textSecondary,
+                fontSize: 13,
+              ),
             ),
             const Spacer(),
             UnifiedButton(label: AppStrings.retake, onPressed: onRetake),
@@ -71,7 +88,7 @@ class _DocumentSketch extends StatelessWidget {
       height: context.h(130),
       padding: EdgeInsets.all(context.w(16)),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F7FB),
+        color: context.adaptiveTint(const Color(0xFFF4F7FB)),
         borderRadius: BorderRadius.circular(context.r(16)),
       ),
       child: Row(
@@ -79,8 +96,15 @@ class _DocumentSketch extends StatelessWidget {
           Container(
             width: context.w(48),
             height: context.w(48),
-            decoration: const BoxDecoration(color: Color(0xFFE7EEF6), shape: BoxShape.circle),
-            child: Icon(Icons.person, color: const Color(0xFFC5D0DE), size: context.w(28)),
+            decoration: BoxDecoration(
+              color: context.adaptiveTint(Color(0xFFE7EEF6)),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.person,
+              color: const Color(0xFFC5D0DE),
+              size: context.w(28),
+            ),
           ),
           SizedBox(width: context.w(14)),
           Expanded(
@@ -107,7 +131,10 @@ class _DocumentSketch extends StatelessWidget {
         widthFactor: widthFactor,
         child: Container(
           height: context.h(8),
-          decoration: BoxDecoration(color: const Color(0xFFE3EAF2), borderRadius: BorderRadius.circular(6)),
+          decoration: BoxDecoration(
+            color: context.adaptiveTint(const Color(0xFFE3EAF2)),
+            borderRadius: BorderRadius.circular(6),
+          ),
         ),
       ),
     );

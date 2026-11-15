@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 void showLocationDetailBottomSheet({
   required BuildContext context,
@@ -17,8 +19,8 @@ void showLocationDetailBottomSheet({
     builder: (context) {
       return Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: context.torkk.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: Column(
@@ -47,12 +49,12 @@ void showLocationDetailBottomSheet({
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text(
+                TText(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F172A),
+                    color: context.torkk.textPrimary,
                   ),
                 ),
                 const Spacer(),
@@ -66,7 +68,7 @@ void showLocationDetailBottomSheet({
                       color: color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
+                    child: TText(
                       distanceText,
                       style: TextStyle(
                         fontSize: 13,
@@ -78,7 +80,7 @@ void showLocationDetailBottomSheet({
               ],
             ),
             const SizedBox(height: 16),
-            const Text(
+            const TText(
               'FULL ADDRESS DETAILS',
               style: TextStyle(
                 fontSize: 11,
@@ -90,10 +92,10 @@ void showLocationDetailBottomSheet({
             const SizedBox(height: 6),
             SelectableText(
               address.isNotEmpty ? address : 'No address provided',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF334155),
+                color: context.torkk.textBody,
                 height: 1.4,
               ),
             ),
@@ -122,7 +124,7 @@ void showLocationDetailBottomSheet({
                         }
                       },
                       icon: const Icon(Icons.navigation_rounded, size: 20),
-                      label: const Text(
+                      label: const TText(
                         'Navigate in Maps',
                         style: TextStyle(
                           fontSize: 15,
@@ -130,7 +132,7 @@ void showLocationDetailBottomSheet({
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1D4ED8),
+                        backgroundColor: context.brandColor,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),

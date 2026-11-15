@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class TripSummarySlider extends StatefulWidget {
   final bool completing;
@@ -35,8 +36,10 @@ class _TripSummarySliderState extends State<TripSummarySlider> {
             alignment: Alignment.centerLeft,
             children: [
               Center(
-                child: Text(
-                  widget.completing ? 'Processing...' : 'Slide to Finish the Ride',
+                child: TText(
+                  widget.completing
+                      ? 'Processing...'
+                      : 'Slide to Finish the Ride',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

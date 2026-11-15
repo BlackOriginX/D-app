@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 // --- DRIVER SUBSCRIPTION PASS SCREEN (Coming Soon) ---
 class DriverSubscriptionPassScreen extends StatelessWidget {
@@ -6,12 +9,12 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? const Color(0xFF0F172A) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final subTextColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final bgColor = context.torkk.background;
+    final textColor = context.torkk.textPrimary;
+    final subTextColor = context.torkk.textSecondary;
 
     return Scaffold(
+      floatingActionButton: const AiChatButton(size: 48),
       backgroundColor: bgColor,
       body: SafeArea(
         child: Stack(
@@ -26,7 +29,10 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1E293B) : const Color(0xFF475569),
+                    color: context.themed(
+                      light: const Color(0xFF475569),
+                      dark: context.torkk.surface,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -59,7 +65,7 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
                             width: 36,
                             height: 6,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.torkk.surface,
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -67,7 +73,7 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    Text(
+                    TText(
                       'Coming Soon',
                       style: TextStyle(
                         fontSize: 26,
@@ -77,7 +83,7 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    TText(
                       'This feature is coming in next update',
                       style: TextStyle(
                         fontSize: 16,
@@ -96,4 +102,3 @@ class DriverSubscriptionPassScreen extends StatelessWidget {
     );
   }
 }
-

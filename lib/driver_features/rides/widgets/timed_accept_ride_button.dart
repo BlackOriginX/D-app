@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Animated accept ride button featuring a 20-second timeout countdown
 /// and left-to-right filling blue progress bar.
@@ -32,9 +33,10 @@ class _TimedAcceptRideButtonState extends State<TimedAcceptRideButton>
       vsync: this,
       duration: Duration(seconds: widget.timeoutSeconds),
     );
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.linear),
-    );
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -85,10 +87,7 @@ class _TimedAcceptRideButtonState extends State<TimedAcceptRideButton>
                     child: Container(
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF2563EB),
-                            Color(0xFF1D4ED8),
-                          ],
+                          colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
                         ),
                       ),
                     ),
@@ -100,7 +99,7 @@ class _TimedAcceptRideButtonState extends State<TimedAcceptRideButton>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    const TText(
                       'Accept Ride',
                       style: TextStyle(
                         color: Colors.white,
@@ -124,7 +123,7 @@ class _TimedAcceptRideButtonState extends State<TimedAcceptRideButton>
                             color: Colors.white.withAlpha(40),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
+                          child: TText(
                             '${remaining}s',
                             style: const TextStyle(
                               color: Colors.white,

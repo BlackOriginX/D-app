@@ -5,6 +5,8 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/coins/widgets/coin_bottom_button.dart';
 import 'package:rider_app/driver_features/coins/widgets/coins_text.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CoinConfettiImage extends StatelessWidget {
   const CoinConfettiImage({super.key, required this.asset, required this.size});
@@ -33,7 +35,10 @@ class CoinConfettiImage extends StatelessWidget {
               child: Container(
                 width: 8,
                 height: 8,
-                decoration: BoxDecoration(color: bit.$1, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: bit.$1,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
           Image.asset(asset, width: context.w(size), height: context.w(size)),
@@ -59,14 +64,21 @@ class CoinGiftMark extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Image.asset(AppAssets.giftCard, width: context.w(130), height: context.w(130)),
+              Image.asset(
+                AppAssets.giftCard,
+                width: context.w(130),
+                height: context.w(130),
+              ),
               Positioned(
                 right: context.w(18),
                 bottom: context.h(28),
                 child: Container(
                   width: context.w(22),
                   height: context.w(22),
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
                   child: Icon(icon, color: Colors.white, size: context.w(14)),
                 ),
               ),
@@ -112,25 +124,42 @@ class CoinResultPage extends StatelessWidget {
           if (image != null)
             confetti
                 ? CoinConfettiImage(asset: image!, size: 150)
-                : Image.asset(image!, width: context.w(150), height: context.w(150)),
+                : Image.asset(
+                    image!,
+                    width: context.w(150),
+                    height: context.w(150),
+                  ),
           if (badge)
             Container(
               width: context.w(72),
               height: context.w(72),
-              decoration: const BoxDecoration(color: Color(0xFFFEE2E2), shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: context.adaptiveTint(Color(0xFFFEE2E2)),
+                shape: BoxShape.circle,
+              ),
               alignment: Alignment.center,
               child: Container(
                 width: context.w(48),
                 height: context.w(48),
-                decoration: const BoxDecoration(color: Color(0xFFEF4444), shape: BoxShape.circle),
-                child: const Icon(Icons.priority_high_rounded, color: Colors.white),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFEF4444),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.priority_high_rounded,
+                  color: Colors.white,
+                ),
               ),
             ),
           SizedBox(height: context.h(16)),
-          Text(title, textAlign: TextAlign.center, style: coinsTitle()),
+          TText(title, textAlign: TextAlign.center, style: coinsTitle()),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: context.w(32)),
-            child: Text(body, textAlign: TextAlign.center, style: coinsMuted()),
+            child: TText(
+              body,
+              textAlign: TextAlign.center,
+              style: coinsMuted(context),
+            ),
           ),
           const Spacer(),
         ],

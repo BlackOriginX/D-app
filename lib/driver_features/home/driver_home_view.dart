@@ -5,10 +5,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/home/home_header.dart';
-import 'package:rider_app/driver_features/home/home_location_card.dart';
+import 'package:rider_app/driver_features/home/home_map_style.dart';
 import 'package:rider_app/driver_features/home/home_plan_card.dart';
 import 'package:rider_app/driver_features/home/home_stats_card.dart';
 import 'package:rider_app/driver_features/home/home_status_card.dart';
+import 'package:rider_app/driver_features/home/screens/plan_driving_hours_screen.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/maps/live_map.dart';
+import 'package:rider_app/common/maps/map_icons.dart';
 
 /// Home map and cards shown when the driver is not in an active ride search.
 class DriverHomeView extends StatefulWidget {
@@ -21,7 +25,6 @@ class DriverHomeView extends StatefulWidget {
     required this.completedJobs,
     required this.onToggle,
     required this.onNotifications,
-    required this.onHelp,
     required this.onEarnings,
     required this.onJobs,
     required this.onUpdateLocation,
@@ -36,7 +39,6 @@ class DriverHomeView extends StatefulWidget {
   final int completedJobs;
   final VoidCallback onToggle;
   final VoidCallback onNotifications;
-  final VoidCallback onHelp;
   final VoidCallback onEarnings;
   final VoidCallback onJobs;
   final VoidCallback onUpdateLocation;
@@ -47,8 +49,39 @@ class DriverHomeView extends StatefulWidget {
   State<DriverHomeView> createState() => _DriverHomeViewState();
 }
 
-class _DriverHomeViewState extends State<DriverHomeView> {
+class _DriverHomeViewState extends State<DriverHomeView>
+    with TickerProviderStateMixin {
   GoogleMapController? _mapController;
+
+  // The driver marker glides between GPS positions (polyline_animation_plus)
+  // and the camera follows it until the driver drags the map.
+  late final LiveMap _live = LiveMap(vsync: this);
+  bool _userMovedMap = false;
+
+  @override
+  void initState() {
+    super.initState();
+    MapIcons.driver().then((icon) {
+      _live.driverIcon = icon;
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _live.dispose();
+    super.dispose();
+  }
+
+  void _follow() {
+    if (!_live.isAttached) return;
+    _live.follow(
+      zoom: 16,
+      tilt: 0,
+      turnWithVehicle: false,
+      onStopped: () => _userMovedMap = true,
+    );
+  }
 
   @override
   void didUpdateWidget(DriverHomeView oldWidget) {
@@ -56,10 +89,14 @@ class _DriverHomeViewState extends State<DriverHomeView> {
     final next = widget.currentPosition;
     final previous = oldWidget.currentPosition;
     if (next == null || _mapController == null) return;
-    if (previous?.latitude == next.latitude && previous?.longitude == next.longitude) return;
-    _mapController!.animateCamera(
-      CameraUpdate.newLatLng(LatLng(next.latitude, next.longitude)),
-    );
+    if (previous?.latitude == next.latitude &&
+        previous?.longitude == next.longitude) {
+      return;
+    }
+    final point = LatLng(next.latitude, next.longitude);
+    final firstFix = previous == null;
+    _live.moveDriver(point);
+    if (firstFix && !_userMovedMap) _follow();
   }
 
   @override
@@ -70,19 +107,27 @@ class _DriverHomeViewState extends State<DriverHomeView> {
     final target = position == null
         ? const LatLng(28.6139, 77.2090)
         : LatLng(position.latitude, position.longitude);
-
     return Stack(
       children: [
         Positioned.fill(
           child: GoogleMap(
             initialCameraPosition: CameraPosition(target: target, zoom: 15),
-            myLocationEnabled: position != null,
+            myLocationEnabled: false,
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
+            style: context.isDarkTheme ? homeDarkMapStyle : null,
             compassEnabled: false,
             mapToolbarEnabled: false,
+            onCameraMoveStarted: _live.onCameraMoveStarted,
             onMapCreated: (controller) {
               _mapController = controller;
+              _live.attach(
+                controller,
+                driverAt: position == null
+                    ? null
+                    : LatLng(position.latitude, position.longitude),
+              );
+              if (position != null) _follow();
               widget.onMapCreated?.call(controller);
             },
           ),
@@ -92,12 +137,17 @@ class _DriverHomeViewState extends State<DriverHomeView> {
           left: 0,
           right: 0,
           height: context.h(160),
-          child: const DecoratedBox(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xF2FFFFFF), Color(0x00FFFFFF)],
+                colors: context.isDarkTheme
+                    ? [
+                        context.torkk.background.withValues(alpha: 0.85),
+                        context.torkk.background.withValues(alpha: 0),
+                      ]
+                    : [const Color(0xF2FFFFFF), const Color(0x00FFFFFF)],
               ),
             ),
           ),
@@ -105,57 +155,69 @@ class _DriverHomeViewState extends State<DriverHomeView> {
         HomeHeader(
           driverName: widget.driverName,
           onNotifications: widget.onNotifications,
-          onHelp: widget.onHelp,
         ),
-        if (widget.isOnline)
-          Positioned(
-            left: context.w(20),
-            right: context.w(20),
-            top: context.h(168),
-            child: HomeLocationCard(
-              locationLabel: widget.locationLabel,
-              onUpdateLocation: widget.onUpdateLocation,
-              accent: accent,
-            ),
-          ),
         Positioned(
-          top: context.h(254),
+          top: context.h(120),
           left: 0,
           right: 0,
           bottom: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFFFF),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(context.r(26))),
-            ),
-            child: ListView(
-              padding: EdgeInsets.only(top: context.h(27), bottom: context.h(16)),
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.w(26)),
-                  child: HomeStatusCard(
-                    isOnline: widget.isOnline,
-                    onToggle: widget.onToggle,
-                    female: female,
+          // Sheet hugs its content and sits at the bottom, so offline (no
+          // location row) there is no empty space above the nav bar.
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              decoration: BoxDecoration(
+                // Dark: same as the scaffold behind the floating nav bar, so
+                // there is no color strip between the sheet and the nav.
+                color: context.isDarkTheme
+                    ? context.torkk.background
+                    : context.torkk.surface,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(context.r(26)),
+                ),
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.only(
+                  top: context.h(14),
+                  bottom: context.h(10),
+                ),
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: context.w(16)),
+                    child: HomeStatusCard(
+                      isOnline: widget.isOnline,
+                      onToggle: widget.onToggle,
+                      female: female,
+                      locationLabel: widget.locationLabel,
+                      onUpdateLocation: widget.onUpdateLocation,
+                    ),
                   ),
-                ),
-                SizedBox(height: context.h(18)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.w(28)),
-                  child: HomeStatsCard(
-                    todayEarnings: widget.todayEarnings,
-                    completedJobs: widget.completedJobs,
-                    onEarnings: widget.onEarnings,
-                    onJobs: widget.onJobs,
-                    accent: accent,
+                  SizedBox(height: context.h(10)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: context.w(16)),
+                    child: HomeStatsCard(
+                      todayEarnings: widget.todayEarnings,
+                      completedJobs: widget.completedJobs,
+                      onEarnings: widget.onEarnings,
+
+                      accent: accent,
+                    ),
                   ),
-                ),
-                SizedBox(height: context.h(18)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.w(28)),
-                  child: HomePlanCard(accent: accent, female: female),
-                ),
-              ],
+                  SizedBox(height: context.h(10)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: context.w(16)),
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const PlanDrivingHoursScreen(),
+                        ),
+                      ),
+                      child: HomePlanCard(accent: accent, female: female),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

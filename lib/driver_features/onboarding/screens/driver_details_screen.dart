@@ -10,6 +10,8 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/driver_features/onboarding/widgets/kyc_form_widgets.dart';
 import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Profile details after KYC. Male uses blue, Female switches the accent to pink.
 class DriverDetailsScreen extends StatefulWidget {
@@ -44,11 +46,15 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
   final ImagePicker _picker = ImagePicker();
   bool _showError = false;
 
-  Color get _accent =>
-      widget.gender == AppStrings.genderFemale ? AppColors.femalePink : AppColors.maleBlue;
+  Color get _accent => widget.gender == AppStrings.genderFemale
+      ? AppColors.femalePink
+      : AppColors.maleBlue;
 
   Future<void> _pickPhoto() async {
-    final photo = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    final photo = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
     if (photo == null) return;
     widget.onPhotoPicked(photo.path);
   }
@@ -62,24 +68,36 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
       lastDate: DateTime(now.year - 18),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(primary: _accent),
-          ),
+          data: Theme.of(
+            context,
+          ).copyWith(colorScheme: ColorScheme.light(primary: _accent)),
           child: child!,
         );
       },
     );
     if (picked == null) return;
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
-    widget.dobController.text = '${picked.day} ${months[picked.month - 1]} ${picked.year}';
+    widget.dobController.text =
+        '${picked.day} ${months[picked.month - 1]} ${picked.year}';
     setState(() => _showError = false);
   }
 
   void _continue() {
-    if (widget.nameController.text.trim().isEmpty || widget.dobController.text.trim().isEmpty) {
+    if (widget.nameController.text.trim().isEmpty ||
+        widget.dobController.text.trim().isEmpty) {
       setState(() => _showError = true);
       return;
     }
@@ -90,18 +108,25 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: context.torkk.background,
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
+            icon: Icon(
+              Icons.arrow_back_ios_new,
+              color: context.themed(
+                light: Colors.black,
+                dark: context.torkk.textPrimary,
+              ),
+              size: 20,
+            ),
             onPressed: widget.onBack,
           ),
           titleSpacing: 0,
           centerTitle: false,
-          backgroundColor: Colors.white,
+          backgroundColor: context.torkk.background,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
-          title: Text(
+          title: TText(
             AppStrings.driversDetails,
             style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2),
           ),
@@ -110,18 +135,26 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
           children: [
             Expanded(
               child: ListView(
-                padding: EdgeInsets.fromLTRB(context.w(24), context.h(8), context.w(24), context.h(16)),
+                padding: EdgeInsets.fromLTRB(
+                  context.w(24),
+                  context.h(8),
+                  context.w(24),
+                  context.h(16),
+                ),
                 children: [
                   Center(child: _photo()),
                   SizedBox(height: context.h(8)),
                   Center(
-                    child: Text(
+                    child: TText(
                       AppStrings.uploadClearPhoto,
-                      style: AppTypography.regular.copyWith(fontSize: 13, color: AppColors.secondaryTextColor),
+                      style: AppTypography.regular.copyWith(
+                        fontSize: 13,
+                        color: context.torkk.textSecondary,
+                      ),
                     ),
                   ),
                   SizedBox(height: context.h(22)),
-                   KycRequiredLabel(AppStrings.fullName),
+                  KycRequiredLabel(AppStrings.fullName),
                   SizedBox(height: context.h(8)),
                   AppTextField(
                     controller: widget.nameController,
@@ -130,7 +163,7 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                     },
                   ),
                   SizedBox(height: context.h(16)),
-                   KycRequiredLabel(AppStrings.gender),
+                  KycRequiredLabel(AppStrings.gender),
                   SizedBox(height: context.h(8)),
                   Row(
                     children: [
@@ -146,9 +179,12 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                   SizedBox(height: context.h(8)),
                   _dobField(),
                   SizedBox(height: context.h(16)),
-                  Text(
+                  TText(
                     AppStrings.emailOptional,
-                    style: AppTypography.regular.copyWith(fontSize: 13, height: 1.2),
+                    style: AppTypography.regular.copyWith(
+                      fontSize: 13,
+                      height: 1.2,
+                    ),
                   ),
                   SizedBox(height: context.h(8)),
                   AppTextField(
@@ -157,16 +193,24 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                   ),
                   if (_showError) ...[
                     SizedBox(height: context.h(12)),
-                    Text(
+                    TText(
                       AppStrings.driverDetailsRequired,
-                      style: AppTypography.regular.copyWith(fontSize: 13, color: AppColors.error),
+                      style: AppTypography.regular.copyWith(
+                        fontSize: 13,
+                        color: context.legible(AppColors.error),
+                      ),
                     ),
                   ],
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(context.w(24), context.h(8), context.w(24), context.h(16)),
+              padding: EdgeInsets.fromLTRB(
+                context.w(24),
+                context.h(8),
+                context.w(24),
+                context.h(16),
+              ),
               child: UnifiedButton(
                 label: AppStrings.continueToFinalReview,
                 backgroundColor: _accent,
@@ -197,10 +241,17 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                 color: _accent.withValues(alpha: 0.12),
                 image: path == null
                     ? null
-                    : DecorationImage(image: FileImage(File(path)), fit: BoxFit.cover),
+                    : DecorationImage(
+                        image: FileImage(File(path)),
+                        fit: BoxFit.cover,
+                      ),
               ),
               child: path == null
-                  ? Icon(Icons.person, size: context.w(40), color: _accent.withValues(alpha: 0.7))
+                  ? Icon(
+                      Icons.person,
+                      size: context.w(40),
+                      color: _accent.withValues(alpha: 0.7),
+                    )
                   : null,
             ),
             Positioned(
@@ -214,7 +265,11 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
-                child: Icon(Icons.photo_camera, color: Colors.white, size: context.w(14)),
+                child: Icon(
+                  Icons.photo_camera,
+                  color: Colors.white,
+                  size: context.w(14),
+                ),
               ),
             ),
           ],
@@ -232,15 +287,17 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
           height: context.h(44),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: selected ? _accent : Colors.white,
+            color: selected ? _accent : context.torkk.surface,
             borderRadius: BorderRadius.circular(context.r(12)),
-            border: Border.all(color: selected ? _accent : AppColors.fieldBorder),
+            border: Border.all(
+              color: selected ? _accent : AppColors.fieldBorder,
+            ),
           ),
-          child: Text(
+          child: TText(
             label,
             style: AppTypography.bold.copyWith(
               fontSize: 14,
-              color: selected ? Colors.white : AppColors.textPrimary,
+              color: selected ? Colors.white : context.torkk.textPrimary,
             ),
           ),
         ),
@@ -255,24 +312,28 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
         height: context.h(48),
         padding: EdgeInsets.symmetric(horizontal: context.w(16)),
         decoration: BoxDecoration(
-          color: AppColors.fieldFill,
+          color: context.torkk.surfaceMuted,
           borderRadius: BorderRadius.circular(context.r(12)),
-          border: Border.all(color: AppColors.fieldBorder),
+          border: Border.all(color: context.torkk.border),
         ),
         child: Row(
           children: [
             Expanded(
-              child: Text(
+              child: TText(
                 widget.dobController.text,
                 style: AppTypography.regular.copyWith(
                   fontSize: 14,
                   color: widget.dobController.text.isEmpty
                       ? AppColors.slate400
-                      : AppColors.textPrimary,
+                      : context.torkk.textPrimary,
                 ),
               ),
             ),
-            Icon(Icons.calendar_today_outlined, size: context.w(18), color: AppColors.slate400),
+            Icon(
+              Icons.calendar_today_outlined,
+              size: context.w(18),
+              color: AppColors.slate400,
+            ),
           ],
         ),
       ),

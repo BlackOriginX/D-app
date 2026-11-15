@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class VehicleHeader extends StatelessWidget {
-  const VehicleHeader({super.key});
+  const VehicleHeader({super.key, this.title = ''});
+
+  /// Line under the label, e.g. the vehicle type. Shows a dash when empty.
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +18,15 @@ class VehicleHeader extends StatelessWidget {
       padding: EdgeInsets.all(context.w(12)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.r(16)),
-        border: Border.all(color: const Color(0xFFE8EDF5)),
+        border: Border.all(color: context.torkk.border),
       ),
       child: Row(
         children: [
           Container(
             width: context.w(72),
-            height: context.h(48),
+            constraints: BoxConstraints(minHeight: context.h(48)),
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: context.adaptiveTint(const Color(0xFFE2E8F0)),
               borderRadius: BorderRadius.circular(context.r(8)),
             ),
           ),
@@ -30,13 +34,20 @@ class VehicleHeader extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              TText(
                 AppStrings.carModel,
-                style: AppTypography.regular.copyWith(fontSize: 12, color: AppColors.slate500),
+                style: AppTypography.regular.copyWith(
+                  fontSize: 12,
+                  color: context.torkk.textSecondary,
+                ),
               ),
-              Text(
-                'Cab . 4 Seater',
-                style: AppTypography.bold.copyWith(fontSize: 14, height: 1.3, letterSpacing: -0.2),
+              TText(
+                title.isEmpty ? '-' : title,
+                style: AppTypography.bold.copyWith(
+                  fontSize: 14,
+                  height: 1.3,
+                  letterSpacing: -0.2,
+                ),
               ),
             ],
           ),

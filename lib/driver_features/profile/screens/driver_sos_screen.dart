@@ -3,7 +3,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rider_app/service/driver_api_service.dart';
+import 'package:rider_app/common/constants/app_colors.dart';
 import 'call_112_screen.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+part 'driver_sos_screen_sections.dart';
 
 // --- DRIVER SOS SCREEN ---
 class DriverSosScreen extends StatefulWidget {
@@ -101,61 +105,6 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
     } catch (_) {}
   }
 
-  void _textEmergency() async {
-    final uri = Uri.parse(
-      "sms:112?body=Emergency! I need immediate help at Lat: $_currentLat, Lng: $_currentLng",
-    );
-    try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      }
-    } catch (_) {}
-  }
-
-  void _callEmergencyContact() async {
-    final uri = Uri.parse("tel:112");
-    try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      }
-    } catch (_) {}
-  }
-
-  Widget _buildSosOptionTile({
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 4),
-        child: Row(
-          children: [
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEF4444), width: 5),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final maxDrag = (MediaQuery.of(context).size.width - 40 - 48).clamp(
@@ -164,7 +113,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: context.torkk.surfaceMuted,
       body: SafeArea(
         child: Column(
           children: [
@@ -174,10 +123,10 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 22,
-                      color: Color(0xFF0F172A),
+                      color: context.torkk.textPrimary,
                     ),
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -191,26 +140,26 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Title Block
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             "Get Emergency Help",
                             style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F172A),
+                              color: context.torkk.textPrimary,
                               letterSpacing: -0.5,
                             ),
                           ),
                           SizedBox(height: 4),
-                          Text(
+                          TText(
                             "Your Current Location and Information will be shared to the help",
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF64748B),
+                              color: context.torkk.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -224,9 +173,9 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.torkk.surface,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        border: Border.all(color: context.torkk.border),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.04),
@@ -255,17 +204,16 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                                       ? Image.network(
                                           _driverPhotoUrl,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, _, _) =>
-                                              const Icon(
-                                                Icons.person,
-                                                size: 28,
-                                                color: Color(0xFF334155),
-                                              ),
+                                          errorBuilder: (_, _, _) => Icon(
+                                            Icons.person,
+                                            size: 28,
+                                            color: context.torkk.textBody,
+                                          ),
                                         )
-                                      : const Icon(
+                                      : Icon(
                                           Icons.person,
                                           size: 28,
-                                          color: Color(0xFF334155),
+                                          color: context.torkk.textBody,
                                         ),
                                 ),
                               ),
@@ -274,20 +222,20 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TText(
                                       _driverName,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.w800,
-                                        color: Color(0xFF0F172A),
+                                        color: context.torkk.textPrimary,
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text(
+                                    TText(
                                       "$_driverGender $_driverDob",
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
-                                        color: Color(0xFF64748B),
+                                        color: context.torkk.textSecondary,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -297,38 +245,38 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          const Text(
+                          TText(
                             "Vehical Info",
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF0F172A),
+                              color: context.torkk.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TText(
                             _vehicleInfo,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF64748B),
+                              color: context.torkk.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 12),
-                          const Text(
+                          TText(
                             "Location",
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF0F172A),
+                              color: context.torkk.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TText(
                             "${_currentLat.toStringAsFixed(7)}, ${_currentLng.toStringAsFixed(7)}",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF64748B),
+                              color: context.torkk.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -347,10 +295,10 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, _, _) => Container(
                                   color: const Color(0xFFCBD5E1),
-                                  child: const Center(
+                                  child: Center(
                                     child: Icon(
                                       Icons.map_rounded,
-                                      color: Color(0xFF64748B),
+                                      color: AppColors.slate500,
                                       size: 36,
                                     ),
                                   ),
@@ -377,12 +325,12 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
                               ),
                             ),
                           ),
-                          const Divider(color: Color(0xFFE2E8F0), height: 1),
+                          Divider(color: context.torkk.border, height: 1),
                           _buildSosOptionTile(
                             title: "Text Emergency Number",
                             onTap: _textEmergency,
                           ),
-                          const Divider(color: Color(0xFFE2E8F0), height: 1),
+                          Divider(color: context.torkk.border, height: 1),
                           _buildSosOptionTile(
                             title: "Call Emergency Contact",
                             onTap: _callEmergencyContact,
@@ -406,7 +354,7 @@ class _DriverSosScreenState extends State<DriverSosScreen> {
               child: Stack(
                 children: [
                   const Center(
-                    child: Text(
+                    child: TText(
                       "Slide to Call for help",
                       style: TextStyle(
                         color: Colors.white,

@@ -48,3 +48,14 @@ app.*.map.json
 .gradle/
 android/.gradle/
 node_modules/
+
+
+# important key files
+upload-keystore.jks
+upload_certificate.pem
+/android/app/key.properties
+# Widget Preview related
+.widget_preview/
+
+# Razorpay keys (secret) - never commit
+lib/service/razorpay_config.dart

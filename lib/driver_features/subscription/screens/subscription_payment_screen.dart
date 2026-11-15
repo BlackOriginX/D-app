@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
@@ -9,6 +8,8 @@ import 'package:rider_app/driver_features/subscription/models/subscription_plan.
 import 'package:rider_app/driver_features/subscription/widgets/payment_method_tile.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_page.dart';
 import 'package:rider_app/driver_features/subscription/widgets/subscription_plan_card.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SubscriptionPaymentScreen extends StatelessWidget {
   const SubscriptionPaymentScreen({
@@ -36,14 +37,18 @@ class SubscriptionPaymentScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.lock_outline, size: context.w(14), color: const Color(0xFF16A34A)),
+              Icon(
+                Icons.lock_outline,
+                size: context.w(14),
+                color: const Color(0xFF16A34A),
+              ),
               SizedBox(width: context.w(10)),
-              Text(
+              TText(
                 'Your Bank details are safe and secure with us',
                 style: AppTypography.regular.copyWith(
                   fontSize: 11,
                   height: 1.35,
-                  color: AppColors.textPrimary,
+                  color: context.torkk.textPrimary,
                 ),
               ),
             ],
@@ -53,20 +58,32 @@ class SubscriptionPaymentScreen extends StatelessWidget {
         ],
       ),
       child: ListView(
-        padding: EdgeInsets.fromLTRB(context.w(20), context.h(8), context.w(20), context.h(12)),
+        padding: EdgeInsets.fromLTRB(
+          context.w(20),
+          context.h(8),
+          context.w(20),
+          context.h(12),
+        ),
         children: [
           SubscriptionPlanCard(
             name: plan.name.replaceAll(' - ', '- '),
             subtitle: plan.validity,
-            trailing: Text(
+            trailing: TText(
               '₹ ${plan.price}',
-              style: AppTypography.bold.copyWith(fontSize: 18, height: 1.2, letterSpacing: -0.3),
+              style: AppTypography.bold.copyWith(
+                fontSize: 18,
+                height: 1.2,
+                letterSpacing: -0.3,
+              ),
             ),
           ),
           SizedBox(height: context.h(22)),
-          Text(
+          TText(
             'Select Payment Method',
-            style: AppTypography.regular.copyWith(fontSize: 12, fontWeight: FontWeight.w600),
+            style: AppTypography.regular.copyWith(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           SizedBox(height: context.h(6)),
           PaymentMethodTile(

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/driver_features/coins/models/coin_models.dart';
+import 'package:rider_app/driver_features/coins/widgets/coin_async.dart';
 import 'package:rider_app/driver_features/coins/widgets/coin_tiles.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 
 import '../../../common/constants/string_constants.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class CoinsHomeScreen extends StatelessWidget {
   const CoinsHomeScreen({
@@ -17,7 +20,18 @@ class CoinsHomeScreen extends StatelessWidget {
     required this.onHistory,
     required this.onHowTo,
     required this.onView,
+    required this.account,
+    required this.card,
+    required this.loading,
+    required this.error,
+    required this.onRetry,
   });
+
+  final CoinAccount? account;
+  final ScratchCard? card;
+  final bool loading;
+  final String? error;
+  final VoidCallback onRetry;
 
   final VoidCallback onBack;
   final VoidCallback onHistory;
@@ -26,11 +40,29 @@ class CoinsHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final account = this.account;
+    if (account == null) {
+      return ProfilePage(
+        title: AppStrings.torkkCoin,
+        onBack: onBack,
+        child: loading
+            ? const CoinLoading()
+            : CoinError(
+                message: error ?? 'Could not load your coins.',
+                onRetry: onRetry,
+              ),
+      );
+    }
     return ProfilePage(
       title: AppStrings.torkkCoin,
       onBack: onBack,
       child: ListView(
-        padding: EdgeInsets.fromLTRB(context.w(28), context.h(28), context.w(28), context.h(20)),
+        padding: EdgeInsets.fromLTRB(
+          context.w(28),
+          context.h(28),
+          context.w(28),
+          context.h(20),
+        ),
         children: [
           GestureDetector(
             onTap: onHistory,
@@ -41,24 +73,35 @@ class CoinsHomeScreen extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: [Color(0xFF0F3FBF), Color(0xFF61217E), Color(0xFFBA2879)],
+                  colors: [
+                    Color(0xFF0F3FBF),
+                    Color(0xFF61217E),
+                    Color(0xFFBA2879),
+                  ],
                 ),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                border: Border.all(color: context.torkk.border),
               ),
               child: Row(
                 children: [
-                  Image.asset(AppAssets.rewardCoins, width: context.w(52), height: context.w(52)),
+                  Image.asset(
+                    AppAssets.rewardCoins,
+                    width: context.w(52),
+                    height: context.w(52),
+                  ),
                   SizedBox(width: context.w(10)),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           AppStrings.yourCoinBalance,
-                          style: AppTypography.regular.copyWith(fontSize: 13, color: Colors.white70),
+                          style: AppTypography.regular.copyWith(
+                            fontSize: 13,
+                            color: Colors.white70,
+                          ),
                         ),
-                        Text(
-                          '1,240',
+                        TText(
+                          coinNumber(account.coins),
                           style: AppTypography.bold.copyWith(
                             fontSize: 28,
                             height: 1.1,
@@ -78,11 +121,19 @@ class CoinsHomeScreen extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CoinMoneyCard(label:AppStrings.totalEarned, value: '+ ₹680.00', color: const Color(0xFF16A34A)),
+                child: CoinMoneyCard(
+                  label: AppStrings.totalEarned,
+                  value: '+ ${coinNumber(account.earned)}',
+                  color: const Color(0xFF16A34A),
+                ),
               ),
               SizedBox(width: context.w(10)),
               Expanded(
-                child: CoinMoneyCard(label: AppStrings.totalRedeemed, value: '₹3,420.00', color: Color(0xFFEF4444)),
+                child: CoinMoneyCard(
+                  label: AppStrings.totalRedeemed,
+                  value: coinNumber(account.redeemed),
+                  color: Color(0xFFEF4444),
+                ),
               ),
             ],
           ),
@@ -91,7 +142,7 @@ class CoinsHomeScreen extends StatelessWidget {
             padding: EdgeInsets.all(context.w(16)),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(context.r(16)),
-              border: Border.all(color: const Color(0xFFF1F5F9)),
+              border: Border.all(color: context.torkk.border),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,31 +150,41 @@ class CoinsHomeScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: TText(
                         AppStrings.scratchCard,
-                        style: AppTypography.regular.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
+                        style: AppTypography.regular.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: context.w(8), vertical: context.h(3)),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.w(8),
+                        vertical: context.h(3),
+                      ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECFDF5),
+                        color: context.adaptiveTint(const Color(0xFFECFDF5)),
                         borderRadius: BorderRadius.circular(context.r(9999)),
                       ),
-                      child: Text(
-                        'Job Id : #33435',
+                      child: TText(
+                        card?.id ?? 'No card',
                         style: AppTypography.regular.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF16A34A),
+                          color: context.legible(Color(0xFF16A34A)),
                         ),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: context.h(4)),
-                Text(
-                  AppStrings.completeEligibleJobs,                  style: AppTypography.regular.copyWith(fontSize: 13, color: AppColors.slate500),
+                TText(
+                  AppStrings.completeEligibleJobs,
+                  style: AppTypography.regular.copyWith(
+                    fontSize: 13,
+                    color: context.torkk.textSecondary,
+                  ),
                 ),
                 SizedBox(height: context.h(4)),
                 Container(
@@ -131,29 +192,51 @@ class CoinsHomeScreen extends StatelessWidget {
                   padding: EdgeInsets.all(context.w(16)),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(context.r(14)),
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Color(0xFFEEF2FF), Color(0xFFF5F3FF), Color(0xFFF3E8FF)],
+                      colors: [
+                        context.adaptiveTint(Color(0xFFEEF2FF)),
+                        context.adaptiveTint(Color(0xFFF5F3FF)),
+                        context.adaptiveTint(Color(0xFFF3E8FF)),
+                      ],
                     ),
                   ),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          Image.asset(AppAssets.giftCard, width: context.w(60), height: context.w(60)),
+                          Image.asset(
+                            AppAssets.giftCard,
+                            width: context.w(60),
+                            height: context.w(60),
+                          ),
                           SizedBox(width: context.w(12)),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  AppStrings.youHaveScratchCard,
-                                  style: AppTypography.regular.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                                TText(
+                                  card == null
+                                      ? 'No scratch card yet'
+                                      : card!.title.isEmpty
+                                      ? AppStrings.youHaveScratchCard
+                                      : card!.title,
+                                  style: AppTypography.regular.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                                Text(
-                                  AppStrings.scratchNowSeeWhatYouWin,
-                                  style: AppTypography.regular.copyWith(fontSize: 11, color: AppColors.slate500),
+                                TText(
+                                  card == null
+                                      ? AppStrings.completeEligibleJobs
+                                      : card!.description.isEmpty
+                                      ? AppStrings.scratchNowSeeWhatYouWin
+                                      : card!.description,
+                                  style: AppTypography.regular.copyWith(
+                                    fontSize: 11,
+                                    color: context.torkk.textSecondary,
+                                  ),
                                 ),
                               ],
                             ),
@@ -163,7 +246,10 @@ class CoinsHomeScreen extends StatelessWidget {
                       SizedBox(height: context.h(22)),
                       Padding(
                         padding: EdgeInsets.only(top: context.h(8)),
-                        child: UnifiedButton(label:AppStrings.view, onPressed: onView,  backgroundColor: const Color(0xFF0F3FBF),),
+                        child: UnifiedButton(
+                          label: AppStrings.view,
+                          onPressed: onView,
+                        ),
                       ),
                     ],
                   ),

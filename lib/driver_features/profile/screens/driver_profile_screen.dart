@@ -3,10 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/driver_features/documents/screens/driver_documents_screen.dart';
 import 'package:rider_app/driver_features/documents/screens/driver_subscription_pass_screen.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+part 'driver_profile_screen_sections.dart';
 
 class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({super.key, this.embedded = false});
@@ -89,17 +91,12 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
 
     setState(() => _loading = true);
     try {
-      final bytes = await image.readAsBytes();
-      final base64Image = base64Encode(bytes);
-      await DriverApiService.uploadProfilePhoto(
-        driverPhone: _phone,
-        base64Image: base64Image,
-      );
+      await DriverApiService.uploadProfilePhoto(filePath: image.path);
       await _loadProfile();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Profile photo updated!'),
+            content: TText('Profile photo updated!'),
             backgroundColor: Colors.green,
           ),
         );
@@ -109,7 +106,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to upload photo: $e'),
+            content: TText('Failed to upload photo: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -117,164 +114,10 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     }
   }
 
-
-  Widget _buildInfoRow(String title, String value) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget _buildOptionTile({
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
-              width: 1,
-            ),
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 18.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: isDark ? Colors.white : const Color(0xFF0F172A),
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
-              size: 24,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNav(BuildContext context, {int currentIndex = 3}) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final navItems = [
-      {'label': 'HOME', 'icon': Icons.home_outlined, 'route': AppRoutes.home},
-      {
-        'label': 'EARNINGS',
-        'icon': Icons.payments_outlined,
-        'route': AppRoutes.earnings,
-      },
-      {
-        'label': 'HELP',
-        'icon': Icons.headset_mic_outlined,
-        'route': AppRoutes.support,
-      },
-      {
-        'label': 'SETTINGS',
-        'icon': Icons.settings_outlined,
-        'route': AppRoutes.profile,
-      },
-    ];
-
-    return Container(
-      color: isDark ? const Color(0xFF0F172A) : Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(navItems.length, (idx) {
-            final item = navItems[idx];
-            final isSelected = currentIndex == idx;
-
-            return GestureDetector(
-              onTap: () {
-                if (currentIndex == idx) return;
-                final route = item['route'] as String;
-                context.go(route);
-              },
-              child: Container(
-                width: 54,
-                height: 54,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1D4ED8),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(
-                        0xFF1D4ED8,
-                      ).withValues(alpha: isSelected ? 0.4 : 0.2),
-                      blurRadius: isSelected ? 8 : 4,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      item['icon'] as IconData,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      item['label'] as String,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
-    );
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
-    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textColor = context.torkk.textPrimary;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -286,19 +129,23 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
         leading: widget.embedded
             ? const SizedBox.shrink()
             : Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () => Navigator.maybePop(context),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFF475569),
-                shape: BoxShape.circle,
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () => Navigator.maybePop(context),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF475569),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
               ),
-              child: const Icon(Icons.close, color: Colors.white, size: 20),
-            ),
-          ),
-        ),
-        title: Text(
+        title: TText(
           'Profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -307,7 +154,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: widget.embedded ? null : _buildBottomNav(context, currentIndex: 3),
+      bottomNavigationBar: widget.embedded
+          ? null
+          : _buildBottomNav(context, currentIndex: 3),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -335,16 +184,25 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         child: _profilePhotoUrl.isNotEmpty
                             ? CircleAvatar(
                                 radius: 56,
-                                backgroundColor: Colors.grey.shade200,
+                                backgroundColor: context.themed(
+                                  light: Colors.grey.shade200,
+                                  dark: context.torkk.surfaceMuted,
+                                ),
                                 backgroundImage: NetworkImage(_profilePhotoUrl),
                               )
                             : CircleAvatar(
                                 radius: 56,
-                                backgroundColor: Colors.grey.shade200,
-                                child: const Icon(
+                                backgroundColor: context.themed(
+                                  light: Colors.grey.shade200,
+                                  dark: context.torkk.surfaceMuted,
+                                ),
+                                child: Icon(
                                   Icons.person,
                                   size: 56,
-                                  color: Colors.grey,
+                                  color: context.themed(
+                                    light: Colors.grey,
+                                    dark: context.torkk.textSecondary,
+                                  ),
                                 ),
                               ),
                       ),
@@ -352,8 +210,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                   ),
                   const SizedBox(height: 16),
                   // Driver Name (e.g. Piyush Kumar from prefs/API)
-                  Text(
-                    _name.isNotEmpty ? _name : 'Driver Partner',
+                  TText(
+                    _name.isNotEmpty ? _name : 'Ankita',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
@@ -366,18 +224,12 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     'Gender',
                     _gender.isNotEmpty ? _gender : 'Not specified',
                   ),
-                  Divider(
-                    color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
-                    height: 1,
-                  ),
+                  Divider(color: context.torkk.border, height: 1),
                   _buildInfoRow(
                     'DOB',
                     _dob.isNotEmpty ? _dob : 'Not specified',
                   ),
-                  Divider(
-                    color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
-                    height: 1,
-                  ),
+                  Divider(color: context.torkk.border, height: 1),
                   const SizedBox(height: 24),
                   // Option Tiles (matching Figma Profile screenshot):
                   _buildOptionTile(
@@ -428,7 +280,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                           side: const BorderSide(color: Colors.red, width: 1),
                         ),
                       ),
-                      child: const Text(
+                      child: const TText(
                         'Log Out',
                         style: TextStyle(
                           fontSize: 15,

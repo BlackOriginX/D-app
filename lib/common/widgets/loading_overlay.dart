@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// A semi-transparent fullscreen overlay with a centered loading spinner.
 ///
@@ -38,7 +39,7 @@ class LoadingOverlay extends StatelessWidget {
             ),
             if (message != null) ...[
               const SizedBox(height: 16),
-              Text(
+              TText(
                 message!,
                 style: const TextStyle(
                   color: Colors.white,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'timed_accept_ride_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+part 'ride_request_card_sections.dart';
 
 /// Individual ride request card displayed in the online search view list.
 /// Features customer info, fare, bonuses, route addresses, passenger badges,
@@ -46,13 +49,14 @@ class RideRequestCard extends StatelessWidget {
       }
     }
 
-    final rawPhone = (ride['customer_phone'] ??
-            ride['user_phone'] ??
-            ride['phone'] ??
-            ride['rider_phone'] ??
-            '')
-        .toString()
-        .replaceAll(RegExp(r'\D'), '');
+    final rawPhone =
+        (ride['customer_phone'] ??
+                ride['user_phone'] ??
+                ride['phone'] ??
+                ride['rider_phone'] ??
+                '')
+            .toString()
+            .replaceAll(RegExp(r'\D'), '');
     if (rawPhone.isNotEmpty) {
       final formattedPhone = rawPhone.length == 10
           ? '+91 ${rawPhone.substring(0, 5)} ${rawPhone.substring(5)}'
@@ -63,204 +67,50 @@ class RideRequestCard extends StatelessWidget {
     return 'Customer';
   }
 
-  Widget _buildPassengerGenderBadges(Map<String, dynamic> ride) {
-    final dynamic maleVal =
-        ride['male_passengers'] ?? ride['male_count'] ?? ride['males'];
-    final dynamic femaleVal =
-        ride['female_passengers'] ?? ride['female_count'] ?? ride['females'];
-    final dynamic totalVal =
-        ride['passenger_count'] ?? ride['total_passengers'] ?? ride['seats'];
-    final String gender = (ride['gender'] ??
-            ride['customer_gender'] ??
-            ride['passenger_gender'] ??
-            '')
-        .toString()
-        .trim()
-        .toLowerCase();
-
-    int? maleCount = (maleVal is num)
-        ? maleVal.toInt()
-        : int.tryParse(maleVal?.toString() ?? '');
-    int? femaleCount = (femaleVal is num)
-        ? femaleVal.toInt()
-        : int.tryParse(femaleVal?.toString() ?? '');
-    int totalCount = (totalVal is num)
-        ? totalVal.toInt()
-        : (int.tryParse(totalVal?.toString() ?? '') ?? 1);
-
-    Widget badge1Content;
-    Color badge1Color;
-    Widget? badge2Content;
-    Color badge2Color = const Color(0xFFEC4899);
-
-    if (maleCount != null && femaleCount != null) {
-      badge1Color = const Color(0xFF1D4ED8);
-      badge1Content =
-          const Icon(Icons.male_rounded, size: 18, color: Colors.white);
-      if (femaleCount > 0) {
-        badge2Color = const Color(0xFFEC4899);
-        badge2Content = femaleCount > 1
-            ? Text(
-                '$femaleCount',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 12,
-                ),
-              )
-            : const Icon(Icons.female_rounded, size: 18, color: Colors.white);
-      }
-    } else if (gender == 'female' || gender == 'f') {
-      badge1Color = const Color(0xFFEC4899);
-      badge1Content =
-          const Icon(Icons.female_rounded, size: 18, color: Colors.white);
-      if (totalCount > 1) {
-        badge2Color = const Color(0xFF1D4ED8);
-        badge2Content = Text(
-          '+${totalCount - 1}',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w800,
-            fontSize: 12,
-          ),
-        );
-      }
-    } else {
-      badge1Color = const Color(0xFF1D4ED8);
-      badge1Content =
-          const Icon(Icons.male_rounded, size: 18, color: Colors.white);
-      if (totalCount > 1) {
-        badge2Color = const Color(0xFFEC4899);
-        badge2Content = Text(
-          '+${totalCount - 1}',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w800,
-            fontSize: 12,
-          ),
-        );
-      }
-    }
-
-    final bool hasSecondBadge = badge2Content != null;
-
-    return SizedBox(
-      width: hasSecondBadge ? 56 : 32,
-      height: 32,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            left: 0,
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: badge1Color,
-                shape: BoxShape.circle,
-              ),
-              child: Center(child: badge1Content),
-            ),
-          ),
-          if (hasSecondBadge)
-            Positioned(
-              left: 20,
-              child: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: badge2Color,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                ),
-                child: Center(child: badge2Content),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildParcelBadges(Map<String, dynamic> ride) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFF10B981), // Emerald green
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.inventory_2_rounded, size: 16, color: Colors.white),
-          const SizedBox(width: 4),
-          Text(
-            (ride['item_weight'] ?? 'Parcel').toString(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final estFare = (ride['estimated_fare'] ??
-            ride['fare'] ??
-            ride['amount'] as num?)
-        ?.toDouble() ??
+    final estFare =
+        (ride['estimated_fare'] ?? ride['fare'] ?? ride['amount'] as num?)
+            ?.toDouble() ??
         0.0;
-    final bonusVal = (ride['bonus'] ??
-            ride['incentive'] ??
-            ride['extra_charge'] as num?)
-        ?.toDouble();
+    final bonusVal =
+        (ride['bonus'] ?? ride['incentive'] ?? ride['extra_charge'] as num?)
+            ?.toDouble();
 
-    final pDist = (ride['pickup_distance_km'] ??
-            ride['pickup_distance'] ??
-            '')
+    final pDist = (ride['pickup_distance_km'] ?? ride['pickup_distance'] ?? '')
         .toString();
-    final pAddr = (ride['pickup_address'] ??
-            ride['pickup_location'] ??
-            ride['pickup'] ??
-            '')
-        .toString();
-    final dDist = (ride['distance_km'] ??
-            ride['drop_distance'] ??
-            ride['distance'] ??
-            '')
-        .toString();
-    final dAddr = (ride['drop_address'] ??
-            ride['destination'] ??
-            ride['drop'] ??
-            '')
-        .toString();
+    final pAddr =
+        (ride['pickup_address'] ??
+                ride['pickup_location'] ??
+                ride['pickup'] ??
+                '')
+            .toString();
+    final dDist =
+        (ride['distance_km'] ?? ride['drop_distance'] ?? ride['distance'] ?? '')
+            .toString();
+    final dAddr =
+        (ride['drop_address'] ?? ride['destination'] ?? ride['drop'] ?? '')
+            .toString();
 
     final customerName = resolveCustomerName(ride);
-    final customerRating = (ride['customer_rating'] ??
-            ride['user_rating'] ??
-            ride['rating'] ??
-            '4.9')
-        .toString();
+    final customerRating =
+        (ride['customer_rating'] ??
+                ride['user_rating'] ??
+                ride['rating'] ??
+                '4.9')
+            .toString();
 
-    final bool isParcel = ride['is_parcel'] == true || ride['service_type'] == 'parcel';
+    final bool isParcel =
+        ride['is_parcel'] == true || ride['service_type'] == 'parcel';
     final displayName = isParcel ? 'Parcel: $customerName' : customerName;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.torkk.surface,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: const Color(0xFFE2E8F0),
-          width: 1.2,
-        ),
+        border: Border.all(color: context.torkk.border, width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(15),
@@ -279,14 +129,14 @@ class RideRequestCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Flexible(
-                      child: Text(
+                      child: TText(
                         displayName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E293B),
+                          color: context.torkk.textPrimary,
                         ),
                       ),
                     ),
@@ -297,24 +147,24 @@ class RideRequestCard extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFEF3C7),
+                        color: context.adaptiveTint(const Color(0xFFFEF3C7)),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.star_rounded,
                             size: 14,
-                            color: Color(0xFFD97706),
+                            color: context.legible(Color(0xFFD97706)),
                           ),
                           const SizedBox(width: 2),
-                          Text(
+                          TText(
                             customerRating,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFFB45309),
+                              color: context.legible(Color(0xFFB45309)),
                             ),
                           ),
                         ],
@@ -335,18 +185,18 @@ class RideRequestCard extends StatelessWidget {
           // Row 2: Dynamic Fare & Bonus
           Row(
             children: [
-              Text(
+              TText(
                 '₹ ${estFare.toStringAsFixed(2)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF111827),
+                  color: context.torkk.textPrimary,
                   letterSpacing: -0.5,
                 ),
               ),
               if (bonusVal != null && bonusVal > 0) ...[
                 const SizedBox(width: 8),
-                Text(
+                TText(
                   '+ ₹ ${bonusVal.round()}',
                   style: const TextStyle(
                     fontSize: 14,
@@ -360,12 +210,12 @@ class RideRequestCard extends StatelessWidget {
           if (isParcel && ride['item_category'] != null)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
+              child: TText(
                 'Category: ${ride['item_category']}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF475569),
+                  color: context.torkk.textBody,
                 ),
               ),
             ),
@@ -405,46 +255,46 @@ class RideRequestCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       pDist.toLowerCase().contains('km')
                           ? pDist
                           : (pDist.isNotEmpty ? '$pDist Km' : ''),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF111827),
+                        color: context.torkk.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    TText(
                       pAddr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF6B7280),
+                        color: context.torkk.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(
+                    TText(
                       dDist.toLowerCase().contains('km')
                           ? dDist
                           : (dDist.isNotEmpty ? '$dDist Km' : ''),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF111827),
+                        color: context.torkk.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    TText(
                       dAddr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF6B7280),
+                        color: context.torkk.textSecondary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

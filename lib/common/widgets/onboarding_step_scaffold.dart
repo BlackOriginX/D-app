@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:rider_app/common/constants/app_colors.dart';
-import 'package:rider_app/common/constants/asset_constants.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Shared header for onboarding steps.
 ///
@@ -29,7 +30,7 @@ class OnboardingStepScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,15 +43,18 @@ class OnboardingStepScaffold extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new,
-                    color: Colors.black,
+                    color: context.themed(
+                      light: Colors.black,
+                      dark: context.torkk.textPrimary,
+                    ),
                     size: 20,
                   ),
                   onPressed: onBack,
                 ),
                 Expanded(
-                  child: Text(
+                  child: TText(
                     title,
                     style: AppTypography.bold.copyWith(
                       fontSize: 20,
@@ -60,15 +64,9 @@ class OnboardingStepScaffold extends StatelessWidget {
                 ),
                 ?headerAction,
                 if (onHelp != null)
-                  IconButton(
-                    tooltip: 'Help',
-                    onPressed: onHelp,
-                    icon: Image.asset(
-                      AppAssets.helpButton,
-                      width: context.w(40),
-                      height: context.w(40),
-                      fit: BoxFit.contain,
-                    ),
+                  Padding(
+                    padding: EdgeInsets.only(right: context.w(8)),
+                    child: AiChatButton(size: context.w(40), onTap: onHelp),
                   ),
               ],
             ),
@@ -82,12 +80,12 @@ class OnboardingStepScaffold extends StatelessWidget {
               ),
               child: SizedBox(
                 width: context.w(281),
-                child: Text(
+                child: TText(
                   subtitle!,
                   style: AppTypography.regular.copyWith(
                     fontSize: 14,
                     height: 1.4,
-                    color: AppColors.secondaryTextColor,
+                    color: context.torkk.textSecondary,
                   ),
                 ),
               ),

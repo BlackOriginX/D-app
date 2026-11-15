@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/constants/asset_constants.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class SelectVehicleScreen extends StatefulWidget {
   final String selectedVehicle;
@@ -33,11 +36,36 @@ class _SelectVehicleScreenState extends State<SelectVehicleScreen> {
   bool _showError = false;
 
   static final List<_VehicleOption> _vehicles = [
-    _VehicleOption('Cab', AppStrings.vehicleCab, AppStrings.fourWheeler, AppAssets.cab),
-    _VehicleOption('Cab EV', AppStrings.vehicleEvCab, AppStrings.fourWheeler, AppAssets.evCab),
-    _VehicleOption('Cab XL', AppStrings.vehicleXlCab, AppStrings.fourWheeler, AppAssets.xlCab),
-     _VehicleOption('Auto', AppStrings.vehicleAuto, AppStrings.threeWheeler, AppAssets.auto),
-     _VehicleOption('Bike', AppStrings.vehicleBike, AppStrings.twoWheeler, AppAssets.bike),
+    _VehicleOption(
+      'Cab',
+      AppStrings.vehicleCab,
+      AppStrings.fourWheeler,
+      AppAssets.cab,
+    ),
+    _VehicleOption(
+      'Cab EV',
+      AppStrings.vehicleEvCab,
+      AppStrings.fourWheeler,
+      AppAssets.evCab,
+    ),
+    _VehicleOption(
+      'Cab XL',
+      AppStrings.vehicleXlCab,
+      AppStrings.fourWheeler,
+      AppAssets.xlCab,
+    ),
+    _VehicleOption(
+      'Auto',
+      AppStrings.vehicleAuto,
+      AppStrings.threeWheeler,
+      AppAssets.auto,
+    ),
+    _VehicleOption(
+      'Bike',
+      AppStrings.vehicleBike,
+      AppStrings.twoWheeler,
+      AppAssets.bike,
+    ),
   ];
 
   void _select(_VehicleOption vehicle) {
@@ -56,49 +84,40 @@ class _SelectVehicleScreenState extends State<SelectVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: widget.onBack == null
-            ? null
-            : IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
-                onPressed: widget.onBack,
-              ),
         titleSpacing: widget.onBack == null ? context.w(20) : 0,
         centerTitle: false,
         toolbarHeight: context.h(64),
-        backgroundColor: Colors.white,
+        backgroundColor: context.torkk.background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: TText(
           AppStrings.selectVehicleCategory,
           style: AppTypography.bold.copyWith(fontSize: 20, height: 1.15),
         ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: context.w(16)),
-            child: GestureDetector(
-              onTap: widget.onHelp,
-              child: Image.asset(
-                AppAssets.helpButton,
-                width: context.w(40),
-                height: context.w(40),
-                fit: BoxFit.contain,
-              ),
-            ),
+            child: AiChatButton(size: context.w(40), onTap: widget.onHelp),
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(context.w(20), context.h(8), context.w(20), context.h(16)),
+        padding: EdgeInsets.fromLTRB(
+          context.w(20),
+          context.h(8),
+          context.w(20),
+          context.h(16),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            TText(
               AppStrings.chooseVehicleType,
               style: AppTypography.bold.copyWith(
-                color: AppColors.textPrimary,
+                color: context.torkk.textPrimary,
                 fontSize: 14,
                 height: 1.35,
               ),
@@ -127,13 +146,17 @@ class _SelectVehicleScreenState extends State<SelectVehicleScreen> {
               SizedBox(height: context.h(8)),
               Row(
                 children: [
-                  Icon(Icons.info, color: AppColors.error, size: context.w(18)),
+                  Icon(
+                    Icons.info,
+                    color: context.legible(AppColors.error),
+                    size: context.w(18),
+                  ),
                   SizedBox(width: context.w(8)),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       AppStrings.selectVehicleError,
                       style: AppTypography.regular.copyWith(
-                        color: AppColors.error,
+                        color: context.legible(AppColors.error),
                         fontSize: 13,
                       ),
                     ),
@@ -180,9 +203,14 @@ class _VehicleCard extends StatelessWidget {
       onTap: onTap,
       child: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: context.w(12), vertical: context.h(12)),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.w(12),
+            vertical: context.h(12),
+          ),
           decoration: BoxDecoration(
-            color: selected ? const Color(0xFFF6F3FB) : Colors.white,
+            color: selected
+                ? context.adaptiveTint(const Color(0xFFF6F3FB))
+                : context.torkk.surface,
             borderRadius: BorderRadius.circular(context.r(16)),
             border: Border.all(
               color: selected ? AppColors.primary : AppColors.fieldBorder,
@@ -214,23 +242,23 @@ class _VehicleCard extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.directions_car_rounded,
                       size: context.w(40),
-                      color: AppColors.secondaryTextColor,
+                      color: context.torkk.textSecondary,
                     ),
                   ),
                 ),
               ),
               SizedBox(height: context.h(8)),
-              Text(
+              TText(
                 vehicle.label,
                 style: AppTypography.bold.copyWith(fontSize: 15, height: 1.2),
               ),
               SizedBox(height: context.h(2)),
-              Text(
+              TText(
                 vehicle.subtitle,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
                   height: 1.2,
-                  color: AppColors.secondaryTextColor,
+                  color: context.torkk.textSecondary,
                 ),
               ),
             ],

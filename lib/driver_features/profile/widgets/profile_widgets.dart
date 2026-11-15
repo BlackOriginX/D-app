@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/constants/app_colors.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
-Color profileAccent(BuildContext context) => Theme.of(context).colorScheme.primary;
+Color profileAccent(BuildContext context) =>
+    Theme.of(context).colorScheme.primary;
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({
@@ -14,6 +18,7 @@ class ProfilePage extends StatelessWidget {
     this.bottom,
     this.onBack,
     this.subtitle,
+    this.showAiChat = true,
   });
 
   final String title;
@@ -23,26 +28,51 @@ class ProfilePage extends StatelessWidget {
   final Widget? bottom;
   final VoidCallback? onBack;
 
+  /// Floating AI chat button; off on tab roots, which have it in the nav bar.
+  final bool showAiChat;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
+      floatingActionButton: showAiChat
+          ? Padding(
+              // Lift above the page's bottom action button, if any.
+              padding: EdgeInsets.only(
+                bottom: bottom != null ? context.h(76) : 0,
+              ),
+              child: AiChatButton(size: context.w(48)),
+            )
+          : null,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(context.w(8), context.h(4), context.w(16), 0),
+              padding: EdgeInsets.fromLTRB(
+                context.w(8),
+                context.h(4),
+                context.w(16),
+                0,
+              ),
               child: Row(
                 children: [
                   IconButton(
                     onPressed: onBack ?? () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.arrow_back_ios_new, size: 20, color: AppColors.textPrimary),
+                    icon: Icon(
+                      Icons.arrow_back_ios_new,
+                      size: 20,
+                      color: context.torkk.textPrimary,
+                    ),
                   ),
                   Expanded(
-                    child: Text(
+                    child: TText(
                       title,
-                      style: AppTypography.bold.copyWith(fontSize: 20, height: 1.2, letterSpacing: -0.4),
+                      style: AppTypography.bold.copyWith(
+                        fontSize: 20,
+                        height: 1.2,
+                        letterSpacing: -0.4,
+                      ),
                     ),
                   ),
                   ?trailing,
@@ -51,15 +81,19 @@ class ProfilePage extends StatelessWidget {
             ),
             if (subtitle != null)
               Padding(
-                padding: EdgeInsets.only(left: 56, right: context.w(60), bottom: context.h(12)),
+                padding: EdgeInsets.only(
+                  left: 56,
+                  right: context.w(60),
+                  bottom: context.h(12),
+                ),
                 child: SizedBox(
                   width: context.w(281),
-                  child: Text(
+                  child: TText(
                     subtitle!,
                     style: AppTypography.regular.copyWith(
                       fontSize: 14,
                       height: 1.4,
-                      color: AppColors.secondaryTextColor,
+                      color: context.torkk.textSecondary,
                     ),
                   ),
                 ),
@@ -83,12 +117,12 @@ class ProfileMenuCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(context.r(16)),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: context.torkk.border),
       ),
       child: Column(
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            if (i > 0) const Divider(height: 1, color: Color(0xFFF1F5F9)),
+            if (i > 0) Divider(height: 1, color: context.torkk.border),
             items[i],
           ],
         ],
@@ -104,6 +138,7 @@ class ProfileMenuItem extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.accent = false,
+    this.iconColor,
   });
 
   final IconData icon;
@@ -111,28 +146,54 @@ class ProfileMenuItem extends StatelessWidget {
   final VoidCallback onTap;
   final bool accent;
 
+  /// Brand color for the leading icon badge; plain icon when null.
+  final Color? iconColor;
+
   @override
   Widget build(BuildContext context) {
-    final color = accent ? profileAccent(context) : AppColors.textPrimary;
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: context.w(14), vertical: context.h(14)),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.w(14),
+          vertical: context.h(14),
+        ),
         child: Row(
           children: [
-            Icon(icon, size: context.w(20), color: AppColors.textPrimary),
+            if (iconColor == null)
+              Icon(icon, size: context.w(20), color: context.torkk.textPrimary)
+            else
+              Container(
+                width: context.w(34),
+                height: context.w(34),
+                decoration: BoxDecoration(
+                  color: iconColor!.withValues(
+                    alpha: context.isDarkTheme ? 0.2 : 0.12,
+                  ),
+                  borderRadius: BorderRadius.circular(context.r(10)),
+                ),
+                child: Icon(
+                  icon,
+                  size: context.w(19),
+                  color: context.legible(iconColor!, minContrast: 3),
+                ),
+              ),
             SizedBox(width: context.w(14)),
             Expanded(
-              child: Text(
+              child: TText(
                 label,
                 style: AppTypography.regular.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: context.torkk.textPrimary,
                 ),
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: AppColors.slate400, size: context.w(20)),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.slate400,
+              size: context.w(20),
+            ),
           ],
         ),
       ),
@@ -147,6 +208,8 @@ class ProfileValueRow extends StatelessWidget {
     required this.label,
     this.value = '',
     this.valueColor,
+    this.trailing,
+    this.onTap,
   });
 
   final IconData icon;
@@ -154,40 +217,51 @@ class ProfileValueRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
+  /// Replaces the default right arrow when set.
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.w(14), vertical: context.h(12)),
+    final row = Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: context.w(14),
+        vertical: context.h(12),
+      ),
       child: Row(
         children: [
-          Icon(icon, size: context.w(18), color: AppColors.textPrimary),
+          Icon(icon, size: context.w(18), color: context.torkk.textPrimary),
           SizedBox(width: context.w(12)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
-                  style: AppTypography.regular.copyWith(fontSize: 11, color: AppColors.slate500),
+                  style: AppTypography.regular.copyWith(
+                    fontSize: 11,
+                    color: context.torkk.textSecondary,
+                  ),
                 ),
                 SizedBox(height: context.h(4)),
                 if (value.isNotEmpty)
-                  Text(
+                  TText(
                     value,
                     style: AppTypography.bold.copyWith(
                       fontSize: 12,
                       height: 1.3,
                       letterSpacing: -0.2,
-                      color: valueColor ?? AppColors.textPrimary,
+                      color: valueColor ?? context.torkk.textPrimary,
                     ),
                   ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right_rounded, color: AppColors.slate400, size: context.w(20)),
+          if (trailing != null) ...[SizedBox(width: context.w(8)), trailing!],
         ],
       ),
     );
+    return onTap == null ? row : InkWell(onTap: onTap, child: row);
   }
 }
 
@@ -203,7 +277,12 @@ class ProfileTitleScreen extends StatelessWidget {
 }
 
 class ProfileAccentButton extends StatelessWidget {
-  const ProfileAccentButton({super.key, required this.label, required this.icon, required this.onTap});
+  const ProfileAccentButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
   final String label;
   final IconData icon;
@@ -212,7 +291,12 @@ class ProfileAccentButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(context.w(20), context.h(8), context.w(20), context.h(16)),
+      padding: EdgeInsets.fromLTRB(
+        context.w(20),
+        context.h(8),
+        context.w(20),
+        context.h(16),
+      ),
       child: SizedBox(
         width: double.infinity,
         height: context.h(48),
@@ -220,17 +304,28 @@ class ProfileAccentButton extends StatelessWidget {
           onPressed: onTap,
           style: FilledButton.styleFrom(
             backgroundColor: profileAccent(context),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.r(14))),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(context.r(14)),
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              TText(
                 label,
-                style: AppTypography.bold.copyWith(fontSize: 15, height: 1, color: Colors.white, letterSpacing: -0.2),
+                style: AppTypography.bold.copyWith(
+                  fontSize: 15,
+                  height: 1,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  letterSpacing: -0.2,
+                ),
               ),
               SizedBox(width: context.w(8)),
-              Icon(icon, size: context.w(18), color: Colors.white),
+              Icon(
+                icon,
+                size: context.w(18),
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ],
           ),
         ),

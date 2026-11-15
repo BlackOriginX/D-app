@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
 import 'dart:io';
 import 'package:rider_app/common/utils/translations.dart';
-import 'dart:ui' as ui;
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -21,7 +20,12 @@ import 'package:rider_app/driver_features/chat/screens/driver_customer_chat_scre
 import 'package:rider_app/driver_features/summary/screens/driver_trip_summary_screen.dart';
 import 'package:rider_app/common/constants/map_styles.dart';
 import '../widgets/widgets.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
+import 'package:rider_app/common/maps/live_map.dart';
+import 'package:rider_app/common/maps/map_icons.dart';
 export '../widgets/widgets.dart';
+part 'driver_navigation_screen_sections.dart';
 
 // --- DRIVER NAVIGATION / TRIP PROGRESS SCREEN ---
 class DriverNavigationScreen extends StatefulWidget {
@@ -39,7 +43,8 @@ enum DriverRideUiMode {
   waiting, // RideWaiting (RideCard3)
 }
 
-class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
+class _DriverNavigationScreenState extends State<DriverNavigationScreen>
+    with TickerProviderStateMixin {
   Timer? _locationTimer;
   String _driverPhone = '';
   String _driverGender = 'Male';
@@ -54,47 +59,94 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   final bool _showFullRoute = false;
 
   final Set<Marker> _markers = {};
-  final Set<Polyline> _polylines = {};
   final Set<Circle> _circles = {};
-  BitmapDescriptor? _navPuckIcon;
+
+  // Ola / Uber style motion (polyline_animation_plus): the driver marker glides
+  // along the route, the route shrinks behind it and the camera follows.
+  late final LiveMap _live = LiveMap(vsync: this);
+  BitmapDescriptor? _riderIcon;
+  BitmapDescriptor? _dropIcon;
+  bool _routeDrawn = false;
+  bool _followActive = false;
+  // ===== TESTING: the sample rides (9901 / 9902) have Delhi coordinates, so a
+  // phone anywhere else never moves along them. With this on, the vehicle drives
+  // along the route by itself so the movement can be seen.
+  // Set to false (PRODUCTION) before building a release.
+  static const bool _simulateSampleRideMovement = false;
+  Timer? _simTimer;
+  LatLng? _simPosition;
+  DateTime? _lastReroute;
+
+  bool get _simulating =>
+      _simulateSampleRideMovement && (_rideId == 9901 || _rideId == 9902);
+
+  /// Where the driver is: the simulated spot, else the GPS position.
+  LatLng? get _driverLatLng {
+    if (_simulating) return _simPosition;
+    final p = _currentPosition;
+    return p == null ? null : LatLng(p.latitude, p.longitude);
+  }
+
+  /// Drives the vehicle along [route] by itself (about 90 seconds in total).
+  void _startSimulation(List<LatLng> route) {
+    _simTimer?.cancel();
+    if (route.length < 2) return;
+    final step = (route.length ~/ 90).clamp(1, 1000);
+    var index = 0;
+    _simTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      index += step;
+      if (!mounted || index >= route.length) {
+        timer.cancel();
+        return;
+      }
+      _simPosition = route[index];
+      _live.moveDriver(route[index]);
+    });
+  }
+
+  /// The driver left the route: find a new one (not more than once in 20 s).
+  void _onOffRoute(LatLng position) {
+    if (_simulating) return;
+    final now = DateTime.now();
+    final last = _lastReroute;
+    if (last != null && now.difference(last) < const Duration(seconds: 20)) {
+      return;
+    }
+    _lastReroute = now;
+    debugPrint('[DEBUG NAV] Off route, finding a new route');
+    _clearRouteCache();
+    _setupMap();
+  }
+
+  // The driver dragged the map away: do not pull the camera back by itself.
+  bool _userMovedMap = false;
+  List<LatLng> _lastRoute = [];
+  Color _lastRouteColor = const Color(0xFF2563EB);
 
   static const String _navigationMapStyle = MapStyles.navigationMapStyle;
 
-  Future<void> _initNavigationPuckIcon() async {
+  /// Loads the driver arrow, the rider pin and the drop pin.
+  Future<void> _initMapIcons() async {
     try {
-      final pictureRecorder = ui.PictureRecorder();
-      final canvas = Canvas(pictureRecorder);
-      const size = 64.0;
-
-      final paint = Paint()
-        ..color = const Color(0xFF1D4ED8)
-        ..style = PaintingStyle.fill;
-
-      final strokePaint = Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.0;
-
-      final path = Path();
-      path.moveTo(size / 2, 6);
-      path.lineTo(size - 10, size - 10);
-      path.lineTo(size / 2, size - 20);
-      path.lineTo(10, size - 10);
-      path.close();
-
-      canvas.drawPath(path, paint);
-      canvas.drawPath(path, strokePaint);
-
-      final picture = pictureRecorder.endRecording();
-      final image = await picture.toImage(size.toInt(), size.toInt());
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (bytes != null) {
-        _navPuckIcon = BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
-        if (mounted) setState(() {});
-      }
+      _live.driverIcon = await MapIcons.driver();
+      _riderIcon = await MapIcons.rider();
+      _dropIcon = await MapIcons.drop();
+      if (mounted) setState(() {});
     } catch (e) {
-      debugPrint('[DEBUG NAV] Error creating nav puck icon: $e');
+      debugPrint('[DEBUG NAV] Error creating map icons: $e');
     }
+  }
+
+  /// Camera follows the driver (tilted, turning with the vehicle).
+  void _startFollow() {
+    if (!_live.isAttached || _driverLatLng == null) return;
+    _followActive = true;
+    _live.follow(
+      onStopped: () {
+        _userMovedMap = true;
+        if (mounted) setState(() => _followActive = false);
+      },
+    );
   }
 
   int get _currentSpeedKmH {
@@ -106,16 +158,20 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
 
   String get _dynamicEtaText {
     final pickupLat = _asDouble(_ride?['pickup_lat']);
-    final pickupLng =
-        _ride?['pickup_lng'] != null ? _asDouble(_ride?['pickup_lng']) : null;
+    final pickupLng = _ride?['pickup_lng'] != null
+        ? _asDouble(_ride?['pickup_lng'])
+        : null;
     final dropLat = _asDouble(_ride?['drop_lat']);
-    final dropLng =
-        _ride?['drop_lng'] != null ? _asDouble(_ride?['drop_lng']) : null;
+    final dropLng = _ride?['drop_lng'] != null
+        ? _asDouble(_ride?['drop_lng'])
+        : null;
 
-    final targetLat =
-        _tripPhase == TripPhase.goingToPickup ? pickupLat : dropLat;
-    final targetLng =
-        _tripPhase == TripPhase.goingToPickup ? pickupLng : dropLng;
+    final targetLat = _tripPhase == TripPhase.goingToPickup
+        ? pickupLat
+        : dropLat;
+    final targetLng = _tripPhase == TripPhase.goingToPickup
+        ? pickupLng
+        : dropLng;
 
     double? distMeters;
 
@@ -186,47 +242,6 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   String _driverPhotoUrl = '';
   double _driverRating = 4.8;
 
-  Future<void> _openGoogleMapsApp() async {
-    double? destLat;
-    double? destLng;
-    if (_tripPhase == TripPhase.goingToPickup) {
-      destLat = _asDouble(_ride?['pickup_lat']) ?? 28.6328;
-      destLng = _asDouble(_ride?['pickup_lng']) ?? 77.2197;
-    } else {
-      destLat = _asDouble(_ride?['drop_lat']) ?? 28.6328;
-      destLng = _asDouble(_ride?['drop_lng']) ?? 77.2197;
-    }
-    final uri = Uri.parse(
-      AppUrls.googleMapsNavigation(destLat: destLat, destLng: destLng),
-    );
-    try {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        await launchUrl(uri);
-      }
-    } catch (e) {
-      debugPrint('[DEBUG NAV] Error launching Google Maps: $e');
-    }
-  }
-
-  void _recenterMap() {
-    if (_currentPosition != null && _mapController != null) {
-      _mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(
-              _currentPosition!.latitude,
-              _currentPosition!.longitude,
-            ),
-            zoom: 17,
-            tilt: 35,
-          ),
-        ),
-      );
-    }
-  }
-
   String get _formattedWaitingTime {
     final m = (_waitingSeconds ~/ 60).toString().padLeft(2, '0');
     final s = (_waitingSeconds % 60).toString().padLeft(2, '0');
@@ -264,7 +279,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   @override
   void initState() {
     super.initState();
-    _initNavigationPuckIcon();
+    _initMapIcons();
     _initTrip();
   }
 
@@ -272,6 +287,8 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
   void dispose() {
     _locationTimer?.cancel();
     _waitingTimer?.cancel();
+    _simTimer?.cancel();
+    _live.dispose();
     _mapController?.dispose();
     super.dispose();
   }
@@ -295,7 +312,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('No active ride found'),
+            content: TText('No active ride found'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -417,8 +434,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
               if (mounted) {
                 setState(() {
                   if (profile['name'] != null &&
-                      profile['name'].toString().isNotEmpty) {
-                  }
+                      profile['name'].toString().isNotEmpty) {}
                   if (profile['profile_photo'] != null &&
                       profile['profile_photo'].toString().isNotEmpty) {
                     _driverPhotoUrl = profile['profile_photo'].toString();
@@ -439,7 +455,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error loading trip: $e'),
+            content: TText('Error loading trip: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -455,220 +471,12 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
     return double.tryParse(value.toString());
   }
 
-  /// Accepts 1/0, true/false, "true"/"1" from different API shapes.
-  bool _isTruthyFlag(dynamic value) {
-    if (value == null) return false;
-    if (value is bool) return value;
-    if (value is num) return value != 0;
-    final s = value.toString().trim().toLowerCase();
-    return s == '1' || s == 'true' || s == 'yes';
-  }
-
-  void _clearRouteCache() {
-    _cachedRouteKey = null;
-    _cachedRoutePoints = [];
-  }
-
-  /// Decode Google encoded polyline into LatLng points.
-  List<LatLng> _decodePolyline(String encoded) {
-    final List<LatLng> points = [];
-    int index = 0;
-    int lat = 0;
-    int lng = 0;
-
-    while (index < encoded.length) {
-      int shift = 0;
-      int result = 0;
-      int b;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      final dlat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.codeUnitAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      final dlng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
-      lng += dlng;
-
-      points.add(LatLng(lat / 1e5, lng / 1e5));
-    }
-    return points;
-  }
-
-  Future<List<LatLng>> _getDrivingRoute(
-    LatLng origin,
-    LatLng destination,
-  ) async {
-    // ~100m cache grid so we don't hit routing APIs on every GPS tick.
-    final cacheKey =
-        '${origin.latitude.toStringAsFixed(3)},${origin.longitude.toStringAsFixed(3)}->'
-        '${destination.latitude.toStringAsFixed(3)},${destination.longitude.toStringAsFixed(3)}';
-    if (_cachedRouteKey == cacheKey && _cachedRoutePoints.length >= 2) {
-      return _cachedRoutePoints;
-    }
-
-    // 1) Google Directions
-    try {
-      final url = Uri.parse(
-        AppUrls.googleDirections(
-          originLat: origin.latitude,
-          originLng: origin.longitude,
-          destLat: destination.latitude,
-          destLng: destination.longitude,
-          apiKey: _mapsApiKey,
-        ),
-      );
-      final response = await http.get(url).timeout(const Duration(seconds: 12));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        final status = data['status']?.toString() ?? '';
-        final routes = data['routes'];
-        if (status == 'OK' && routes is List && routes.isNotEmpty) {
-          final overview = routes[0]['overview_polyline'];
-          final encoded = overview is Map
-              ? overview['points']?.toString()
-              : null;
-          if (encoded != null && encoded.isNotEmpty) {
-            final points = _decodePolyline(encoded);
-            if (points.length >= 2) {
-              _cachedRouteKey = cacheKey;
-              _cachedRoutePoints = points;
-              return points;
-            }
-          }
-        } else {
-          debugPrint('[DEBUG NAV] Google Directions status: $status');
-        }
-      } else {
-        debugPrint('[DEBUG NAV] Google Directions HTTP ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('[DEBUG NAV] Google Directions error: $e');
-    }
-
-    // 2) OSRM road route fallback (works when Maps key blocks Directions)
-    try {
-      final url = Uri.parse(
-        AppUrls.osrmRoute(
-          originLat: origin.latitude,
-          originLng: origin.longitude,
-          destLat: destination.latitude,
-          destLng: destination.longitude,
-        ),
-      );
-      final response = await http.get(url).timeout(const Duration(seconds: 12));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        final routes = data['routes'];
-        if (data['code']?.toString() == 'Ok' &&
-            routes is List &&
-            routes.isNotEmpty) {
-          final encoded = routes[0]['geometry']?.toString();
-          if (encoded != null && encoded.isNotEmpty) {
-            final points = _decodePolyline(encoded);
-            if (points.length >= 2) {
-              debugPrint('[DEBUG NAV] Using OSRM road route (${points.length} pts)');
-              _cachedRouteKey = cacheKey;
-              _cachedRoutePoints = points;
-              return points;
-            }
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint('[DEBUG NAV] OSRM route error: $e');
-    }
-
-    // Last resort: straight line (should rarely happen)
-    final straightPoints = [origin, destination];
-    _cachedRouteKey = cacheKey;
-    _cachedRoutePoints = straightPoints;
-    return straightPoints;
-  }
-
+  /// A new GPS position: the driver marker glides there along the route.
   void _updateDriverMarkerOnly() {
     if (_currentPosition == null || !mounted) return;
-    final pos = LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
-    final heading = _currentPosition!.heading;
-    setState(() {
-      _markers.removeWhere((m) => m.markerId.value == 'driver');
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('driver'),
-          position: pos,
-          icon:
-              _navPuckIcon ??
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
-          rotation: heading,
-          anchor: const Offset(0.5, 0.5),
-          flat: true,
-          infoWindow: const InfoWindow(title: 'Your location'),
-          zIndex: 5,
-        ),
-      );
-      _circles.removeWhere((c) => c.circleId.value == 'driver_aura');
-      _circles.add(
-        Circle(
-          circleId: const CircleId('driver_aura'),
-          center: pos,
-          radius: 35,
-          fillColor: const Color(0xFF2563EB).withValues(alpha: 0.22),
-          strokeColor: const Color(0xFF2563EB).withValues(alpha: 0.45),
-          strokeWidth: 1,
-          zIndex: 4,
-        ),
-      );
-
-      // Live Polyline Trimming: Trim route behind driver as driver moves forward
-      if (_cachedRoutePoints.length >= 2) {
-        int closestIndex = 0;
-        double minDistance = double.infinity;
-        for (int i = 0; i < _cachedRoutePoints.length; i++) {
-          final dist = Geolocator.distanceBetween(
-            pos.latitude,
-            pos.longitude,
-            _cachedRoutePoints[i].latitude,
-            _cachedRoutePoints[i].longitude,
-          );
-          if (dist < minDistance) {
-            minDistance = dist;
-            closestIndex = i;
-          }
-        }
-        final remaining = [
-          pos,
-          ..._cachedRoutePoints.sublist(
-            (closestIndex + 1).clamp(0, _cachedRoutePoints.length),
-          ),
-        ];
-        if (remaining.length >= 2) {
-          final routeColor = _tripPhase == TripPhase.goingToPickup
-              ? const Color(0xFF2563EB)
-              : const Color(0xFF10B981);
-          _polylines
-            ..clear()
-            ..add(
-              Polyline(
-                polylineId: const PolylineId('route'),
-                points: remaining,
-                color: routeColor,
-                width: 6,
-                jointType: JointType.round,
-                endCap: Cap.roundCap,
-                startCap: Cap.roundCap,
-              ),
-            );
-        }
-      }
-    });
+    _live.moveDriver(
+      LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+    );
   }
 
   Future<void> _setupMap() async {
@@ -694,9 +502,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('pickup'),
               position: LatLng(pickupLat, pickupLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+              icon:
+                  _riderIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueGreen,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Pickup Location',
                 snippet: '${_ride!['pickup_address'] ?? ''}',
@@ -710,9 +520,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('drop'),
               position: LatLng(dropLat, dropLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+              icon:
+                  _dropIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Drop Location',
                 snippet: '${_ride!['drop_address'] ?? ''}',
@@ -730,9 +542,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('pickup'),
               position: LatLng(pickupLat, pickupLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen,
-              ),
+              icon:
+                  _riderIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueGreen,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Pickup Location',
                 snippet: '${_ride!['pickup_address'] ?? ''}',
@@ -756,9 +570,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
             Marker(
               markerId: const MarkerId('drop'),
               position: LatLng(dropLat, dropLng),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueRed,
-              ),
+              icon:
+                  _dropIcon ??
+                  BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed,
+                  ),
               infoWindow: InfoWindow(
                 title: 'Drop Location',
                 snippet: '${_ride!['drop_address'] ?? ''}',
@@ -775,43 +591,27 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
         }
       }
 
-      // Driver / car navigation arrow marker & halo
-      if (_currentPosition != null) {
-        final pos = LatLng(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        );
-        final heading = _currentPosition!.heading;
-        _markers.removeWhere((m) => m.markerId.value == 'driver');
-        _markers.add(
-          Marker(
-            markerId: const MarkerId('driver'),
-            position: pos,
-            icon:
-                _navPuckIcon ??
-                BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueAzure,
-                ),
-            rotation: heading,
-            anchor: const Offset(0.5, 0.5),
-            flat: true,
-            infoWindow: const InfoWindow(title: 'Your location'),
-            zIndex: 5,
-          ),
-        );
-        _circles.removeWhere((c) => c.circleId.value == 'driver_aura');
-        _circles.add(
-          Circle(
-            circleId: const CircleId('driver_aura'),
-            center: pos,
-            radius: 35,
-            fillColor: const Color(0xFF2563EB).withValues(alpha: 0.22),
-            strokeColor: const Color(0xFF2563EB).withValues(alpha: 0.45),
-            strokeWidth: 1,
-            zIndex: 4,
-          ),
-        );
+      // TESTING: a sample ride starts about 700 m before the pickup (or at the
+      // pickup once the rider is on board), not at the phone's real GPS spot.
+      if (_simulating && destination != null) {
+        final pLat = _asDouble(_ride!['pickup_lat']);
+        final pLng = _asDouble(_ride!['pickup_lng']);
+        if (_tripPhase == TripPhase.goingToPickup) {
+          origin =
+              _simPosition ??
+              LatLng(
+                destination.latitude - 0.006,
+                destination.longitude - 0.006,
+              );
+        } else if (pLat != null && pLng != null) {
+          origin = LatLng(pLat, pLng);
+        }
+        _simPosition = origin;
       }
+
+      // Driver marker: the controller draws it and moves it along the route.
+      final here = _driverLatLng;
+      if (here != null) _live.moveDriver(here);
 
       if (mounted && token == _mapSetupToken) {
         setState(() {});
@@ -827,36 +627,26 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
 
       if (!mounted || token != _mapSetupToken) return;
 
-      _polylines
-        ..clear()
-        ..addAll(
-          routePoints.length >= 2
-              ? [
-                  Polyline(
-                    polylineId: const PolylineId('route'),
-                    points: routePoints,
-                    color: routeColor,
-                    width: 6,
-                    jointType: JointType.round,
-                    endCap: Cap.roundCap,
-                    startCap: Cap.roundCap,
-                  ),
-                ]
-              : [],
+      _routeDrawn = routePoints.length >= 2;
+      _lastRoute = routePoints;
+      _lastRouteColor = routeColor;
+      if (_routeDrawn) {
+        _live.trackRoute(
+          routePoints,
+          color: routeColor,
+          onOffRoute: _onOffRoute,
         );
+        final here = _driverLatLng;
+        if (here != null) _live.moveDriver(here);
+        if (_simulating) _startSimulation(routePoints);
+      }
 
       setState(() {});
+      if (_routeDrawn && !_followActive && !_userMovedMap) _startFollow();
       _fitMapBounds();
     } catch (e, st) {
       debugPrint('[DEBUG NAV] Map setup error: $e\n$st');
     }
-  }
-
-  void _fitMapBounds() {
-    if (_mapController == null || _markers.isEmpty) return;
-
-    final bounds = _calculateBounds(_markers.map((m) => m.position).toList());
-    _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 100));
   }
 
   LatLngBounds _calculateBounds(List<LatLng> positions) {
@@ -875,137 +665,6 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
     return LatLngBounds(
       southwest: LatLng(minLat, minLng),
       northeast: LatLng(maxLat, maxLng),
-    );
-  }
-
-  void _startLocationUpdates() {
-    _updateLocation();
-    _locationTimer = Timer.periodic(
-      const Duration(seconds: 5),
-      (_) => _updateLocation(),
-    );
-  }
-
-  Future<void> _updateLocation() async {
-    if (_driverPhone.isEmpty) return;
-
-    // Status check must happen FIRST, before any Geolocator/location calls,
-    // to ensure cancellation is detected even if location permissions or GPS are off/failing.
-    if (_rideId != null) {
-      try {
-        final rideDetail = await DriverApiService.fetchRideDetail(
-          rideId: _rideId!,
-          driverPhone: _driverPhone,
-        );
-        if (rideDetail['status'] == 'cancelled' ||
-            rideDetail['ride_status'] == 'cancelled') {
-          _locationTimer?.cancel();
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove('active_ride_id');
-          await prefs.remove('active_ride_picked_up');
-          if (mounted) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => RideCancelledDialog(
-                onDismiss: () {
-                  Navigator.pop(context); // Close dialog
-                  Navigator.pop(context); // Close navigation screen
-                },
-              ),
-            );
-          }
-          return;
-        }
-      } catch (e) {
-        debugPrint('[DEBUG NAV] Status check error: $e');
-      }
-    }
-
-    try {
-      if (!await LocationConsentService.hasAccepted()) return;
-
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return;
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        return;
-      }
-
-      final position = await Geolocator.getCurrentPosition();
-      await DriverApiService.updateLocation(
-        driverPhone: _driverPhone,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      );
-
-      if (!mounted) return;
-
-      final newPos = LatLng(position.latitude, position.longitude);
-      _currentPosition = position;
-
-      // Move driver marker every tick; only rebuild road route when cache misses (~100m).
-      _updateDriverMarkerOnly();
-
-      // Trigger waiting timer automatically when driver arrives at pickup location (<=150m)
-      if (_tripPhase == TripPhase.goingToPickup) {
-        final pickupLat = _asDouble(_ride?['pickup_lat']);
-        final pickupLng = _asDouble(_ride?['pickup_lng']);
-        if (pickupLat != null && pickupLng != null) {
-          final distM = Geolocator.distanceBetween(
-            position.latitude,
-            position.longitude,
-            pickupLat,
-            pickupLng,
-          );
-          if (distM <= 150) {
-            _startWaitingTimer();
-          }
-        }
-      }
-
-      if (_polylines.isEmpty || _cachedRoutePoints.length < 2) {
-        await _setupMap();
-      } else {
-        // Soft-refresh route if driver moved out of cache grid.
-        final dest = _tripPhase == TripPhase.goingToPickup
-            ? (_asDouble(_ride?['pickup_lat']) != null &&
-                      _asDouble(_ride?['pickup_lng']) != null
-                  ? LatLng(
-                      _asDouble(_ride!['pickup_lat'])!,
-                      _asDouble(_ride!['pickup_lng'])!,
-                    )
-                  : null)
-            : (_asDouble(_ride?['drop_lat']) != null &&
-                      _asDouble(_ride?['drop_lng']) != null
-                  ? LatLng(
-                      _asDouble(_ride!['drop_lat'])!,
-                      _asDouble(_ride!['drop_lng'])!,
-                    )
-                  : null);
-        if (dest != null) {
-          final cacheKey =
-              '${newPos.latitude.toStringAsFixed(3)},${newPos.longitude.toStringAsFixed(3)}->'
-              '${dest.latitude.toStringAsFixed(3)},${dest.longitude.toStringAsFixed(3)}';
-          if (_cachedRouteKey != cacheKey) {
-            await _setupMap();
-          }
-        }
-      }
-    } catch (e) {
-      debugPrint('[DEBUG NAV] Location update error: $e');
-    }
-  }
-
-  void _showRideOtpSheet() {
-    final bool isParcel = _ride?['is_parcel'] == true || _ride?['service_type'] == 'parcel';
-    showRideOtpBottomSheet(
-      context: context,
-      rideCode: (_ride?['ride_code'] ?? '').toString(),
-      subtitle: isParcel ? 'Ask the Sender for Pickup OTP' : 'Ask the Passenger for OTP',
-      onVerify: (otp) => _verifyAndPickupCustomer(otp),
     );
   }
 
@@ -1037,7 +696,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Customer picked up! Heading to drop location.'),
+            content: TText('Customer picked up! Heading to drop location.'),
             backgroundColor: Colors.green,
           ),
         );
@@ -1048,24 +707,10 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
       if (mounted) {
         setState(() => _isProcessing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$e'), backgroundColor: Colors.red),
+          SnackBar(content: TText('$e'), backgroundColor: Colors.red),
         );
       }
     }
-  }
-
-  Future<void> _handlePickedUp() async {
-    if (_isProcessing || _rideId == null) return;
-    _showRideOtpSheet();
-  }
-
-  void _showDeliveryOtpSheet() {
-    showRideOtpBottomSheet(
-      context: context,
-      rideCode: (_ride?['delivery_code'] ?? '').toString(),
-      subtitle: 'Ask the Receiver for Delivery OTP',
-      onVerify: (otp) => _verifyAndCompleteTrip(otp),
-    );
   }
 
   Future<void> _verifyAndCompleteTrip(String otp) async {
@@ -1075,75 +720,10 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
     await _completeTrip();
   }
 
-  Future<void> _completeTrip() async {
-    if (_rideId == null || _isProcessing || _ride == null) return;
-
-    // Set is_dropped = 1 on the backend so customer receives payment screen
-    try {
-      await http.post(
-        Uri.parse(AppUrls.reached),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'ride_id': _rideId}),
-      );
-    } catch (e) {
-      debugPrint('[DEBUG NAV] Error marking drop reached: $e');
-    }
-
-    _locationTimer?.cancel();
-    _waitingTimer?.cancel();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('active_ride_id');
-    await prefs.remove('active_ride_picked_up');
-
-    if (mounted) {
-      final bool isParcel = _ride!['is_parcel'] == true || _ride!['service_type'] == 'parcel';
-      final customerName = isParcel
-          ? (_ride!['receiver_name'] ?? _ride!['customer_name'] ?? 'Receiver')
-          : (_ride!['customer_name'] ?? 'Customer');
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DriverTripSummaryScreen(
-            rideId: _rideId!,
-            driverPhone: _driverPhone,
-            estimatedFare:
-                (_ride!['estimated_fare'] as num?)?.toDouble() ?? 0.0,
-            customerName: customerName.toString(),
-            customerPhone: _ride!['receiver_phone'] ?? _ride!['customer_phone'] ?? '',
-          ),
-        ),
-      );
-    }
-  }
-
-
-  void _openChat() {
-    final phone = _ride?['customer_phone'] ?? '';
-    final name = _ride?['customer_name'] ?? 'Customer';
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            DriverCustomerChatScreen(customerName: name, customerPhone: phone),
-      ),
-    );
-  }
-
-  void _callCustomer() {
-    final phone = _ride?['customer_phone'] ?? '';
-    if (phone.isNotEmpty) {
-      launchUrl(Uri.parse('tel:$phone'));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Customer phone not available')),
-      );
-    }
-  }
-
   void _onSliderAction() {
     if (_tripPhase == TripPhase.goingToDrop) {
-      final bool isParcel = _ride?['is_parcel'] == true || _ride?['service_type'] == 'parcel';
+      final bool isParcel =
+          _ride?['is_parcel'] == true || _ride?['service_type'] == 'parcel';
       if (isParcel) {
         _showDeliveryOtpSheet();
       } else {
@@ -1176,35 +756,6 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
     }
   }
 
-  Widget _buildSliderButton() {
-    return NavigationSliderButton(
-      isDrop: _tripPhase == TripPhase.goingToDrop,
-      isProcessing: _isProcessing,
-      onAction: _onSliderAction,
-    );
-  }
-
-
-
-  void _showLocationDetailBottomSheet({
-    required String title,
-    required String address,
-    required String distanceText,
-    required Color color,
-    double? lat,
-    double? lng,
-  }) {
-    showLocationDetailBottomSheet(
-      context: context,
-      title: title,
-      address: address,
-      distanceText: distanceText,
-      color: color,
-      lat: lat,
-      lng: lng,
-    );
-  }
-
   Widget _buildRideCard() {
     final isAccept =
         _tripPhase == TripPhase.goingToPickup &&
@@ -1223,29 +774,26 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
       },
       onChat: _openChat,
       onCall: _callCustomer,
-      onLocationTap: ({
-        required String title,
-        required String address,
-        required String distanceText,
-        required Color color,
-        double? lat,
-        double? lng,
-      }) {
-        _showLocationDetailBottomSheet(
-          title: title,
-          address: address,
-          distanceText: distanceText,
-          color: color,
-          lat: lat,
-          lng: lng,
-        );
-      },
+      onLocationTap:
+          ({
+            required String title,
+            required String address,
+            required String distanceText,
+            required Color color,
+            double? lat,
+            double? lng,
+          }) {
+            _showLocationDetailBottomSheet(
+              title: title,
+              address: address,
+              distanceText: distanceText,
+              color: color,
+              lat: lat,
+              lng: lng,
+            );
+          },
       sliderButton: _buildSliderButton(),
     );
-  }
-
-  Widget _buildBottomNav() {
-    return NavigationBottomNav(driverPhotoUrl: _driverPhotoUrl);
   }
 
   @override
@@ -1286,7 +834,6 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                           tilt: 35.0,
                         ),
                         markers: _markers,
-                        polylines: _polylines,
                         circles: _circles,
                         myLocationEnabled: false,
                         myLocationButtonEnabled: false,
@@ -1296,9 +843,20 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                         buildingsEnabled: true,
                         indoorViewEnabled: true,
                         compassEnabled: true,
+                        onCameraMoveStarted: _live.onCameraMoveStarted,
                         onMapCreated: (controller) {
                           _mapController = controller;
                           controller.setMapStyle(_navigationMapStyle);
+                          _live.attach(controller, driverAt: _driverLatLng);
+                          // The route may have been found before the map existed.
+                          if (_lastRoute.length >= 2) {
+                            _live.trackRoute(
+                              _lastRoute,
+                              color: _lastRouteColor,
+                              onOffRoute: _onOffRoute,
+                            );
+                          }
+                          if (!_userMovedMap) _startFollow();
                           _fitMapBounds();
                         },
                       ),
@@ -1337,7 +895,9 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.2),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.2,
+                                        ),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),
@@ -1358,7 +918,8 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     setState(() {
                                       if (isNavigatingMode) {
                                         _uiMode =
-                                            _tripPhase == TripPhase.goingToPickup
+                                            _tripPhase ==
+                                                TripPhase.goingToPickup
                                             ? DriverRideUiMode.waiting
                                             : DriverRideUiMode.accept;
                                       } else {
@@ -1417,7 +978,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     ),
                                   ],
                                 ),
-                                child: const Text(
+                                child: const TText(
                                   'ONLINE',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -1437,8 +998,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ProfileScreen(),
+                                  builder: (context) => const ProfileScreen(),
                                 ),
                               );
                             },
@@ -1468,20 +1028,28 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     ? Image.network(
                                         _driverPhotoUrl,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, error, stackTrace) => Container(
-                                          color: Colors.grey.shade200,
-                                          child: const Icon(
-                                            Icons.person,
-                                            color: Color(0xFF334155),
-                                            size: 24,
-                                          ),
-                                        ),
+                                        errorBuilder: (_, error, stackTrace) =>
+                                            Container(
+                                              color: context.themed(
+                                                light: Colors.grey.shade200,
+                                                dark:
+                                                    context.torkk.surfaceMuted,
+                                              ),
+                                              child: Icon(
+                                                Icons.person,
+                                                color: context.torkk.textBody,
+                                                size: 24,
+                                              ),
+                                            ),
                                       )
                                     : Container(
-                                        color: Colors.grey.shade200,
-                                        child: const Icon(
+                                        color: context.themed(
+                                          light: Colors.grey.shade200,
+                                          dark: context.torkk.surfaceMuted,
+                                        ),
+                                        child: Icon(
                                           Icons.person,
-                                          color: Color(0xFF334155),
+                                          color: context.torkk.textBody,
                                           size: 24,
                                         ),
                                       ),
@@ -1529,7 +1097,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                 Container(
                                   width: 18,
                                   height: 18,
-                                  decoration: const BoxDecoration(
+                                  decoration: BoxDecoration(
                                     color: Colors.white,
                                     shape: BoxShape.circle,
                                   ),
@@ -1540,7 +1108,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text(
+                                const TText(
                                   'Open Maps',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -1573,7 +1141,9 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.2),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.2,
+                                      ),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -1611,7 +1181,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                   ],
                                 ),
                                 child: const Center(
-                                  child: Text(
+                                  child: TText(
                                     'SOS',
                                     style: TextStyle(
                                       color: Colors.white,
@@ -1649,7 +1219,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                               MediaQuery.of(context).padding.bottom + 12,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: context.torkk.surface,
                               borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(24),
                               ),
@@ -1677,28 +1247,28 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.format_list_bulleted_rounded,
-                                      color: Color(0xFF334155),
+                                      color: context.torkk.textBody,
                                       size: 24,
                                     ),
                                     Column(
                                       children: [
-                                        Text(
+                                        TText(
                                           _dynamicEtaText,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w800,
-                                            color: Color(0xFF0F172A),
+                                            color: context.torkk.textPrimary,
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        Text(
+                                        TText(
                                           _dynamicInstructionText,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
-                                            color: Color(0xFF64748B),
+                                            color: context.torkk.textSecondary,
                                           ),
                                         ),
                                       ],
@@ -1728,7 +1298,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                         right: 0,
                         child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF8FAFC),
+                            color: context.torkk.surfaceMuted,
                             borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(28),
                             ),
@@ -1752,15 +1322,17 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFE2E8F0),
+                                    color: context.adaptiveTint(
+                                      const Color(0xFFE2E8F0),
+                                    ),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: Text(
+                                  child: TText(
                                     _formattedWaitingTime,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w700,
-                                      color: Color(0xFF334155),
+                                      color: context.torkk.textBody,
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -1788,7 +1360,9 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 24,
                                 ),
-                                color: const Color(0xFFE2E8F0),
+                                color: context.adaptiveTint(
+                                  const Color(0xFFE2E8F0),
+                                ),
                               ),
                               _buildBottomNav(),
                             ],
@@ -1802,5 +1376,3 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen> {
     );
   }
 }
-
-

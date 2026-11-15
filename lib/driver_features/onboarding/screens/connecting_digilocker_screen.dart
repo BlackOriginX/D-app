@@ -7,6 +7,8 @@ import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/onboarding_info_banner.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class ConnectingDigilockerScreen extends StatelessWidget {
   final VoidCallback onBack;
@@ -30,20 +32,32 @@ class ConnectingDigilockerScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.torkk.background,
       appBar: AppBar(
         leading: IconButton(
           onPressed: onBack,
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: context.themed(
+              light: Colors.black,
+              dark: context.torkk.textPrimary,
+            ),
+            size: 20,
+          ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: context.torkk.background,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
       ),
       body: SafeArea(
         top: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(context.w(24), context.h(8), context.w(24), context.h(16)),
+          padding: EdgeInsets.fromLTRB(
+            context.w(24),
+            context.h(8),
+            context.w(24),
+            context.h(16),
+          ),
           child: Column(
             children: [
               Expanded(
@@ -54,17 +68,17 @@ class ConnectingDigilockerScreen extends StatelessWidget {
                       SizedBox(
                         width: context.w(56),
                         height: context.w(56),
-                        child: const CircularProgressIndicator(
+                        child: CircularProgressIndicator(
                           strokeWidth: 4,
-                          color: AppColors.primary,
+                          color: context.legible(AppColors.primary),
                         ),
                       ),
                       SizedBox(height: context.h(24)),
-                      Text(
+                      TText(
                         AppStrings.connectingDigilockerSubtitle,
                         textAlign: TextAlign.center,
                         style: AppTypography.regular.copyWith(
-                          color: AppColors.secondaryTextColor,
+                          color: context.torkk.textSecondary,
                           fontSize: 14,
                           height: 1.4,
                         ),
@@ -73,7 +87,9 @@ class ConnectingDigilockerScreen extends StatelessWidget {
                     ],
                     Center(
                       child: ticking
-                          ? _TickSequence(onFinished: onTickingFinished ?? () {})
+                          ? _TickSequence(
+                              onFinished: onTickingFinished ?? () {},
+                            )
                           : IntrinsicWidth(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,13 +205,19 @@ class _ConnectStep extends StatelessWidget {
                       ? AppColors.green600
                       : active
                       ? _active
-                      : Colors.white,
-                  border: done || active ? null : Border.all(color: AppColors.slate300, width: 1.5),
+                      : context.torkk.surface,
+                  border: done || active
+                      ? null
+                      : Border.all(color: AppColors.slate300, width: 1.5),
                 ),
                 child: done
                     ? const Icon(Icons.check, color: Colors.white, size: 14)
                     : active
-                    ? const Icon(Icons.cloud_upload, color: Colors.white, size: 12)
+                    ? const Icon(
+                        Icons.cloud_upload,
+                        color: Colors.white,
+                        size: 12,
+                      )
                     : null,
               ),
               if (showLine)
@@ -214,11 +236,18 @@ class _ConnectStep extends StatelessWidget {
         SizedBox(width: context.w(12)),
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Text(
+          child: TText(
             label,
             style: done || active
-                ? AppTypography.bold.copyWith(fontSize: 16, height: 1.2, color: AppColors.textPrimary)
-                : AppTypography.regular.copyWith(fontSize: 14, color: AppColors.secondaryTextColor),
+                ? AppTypography.bold.copyWith(
+                    fontSize: 16,
+                    height: 1.2,
+                    color: context.torkk.textPrimary,
+                  )
+                : AppTypography.regular.copyWith(
+                    fontSize: 14,
+                    color: context.torkk.textSecondary,
+                  ),
           ),
         ),
       ],

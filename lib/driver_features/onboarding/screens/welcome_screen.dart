@@ -8,6 +8,8 @@ import 'package:rider_app/common/utils/screen_utils.dart';
 import 'package:rider_app/common/widgets/app_text_field.dart';
 import 'package:rider_app/common/widgets/onboarding_header_image.dart';
 import 'package:rider_app/common/widgets/unified_button.dart';
+import 'package:rider_app/common/theme/torkk_colors.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class WelcomeScreen extends StatefulWidget {
   final TextEditingController phoneController;
@@ -96,15 +98,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TText(
                           AppStrings.welcome,
                           style: AppTypography.bold.copyWith(fontSize: 24),
                         ),
                         SizedBox(height: context.h(10)),
-                        Text(
+                        TText(
                           AppStrings.welcomeSubtitle,
                           style: AppTypography.regular.copyWith(
-                            color: AppColors.secondaryTextColor,
+                            color: context.torkk.textSecondary,
                             fontSize: 14.5,
                           ),
                         ),
@@ -118,13 +120,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: AppColors.fieldFill,
+                                color: context.torkk.surfaceMuted,
                                 borderRadius: BorderRadius.circular(
                                   context.r(12),
                                 ),
-                                border: Border.all(
-                                  color: AppColors.fieldBorder,
-                                ),
+                                border: Border.all(color: context.torkk.border),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.05),
@@ -135,13 +135,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ),
                               child: Row(
                                 children: [
-                                  Text(
+                                  TText(
                                     AppStrings.countryCodeIndia,
                                     style: AppTypography.regular,
                                   ),
                                   Icon(
                                     Icons.keyboard_arrow_down,
-                                    color: AppColors.slate500,
+                                    color: context.torkk.textSecondary,
                                     size: context.w(18),
                                   ),
                                 ],
@@ -168,15 +168,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             children: [
                               Icon(
                                 Icons.info,
-                                color: AppColors.error,
+                                color: context.legible(AppColors.error),
                                 size: context.w(18),
                               ),
                               SizedBox(width: context.w(8)),
                               Expanded(
-                                child: Text(
+                                child: TText(
                                   AppStrings.enterMobileError,
                                   style: AppTypography.regular.copyWith(
-                                    color: AppColors.error,
+                                    color: context.legible(AppColors.error),
                                     fontSize: 13,
                                   ),
                                 ),
@@ -221,7 +221,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget _termsAgreement(VoidCallback onTap) {
     final linkStyle = AppTypography.regular.copyWith(
-      color: AppColors.blue600,
+      color: context.legible(AppColors.blue600),
       fontSize: 13,
     );
     return GestureDetector(
@@ -231,7 +231,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         text: TextSpan(
           text: AppStrings.termsPrefix,
           style: AppTypography.regular.copyWith(
-            color: AppColors.secondaryTextColor,
+            color: context.torkk.textSecondary,
             fontSize: 13,
           ),
           children: [

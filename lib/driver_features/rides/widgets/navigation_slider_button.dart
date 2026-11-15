@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rider_app/common/widgets/t_text.dart';
 
 class NavigationSliderButton extends StatefulWidget {
   final bool isDrop;
@@ -41,7 +42,7 @@ class _NavigationSliderButtonState extends State<NavigationSliderButton> {
             alignment: Alignment.centerLeft,
             children: [
               Center(
-                child: Text(
+                child: TText(
                   widget.isProcessing ? 'Processing...' : label,
                   style: const TextStyle(
                     color: Colors.white,

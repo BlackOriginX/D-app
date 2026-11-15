@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-
+import 'package:rider_app/service/api_client.dart';
 import 'package:rider_app/common/constants/app_urls.dart';
+import 'package:rider_app/service/onboarding_api_log.dart';
 
 /// Vehicle details returned after the registration number is checked.
 class VehicleRcDetails {
@@ -16,9 +17,14 @@ class VehicleRcDetails {
   final String model;
   final String vehicleType;
 
-  factory VehicleRcDetails.fromBody(String body, {required String fallbackNumber}) {
+  factory VehicleRcDetails.fromBody(
+    String body, {
+    required String fallbackNumber,
+  }) {
     final decoded = jsonDecode(body);
-    final root = decoded is Map ? Map<String, dynamic>.from(decoded) : <String, dynamic>{};
+    final root = decoded is Map
+        ? Map<String, dynamic>.from(decoded)
+        : <String, dynamic>{};
     final data = _map(root['data']);
     final extracted = _map(root['extracted']);
     final source = data.isNotEmpty ? data : extracted;
@@ -36,7 +42,11 @@ class VehicleRcDetails {
     return VehicleRcDetails(
       registrationNumber: number.isEmpty ? fallbackNumber : number,
       model: pick(['maker_model', 'model', 'vehicle_model']),
-      vehicleType: pick(['vehicle_category_description', 'vehicle_category', 'vehicle_type']),
+      vehicleType: pick([
+        'vehicle_category_description',
+        'vehicle_category',
+        'vehicle_type',
+      ]),
     );
   }
 }
@@ -54,15 +64,26 @@ class RcVerificationException implements Exception {
 /// The server keeps the Surepass token and calls
 /// `POST /api/v1/rc/rc-full` with that same body.
 Future<VehicleRcDetails> verifyVehicleRc({required String idNumber}) async {
-  final response = await http
-      .post(
-        Uri.parse(AppUrls.verifyRc),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'id_number': idNumber}),
-      )
-      .timeout(const Duration(seconds: 20));
+  final requestBody = jsonEncode({'id_number': idNumber});
+  onbBefore('VEHICLE RC VERIFY', 'POST', AppUrls.verifyRc, requestBody);
+  final http.Response response;
+  try {
+    response = await apiClient
+        .post(
+          Uri.parse(AppUrls.verifyRc),
+          headers: {'Content-Type': 'application/json'},
+          body: requestBody,
+        )
+        .timeout(const Duration(seconds: 20));
+  } catch (e) {
+    onbFailed('VEHICLE RC VERIFY', e);
+    rethrow;
+  }
+  onbAfter('VEHICLE RC VERIFY', response.statusCode, response.body);
 
-  if (response.statusCode < 200 || response.statusCode >= 300 || !_accepted(response.body)) {
+  if (response.statusCode < 200 ||
+      response.statusCode >= 300 ||
+      !_accepted(response.body)) {
     throw RcVerificationException(_errorMessage(response.body));
   }
   return VehicleRcDetails.fromBody(response.body, fallbackNumber: idNumber);
