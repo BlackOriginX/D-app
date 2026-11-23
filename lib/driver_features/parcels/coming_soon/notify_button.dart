@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
+
+/// Coming Soon screens keep the design's own purple; they do not follow the
+/// gender-based accent used in the rest of the app.
+const Color _comingSoonPurple = Color(0xFF42145A);
 
 class NotifyButton extends StatelessWidget {
   final String label;
@@ -16,7 +19,7 @@ class NotifyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fill = context.brandColor;
+    const fill = _comingSoonPurple;
     return SizedBox(
       width: double.infinity,
       height: 54,
@@ -25,8 +28,8 @@ class NotifyButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: fill,
           disabledBackgroundColor: fill,
-          foregroundColor: onColorFor(fill),
-          disabledForegroundColor: onColorFor(fill),
+          foregroundColor: Colors.white,
+          disabledForegroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
