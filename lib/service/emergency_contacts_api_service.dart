@@ -34,7 +34,12 @@ class EmergencyContactsApiService {
     _check(response.statusCode, body);
     return [
       for (final c in (body['contacts'] as List? ?? const []))
-        {'name': '${(c as Map)['name'] ?? ''}', 'phone': '${c['phone'] ?? ''}'},
+        {
+          'name': '${(c as Map)['name'] ?? ''}',
+          'phone': '${c['phone'] ?? ''}',
+          if ((c['relation'] ?? '').toString().isNotEmpty)
+            'relation': '${c['relation']}',
+        },
     ];
   }
 

@@ -151,7 +151,9 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
                     ),
                     child: _ContactCard(
                       name: c['name'] ?? '',
-                      subtitle: _display(c['phone'] ?? ''),
+                      subtitle: (c['relation'] ?? '').isEmpty
+                          ? _display(c['phone'] ?? '')
+                          : '${c['relation']} • ${_display(c['phone'] ?? '')}',
                       onCall: () => _call(c['phone'] ?? ''),
                     ),
                   );

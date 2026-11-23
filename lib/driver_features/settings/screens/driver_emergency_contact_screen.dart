@@ -10,6 +10,17 @@ import 'package:rider_app/service/emergency_contacts_api_service.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Form to add one emergency contact. Pops with `true` once saved.
+const _relations = [
+  'Father',
+  'Mother',
+  'Brother',
+  'Sister',
+  'Husband',
+  'Wife',
+  'Friend',
+  'Other',
+];
+
 class DriverEmergencyContactScreen extends StatefulWidget {
   const DriverEmergencyContactScreen({super.key});
 
@@ -22,6 +33,8 @@ class _DriverEmergencyContactScreenState
     extends State<DriverEmergencyContactScreen> {
   final _nameCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
+  String? _relation;
+  String? _relationError;
   String? _nameError;
   String? _phoneError;
   bool _saving = false;
@@ -38,14 +51,17 @@ class _DriverEmergencyContactScreenState
     final phone = _phoneCtrl.text.trim();
     setState(() {
       _nameError = name.isEmpty ? 'Enter a name' : null;
+      _relationError = _relation == null ? 'Select a relation' : null;
       _phoneError = phone.length != 10 ? 'Enter a valid 10 digit number' : null;
     });
-    if (_nameError != null || _phoneError != null) return;
+    if (_nameError != null || _relationError != null || _phoneError != null) {
+      return;
+    }
 
     setState(() => _saving = true);
     try {
       final contacts = await EmergencyContactsApiService.fetch();
-      contacts.add({'name': name, 'phone': phone});
+      contacts.add({'name': name, 'relation': _relation!, 'phone': phone});
       await EmergencyContactsApiService.save(contacts);
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -71,7 +87,7 @@ class _DriverEmergencyContactScreenState
     String? error,
     TextInputType? keyboardType,
     List<TextInputFormatter>? formatters,
-    String? prefixText,
+    bool showCountryCode = false,
     TextCapitalization capitalization = TextCapitalization.words,
   }) {
     return Padding(
@@ -103,8 +119,73 @@ class _DriverEmergencyContactScreenState
             },
             decoration: InputDecoration(
               hintText: hint,
-              prefixText: prefixText,
+              prefixIcon: showCountryCode
+                  ? Padding(
+                      padding: EdgeInsets.only(left: context.w(14), right: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TText(
+                            '+91',
+                            style: AppTypography.regular.copyWith(
+                              fontSize: 16,
+                              color: context.torkk.textPrimary,
+                            ),
+                          ),
+                          SizedBox(width: context.w(10)),
+                          Container(
+                            width: 1,
+                            height: context.h(20),
+                            color: context.torkk.border,
+                          ),
+                        ],
+                      ),
+                    )
+                  : null,
+              prefixIconConstraints: const BoxConstraints(minWidth: 0),
               errorText: error,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(context.r(12)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _relationField() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: context.h(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TText(
+            'Relation',
+            style: AppTypography.regular.copyWith(
+              fontSize: 12,
+              color: context.torkk.textSecondary,
+            ),
+          ),
+          SizedBox(height: context.h(6)),
+          DropdownButtonFormField<String>(
+            initialValue: _relation,
+            isExpanded: true,
+            borderRadius: BorderRadius.circular(context.r(12)),
+            icon: const Icon(Icons.keyboard_arrow_down_rounded),
+            hint: const TText('Select relation'),
+            items: [
+              for (final r in _relations)
+                DropdownMenuItem(value: r, child: TText(r)),
+            ],
+            onChanged: _saving
+                ? null
+                : (v) => setState(() {
+                    _relation = v;
+                    _relationError = null;
+                  }),
+            decoration: InputDecoration(
+              errorText: _relationError,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(context.r(12)),
               ),
@@ -142,12 +223,13 @@ class _DriverEmergencyContactScreenState
         ),
         children: [
           _field('Name', _nameCtrl, hint: 'Enter name', error: _nameError),
+          _relationField(),
           _field(
             'Mobile number',
             _phoneCtrl,
             hint: 'Enter mobile number',
             error: _phoneError,
-            prefixText: '+91 ',
+            showCountryCode: true,
             keyboardType: TextInputType.phone,
             formatters: [
               FilteringTextInputFormatter.digitsOnly,
