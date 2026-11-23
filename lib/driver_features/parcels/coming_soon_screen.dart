@@ -4,14 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:rider_app/common/routes/app_routes.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
-import 'package:rider_app/driver_features/parcels/coming_soon/feature_page.dart';
-import 'package:rider_app/driver_features/parcels/coming_soon/launch_page.dart';
 import 'package:rider_app/driver_features/parcels/coming_soon/neighbourhood_page.dart';
 import 'package:rider_app/service/location_availability_service.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 
 /// Neighbourhood launch screen shown when the backend says service is unavailable.
-/// The other frames in the design are additional pages in the same screen.
 class ComingSoonScreen extends StatefulWidget {
   final VoidCallback? onBack;
   final VoidCallback? onChangeLocation;
@@ -34,19 +31,12 @@ class ComingSoonScreen extends StatefulWidget {
 }
 
 class _ComingSoonScreenState extends State<ComingSoonScreen> {
-  final PageController _pages = PageController();
   bool _notified = false;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  @override
-  void dispose() {
-    _pages.dispose();
-    super.dispose();
   }
 
   Future<void> _load() async {
@@ -76,7 +66,9 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
     } catch (e) {
       if (!mounted) return;
       final text = '$e'.replaceFirst('Exception: ', '');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TText(text)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: TText(text)));
     }
   }
 
@@ -106,29 +98,22 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
             children: [
               SizedBox(height: 8),
               Expanded(
-                child: PageView(
-                  controller: _pages,
-                  children: [
-                    NeighbourhoodPage(
-                      notified: _notified,
-                      onNotify: _notify,
-                      onChangeLocation:
-                          widget.onChangeLocation ??
-                          () async {
-                            final prefs = await SharedPreferences.getInstance();
-                            await prefs.setBool('is_outside_delhi_ncr', false);
-                            if (context.mounted) {
-                              if (Navigator.canPop(context)) {
-                                Navigator.pop(context);
-                              } else {
-                                context.go(AppRoutes.login);
-                              }
-                            }
-                          },
-                    ),
-                    LaunchPage(onNotify: _notify),
-                    FeaturePage(onNotify: _notify),
-                  ],
+                child: NeighbourhoodPage(
+                  notified: _notified,
+                  onNotify: _notify,
+                  onChangeLocation:
+                      widget.onChangeLocation ??
+                      () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('is_outside_delhi_ncr', false);
+                        if (context.mounted) {
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            context.go(AppRoutes.login);
+                          }
+                        }
+                      },
                 ),
               ),
             ],
