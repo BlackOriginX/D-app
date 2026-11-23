@@ -6,6 +6,7 @@ import 'package:rider_app/app/theme/theme_event.dart';
 import 'package:rider_app/app/theme/theme_repository.dart';
 import 'package:rider_app/app/theme/theme_state.dart';
 import 'package:rider_app/common/routes/app_router.dart';
+import 'package:rider_app/common/security/app_lock_gate.dart';
 import 'package:rider_app/common/theme/theme.dart';
 import 'package:rider_app/driver_features/onboarding/onboarding_session.dart';
 
@@ -49,7 +50,8 @@ class DriverApp extends StatelessWidget {
                   isDark: true,
                 ),
                 routerConfig: AppRouter.router,
-                builder: (context, child) => _KeyboardDismisser(child: child!),
+                builder: (context, child) =>
+                    AppLockGate(child: _KeyboardDismisser(child: child!)),
               );
             },
           );
