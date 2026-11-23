@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:rider_app/common/widgets/ai_chat_button.dart';
 import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/theme/app_typography.dart';
 import 'package:rider_app/common/utils/screen_utils.dart';
@@ -46,7 +45,6 @@ class _AddPhotosScreenState extends State<AddPhotosScreen> {
   Widget build(BuildContext context) {
     return ProfilePage(
       title: 'Add Photos',
-      trailing: AiChatButton(size: context.w(36)),
       bottom: ticketFilled(context, AppStrings.continueAction, () {
         Navigator.of(context).push(
           MaterialPageRoute<void>(
