@@ -98,8 +98,11 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
       case 'face':
         return Icons.face_unlock_outlined;
       case 'fingerprint':
-      case 'biometric':
         return Icons.fingerprint_rounded;
+      case 'biometric':
+        // Android cannot say whether face or fingerprint was used (or the
+        // phone has both), so show a neutral "verified" shield, not a thumb.
+        return Icons.verified_user_outlined;
       default:
         return Icons.pattern_rounded;
     }
@@ -129,8 +132,11 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
       case 'face':
         return Icons.face_unlock_outlined;
       case 'fingerprint':
-      case 'biometric':
         return Icons.fingerprint_rounded;
+      case 'biometric':
+        // Android cannot say whether face or fingerprint was used (or the
+        // phone has both), so show a neutral "verified" shield, not a thumb.
+        return Icons.verified_user_outlined;
       default:
         return Icons.pattern_rounded;
     }
@@ -169,7 +175,9 @@ class _PrivacySecurityScreenState extends State<PrivacySecurityScreen> {
       );
       if (!mounted) return;
       setState(() => _lockFailed = !ok);
-      await _showResult(ok);
+      // The animated "Verified" popup is only for turning the lock on; turning
+      // it off just needs the phone's own check. A failed check always shows.
+      if (enable || !ok) await _showResult(ok);
       if (!ok || !mounted) return;
     } on PlatformException catch (e) {
       if (!mounted) return;
