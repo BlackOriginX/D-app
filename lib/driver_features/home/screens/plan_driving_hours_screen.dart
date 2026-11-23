@@ -181,7 +181,7 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
           context.h(20),
         ),
         itemCount: _slots.length,
-        separatorBuilder: (_, _) => SizedBox(height: context.h(12)),
+        separatorBuilder: (_, _) => SizedBox(height: context.h(10)),
         itemBuilder: (_, i) => _slotCard(context, i),
       ),
     );
@@ -196,7 +196,7 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: context.w(16),
-          vertical: context.h(16),
+          vertical: context.h(11),
         ),
         decoration: BoxDecoration(
           color: context.torkk.surface,
@@ -216,19 +216,19 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
         child: Row(
           children: [
             Container(
-              width: context.w(48),
-              height: context.w(48),
+              width: context.w(38),
+              height: context.w(38),
               decoration: BoxDecoration(
                 color: context.adaptiveTint(slot.background),
-                borderRadius: BorderRadius.circular(context.r(12)),
+                borderRadius: BorderRadius.circular(context.r(10)),
               ),
               child: Icon(
                 slot.icon,
                 color: context.legible(slot.color),
-                size: context.w(24),
+                size: context.w(19),
               ),
             ),
-            SizedBox(width: context.w(16)),
+            SizedBox(width: context.w(12)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,16 +236,16 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
                   TText(
                     slot.title,
                     style: AppTypography.bold.copyWith(
-                      fontSize: 15,
+                      fontSize: 14,
                       height: 1.2,
                       letterSpacing: -0.2,
                     ),
                   ),
-                  SizedBox(height: context.h(4)),
+                  SizedBox(height: context.h(2)),
                   TText(
                     slot.time,
                     style: AppTypography.regular.copyWith(
-                      fontSize: 12,
+                      fontSize: 11.5,
                       color: context.torkk.textSecondary,
                     ),
                   ),
@@ -260,7 +260,7 @@ class _PlanDrivingHoursScreenState extends State<PlanDrivingHoursScreen> {
   }
 
   Widget _radio(BuildContext context, bool selected) {
-    final size = context.w(28);
+    final size = context.w(22);
     return Container(
       width: size,
       height: size,
