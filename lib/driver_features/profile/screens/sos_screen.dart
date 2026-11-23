@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:rider_app/common/utils/translations.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import 'package:rider_app/driver_features/profile/screens/emergency_contacts_screen.dart';
 import 'package:rider_app/driver_features/profile/screens/tickets_screen.dart';
 import 'package:rider_app/service/sos_api_service.dart';
 
@@ -16,13 +15,7 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 part 'sos_screen_sections.dart';
 
-enum _SosPage { confirm, active, contacts, reported }
-
-class _Contact {
-  _Contact(this.name, this.phone);
-  final String name;
-  final String phone;
-}
+enum _SosPage { confirm, active, reported }
 
 class SosScreen extends StatefulWidget {
   /// The ride to raise the alert for. Falls back to the ride saved by the ride
@@ -40,11 +33,6 @@ class _SosScreenState extends State<SosScreen> {
   int _seconds = 0;
   bool _helpOnTheWay = false;
   Timer? _timer;
-  final _contacts = <_Contact>[
-    _Contact('Sister', '+91 23456785'),
-    _Contact('Sister', '+91 23456785'),
-    _Contact('Sister', '+91 23456785'),
-  ];
 
   @override
   void dispose() {
@@ -94,57 +82,7 @@ class _SosScreenState extends State<SosScreen> {
     }
   }
 
-  Future<void> _addContact() async {
-    final name = TextEditingController();
-    final phone = TextEditingController();
-    final saved = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const TText('Add Emergency Contact'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: name,
-                decoration: InputDecoration(labelText: AppTranslations.t('Name')),
-              ),
-              TextField(
-                controller: phone,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(labelText: AppTranslations.t('Mobile Number')),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const TText('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const TText('Save'),
-            ),
-          ],
-        );
-      },
-    );
-    if (saved == true &&
-        name.text.trim().isNotEmpty &&
-        phone.text.trim().isNotEmpty) {
-      setState(
-        () => _contacts.add(_Contact(name.text.trim(), phone.text.trim())),
-      );
-    }
-    name.dispose();
-    phone.dispose();
-  }
-
   void _back() {
-    if (_page == _SosPage.contacts) {
-      setState(() => _page = _SosPage.confirm);
-      return;
-    }
     _timer?.cancel();
     Navigator.of(context).pop();
   }
@@ -154,7 +92,6 @@ class _SosScreenState extends State<SosScreen> {
     return switch (_page) {
       _SosPage.confirm => _confirm(context),
       _SosPage.active => _active(context),
-      _SosPage.contacts => _contactsPage(context),
       _SosPage.reported => _reported(context),
     };
   }
@@ -250,7 +187,11 @@ class _SosScreenState extends State<SosScreen> {
                 const Color(0xFFEF4444),
                 'Call Emergency\nContacts',
                 () {
-                  setState(() => _page = _SosPage.contacts);
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const EmergencyContactsScreen(),
+                    ),
+                  );
                 },
               ),
               SizedBox(width: context.w(28)),

@@ -18,11 +18,6 @@ extension _SosScreenStateSections on _SosScreenState {
     if (cancel) _stop();
   }
 
-  Future<void> _call(String phone) async {
-    final uri = Uri(scheme: 'tel', path: phone);
-    if (await canLaunchUrl(uri)) await launchUrl(uri);
-  }
-
   Widget _active(BuildContext context) {
     final clock =
         '${(_seconds ~/ 60).toString().padLeft(2, '0')}:${(_seconds % 60).toString().padLeft(2, '0')}';
@@ -99,91 +94,6 @@ extension _SosScreenStateSections on _SosScreenState {
           _redButton(context, 'Stop SOS', null, _confirmStop),
           SizedBox(height: context.h(12)),
         ],
-      ),
-    );
-  }
-
-  Widget _contactsPage(BuildContext context) {
-    return ProfilePage(
-      title: 'Emergency Contacts',
-      onBack: _back,
-      bottom: _accentButton(context, '+  Add Emergency Contact', _addContact),
-      child: ListView.separated(
-        padding: EdgeInsets.fromLTRB(
-          context.w(20),
-          context.h(8),
-          context.w(20),
-          context.h(12),
-        ),
-        itemCount: _contacts.length,
-        separatorBuilder: (_, _) => SizedBox(height: context.h(10)),
-        itemBuilder: (context, index) {
-          final contact = _contacts[index];
-          return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: context.w(12),
-              vertical: context.h(12),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(context.r(16)),
-              border: Border.all(color: context.torkk.border),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: context.w(18),
-                  backgroundColor: context.adaptiveTint(
-                    const Color(0xFFF1F5F9),
-                  ),
-                  child: Icon(
-                    Icons.person,
-                    color: AppColors.slate400,
-                    size: context.w(18),
-                  ),
-                ),
-                SizedBox(width: context.w(10)),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TText(
-                        contact.name,
-                        style: AppTypography.regular.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      TText(
-                        contact.phone,
-                        style: AppTypography.regular.copyWith(
-                          fontSize: 12,
-                          color: context.torkk.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () => _call(contact.phone),
-                  customBorder: const CircleBorder(),
-                  child: Container(
-                    width: context.w(36),
-                    height: context.w(36),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: context.torkk.border),
-                    ),
-                    child: Icon(
-                      Icons.call_rounded,
-                      color: profileAccent(context),
-                      size: context.w(16),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
       ),
     );
   }
