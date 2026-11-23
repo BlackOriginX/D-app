@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rider_app/app/theme/theme_bloc.dart';
@@ -48,11 +49,53 @@ class DriverApp extends StatelessWidget {
                   isDark: true,
                 ),
                 routerConfig: AppRouter.router,
+                builder: (context, child) => _KeyboardDismisser(child: child!),
               );
             },
           );
         },
       ),
+    );
+  }
+}
+
+/// App-wide: tap anywhere outside a field to close the keyboard, and on iOS
+/// (number pads have no Done key) show a small "Done" bar above the keyboard.
+class _KeyboardDismisser extends StatelessWidget {
+  const _KeyboardDismisser({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+    final showDone =
+        defaultTargetPlatform == TargetPlatform.iOS && keyboard > 0;
+    return Stack(
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: child,
+        ),
+        if (showDone)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: keyboard,
+            child: Material(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
+                  child: const Text('Done'),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
