@@ -60,9 +60,6 @@ class FCMService {
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     if (!isLoggedIn) return;
 
-    final phone = prefs.getString('user_phone');
-    if (phone == null || phone.isEmpty) return;
-
     final messaging = FirebaseMessaging.instance;
     await messaging.requestPermission(
       alert: true,
@@ -84,20 +81,26 @@ class FCMService {
     }
     if (token == null || token.isEmpty) return;
 
-    debugPrint('FCM Token: $token');
+    // POST /api/notifications/fcm-token. No phone is sent: the server knows
+    // the driver from the Bearer token that [apiClient] adds.
+    final body = jsonEncode({'fcm_token': token, 'type': type});
+    debugPrint(
+      'FCM_API | BEFORE | POST ${AppUrls.fcmToken} type=$type '
+      'token=${token.substring(0, token.length < 12 ? token.length : 12)}...(${token.length} chars)',
+    );
     try {
-      final response = await apiClient.post(
-        Uri.parse(AppUrls.fcmToken),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'phone': phone,
-          'fcm_token': token,
-          'type': type,
-        }),
+      final response = await apiClient
+          .post(
+            Uri.parse(AppUrls.fcmToken),
+            headers: {'Content-Type': 'application/json'},
+            body: body,
+          )
+          .timeout(const Duration(seconds: 15));
+      debugPrint(
+        'FCM_API | AFTER  | status=${response.statusCode} body=${response.body}',
       );
-      debugPrint('FCM Token registration response: ${response.statusCode} ${response.body}');
     } catch (e) {
-      debugPrint('Error registering FCM token: $e');
+      debugPrint('FCM_API | AFTER  | FAILED (no response): $e');
     }
   }
 

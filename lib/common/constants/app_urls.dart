@@ -193,7 +193,8 @@ class AppUrls {
   // ---------------------------------------------------------------------------
   // FCM & Push Notifications
   // ---------------------------------------------------------------------------
-  static const String fcmToken = '$apiBase/fcm-token';
+  /// POST {fcm_token, type}. The driver is identified by the Bearer token.
+  static const String fcmToken = '$apiBase/notifications/fcm-token';
 
   // Driver notifications (list, read state and preferences).
   static const String notificationPreferences =
