@@ -335,7 +335,6 @@ class OnboardingSession extends ChangeNotifier {
           }
           if ((data['gender'] ?? '').toString().isNotEmpty) {
             gender = data['gender'] == 'Female' ? 'Female' : 'Male';
-            publishAccent?.call(gender == 'Female');
           }
         } catch (_) {}
       }
@@ -376,7 +375,6 @@ class OnboardingSession extends ChangeNotifier {
     final genderRaw = (aadhaarData['gender'] ?? data['gender'] ?? 'M')
         .toString();
     gender = (genderRaw == 'F' || genderRaw == 'Female') ? 'Female' : 'Male';
-    publishAccent?.call(gender == 'Female');
 
     final pan = (data['pan_number'] ?? '').toString().trim();
     final dl = (data['driving_licence_number'] ?? '').toString().trim();

@@ -43,6 +43,9 @@ class SplashPage extends StatelessWidget {
       // );
       return;
     }
+    // Not logged in (first launch, killed app, cleared storage, logout):
+    // onboarding and login use the purple accent.
+    context.read<ThemeBloc>().add(const AccentNeutral());
     final where = await KycResume.destination();
     final phone = await KycResume.savedPhone();
     if (phone.isNotEmpty) _session.phone.text = phone;

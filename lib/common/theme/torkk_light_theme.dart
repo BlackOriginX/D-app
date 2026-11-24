@@ -5,8 +5,10 @@ import 'torkk_colors.dart';
 import 'torkk_theme.dart';
 
 /// Light mode. Keeps the colors the app shipped with.
-ThemeData buildTorkkLightTheme({required bool isPink}) {
-  final primary = isPink ? AppColors.femalePink : AppColors.maleBlue;
+ThemeData buildTorkkLightTheme({required bool isPink, bool isNeutral = false}) {
+  final primary = isNeutral
+      ? AppColors.primary
+      : (isPink ? AppColors.femalePink : AppColors.maleBlue);
   const base = TorkkColors.light;
   return buildTorkkTheme(
     scheme: ColorScheme.light(

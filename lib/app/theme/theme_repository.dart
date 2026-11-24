@@ -9,22 +9,33 @@ class ThemeRepository {
 
   static const pinkKey = 'is_pink_theme';
   static const genderKey = 'user_gender';
+
+  /// True once the driver's gender colour (pink / blue) has been applied.
+  /// Missing (older builds): treated as decided when the driver is logged in.
+  static const decidedKey = 'accent_decided';
   static const appearanceKey = 'app_theme';
 
   ThemeState read() {
     final savedPink = _preferences.getBool(pinkKey);
     final gender = (_preferences.getString(genderKey) ?? '').toLowerCase();
     final label = _preferences.getString(appearanceKey) ?? 'Default';
+    final decided =
+        _preferences.getBool(decidedKey) ??
+        (_preferences.getBool('isLoggedIn') ?? false);
     return ThemeState(
       isPink: savedPink ?? gender == 'female',
+      isNeutral: !decided,
       themeMode: modeFor(label),
       appearanceLabel: label,
     );
   }
 
-  Future<void> savePink(bool isPink) {
-    return _preferences.setBool(pinkKey, isPink);
+  Future<void> savePink(bool isPink) async {
+    await _preferences.setBool(decidedKey, true);
+    await _preferences.setBool(pinkKey, isPink);
   }
+
+  Future<void> saveNeutral() => _preferences.setBool(decidedKey, false);
 
   Future<void> saveAppearance(String label) {
     return _preferences.setString(appearanceKey, label);

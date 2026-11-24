@@ -64,9 +64,8 @@ class ReviewDetailsScreen extends StatelessWidget {
   final bool bankDone;
   final bool isLoading;
 
-  Color get _accent => gender == AppStrings.genderFemale
-      ? AppColors.femalePink
-      : AppColors.maleBlue;
+  /// Onboarding stays purple; pink / blue starts after the application.
+  Color get _accent => AppColors.primary;
 
   @override
   Widget build(BuildContext context) {

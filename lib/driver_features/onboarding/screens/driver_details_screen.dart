@@ -48,9 +48,8 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
   bool _showError = false;
   bool _uploadingPhoto = false;
 
-  Color get _accent => widget.gender == AppStrings.genderFemale
-      ? AppColors.femalePink
-      : AppColors.maleBlue;
+  /// Onboarding stays purple; pink / blue starts after the application.
+  Color get _accent => AppColors.primary;
 
   Future<void> _pickPhoto() async {
     final photo = await _picker.pickImage(

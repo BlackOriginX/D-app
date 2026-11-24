@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:rider_app/common/constants/string_constants.dart';
 import 'package:rider_app/common/routes/app_routes.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rider_app/app/theme/theme_bloc.dart';
-import 'package:rider_app/app/theme/theme_event.dart';
 import 'package:rider_app/driver_features/onboarding/onboarding_session.dart';
 import 'package:rider_app/driver_features/onboarding/screens/driver_details_screen.dart';
 import 'package:rider_app/driver_features/onboarding/pages/page_helpers.dart';
@@ -27,10 +23,8 @@ class DriverDetailsPage extends StatelessWidget {
           gender: _session.gender,
           photoPath: _session.photoPath,
           onGenderChanged: (value) {
+            // The pink / blue accent is applied after onboarding, not here.
             _session.gender = value;
-            context.read<ThemeBloc>().add(
-              AccentChanged(isPink: value == AppStrings.genderFemale),
-            );
             _session.touch();
           },
           onPhotoPicked: (path) {

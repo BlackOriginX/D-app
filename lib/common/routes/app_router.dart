@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../app/theme/theme_bloc.dart';
+import '../../app/theme/theme_event.dart';
 import '../../driver_features/earnings/screens/driver_earnings_screen.dart';
 import '../../driver_features/home/screens/driver_home_screen.dart';
 import '../../driver_features/notifications/screens/driver_notifications_screen.dart';
@@ -15,6 +18,30 @@ import '../../driver_features/trips/screens/driver_history_screen.dart';
 import '../../driver_features/trips/screens/driver_trips_screen.dart';
 import '../../driver_features/wallet/wallet_screen.dart';
 import 'app_routes.dart';
+
+/// Login-side screens (language, welcome, login) always use the purple accent,
+/// whatever colour the app had before (for example after a logout).
+class _PurpleAccent extends StatefulWidget {
+  const _PurpleAccent({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_PurpleAccent> createState() => _PurpleAccentState();
+}
+
+class _PurpleAccentState extends State<_PurpleAccent> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<ThemeBloc>().add(const AccentNeutral());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 class AppRouter {
   AppRouter._();
@@ -41,17 +68,20 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.language,
           name: 'language',
-          builder: (context, state) => const LanguagePage(),
+          builder: (context, state) =>
+              const _PurpleAccent(child: LanguagePage()),
         ),
         GoRoute(
           path: AppRoutes.welcome,
           name: 'welcome',
-          builder: (context, state) => const WelcomePage(),
+          builder: (context, state) =>
+              const _PurpleAccent(child: WelcomePage()),
         ),
         GoRoute(
           path: AppRoutes.login,
           name: 'login',
-          builder: (context, state) => const WelcomePage(),
+          builder: (context, state) =>
+              const _PurpleAccent(child: WelcomePage()),
         ),
         GoRoute(
           path: AppRoutes.otp,

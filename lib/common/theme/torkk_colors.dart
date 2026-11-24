@@ -60,7 +60,13 @@ class TorkkColors extends ThemeExtension<TorkkColors> {
 
   /// Solid button fill in dark mode: brand blue, or brand pink when the
   /// pink (female) theme is active. Labels and icons on it are white.
-  Color get buttonFill => isPink ? AppColors.femalePink : AppColors.maleBlue;
+  Color get buttonFill => isNeutral
+      ? AppColors.primary
+      : (isPink ? AppColors.femalePink : AppColors.maleBlue);
+
+  /// True for the purple onboarding accent (before the gender is known).
+  bool get isNeutral =>
+      accent == darkNeutralAccent || accent == AppColors.primary;
 
   /// True when the pink (female) theme is active, in light or dark mode.
   bool get isPink =>
@@ -112,6 +118,9 @@ class TorkkColors extends ThemeExtension<TorkkColors> {
 
   /// Dark-mode pink accent, lightened so it stays readable on [dark].
   static const darkPinkAccent = Color(0xFFF08FC4);
+
+  /// Dark-mode purple accent for onboarding, lightened to stay readable.
+  static const darkNeutralAccent = Color(0xFFC9A8E8);
 
   @override
   TorkkColors copyWith({

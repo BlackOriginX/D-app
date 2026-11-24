@@ -16,6 +16,11 @@ class AccentChanged extends ThemeEvent {
   List<Object> get props => [isPink];
 }
 
+/// Back to the purple onboarding accent (login, onboarding, after logout).
+class AccentNeutral extends ThemeEvent {
+  const AccentNeutral();
+}
+
 class AppearanceSelected extends ThemeEvent {
   const AppearanceSelected(this.label);
 

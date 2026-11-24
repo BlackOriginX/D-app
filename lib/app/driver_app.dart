@@ -43,10 +43,12 @@ class DriverApp extends StatelessWidget {
                 themeMode: state.themeMode,
                 theme: AppTheme.getTheme(
                   isPink: state.isPink,
+                  isNeutral: state.isNeutral,
                   isDark: false,
                 ),
                 darkTheme: AppTheme.getTheme(
                   isPink: state.isPink,
+                  isNeutral: state.isNeutral,
                   isDark: true,
                 ),
                 routerConfig: AppRouter.router,

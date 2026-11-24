@@ -8,9 +8,13 @@ import 'torkk_light_theme.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData getTheme({required bool isPink, bool isDark = false}) {
+  static ThemeData getTheme({
+    required bool isPink,
+    bool isNeutral = false,
+    bool isDark = false,
+  }) {
     return isDark
-        ? buildTorkkDarkTheme(isPink: isPink)
-        : buildTorkkLightTheme(isPink: isPink);
+        ? buildTorkkDarkTheme(isPink: isPink, isNeutral: isNeutral)
+        : buildTorkkLightTheme(isPink: isPink, isNeutral: isNeutral);
   }
 }
