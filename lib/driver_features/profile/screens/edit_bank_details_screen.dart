@@ -17,6 +17,8 @@ class BankDetails {
     this.ifscCode = '',
     this.bankName = '',
     this.branchName = '',
+    this.maskedAccountNumber = '',
+    this.isVerified,
   });
 
   final String accountHolderName;
@@ -24,6 +26,13 @@ class BankDetails {
   final String ifscCode;
   final String bankName;
   final String branchName;
+
+  /// Account number as the server returns it on GET (e.g. XXXXXXXXX8966).
+  /// The full number is never sent back, so this is for display only.
+  final String maskedAccountNumber;
+
+  /// Whether the bank account is verified (null when the server did not say).
+  final bool? isVerified;
 
   /// Reads bank details from a profile response, wherever the backend nests
   /// them.
@@ -58,11 +67,37 @@ class BankDetails {
       ifscCode: pick(['ifsc_code', 'bank_ifsc_code']),
       bankName: pick(['bank_name']),
       branchName: pick(['branch_name', 'bank_branch_name']),
+      maskedAccountNumber: pick(['masked_account_number']),
+      isVerified: _verified(sources),
     );
   }
 
+  static bool? _verified(List<Map> sources) {
+    for (final source in sources) {
+      final v = source['is_verified'] ?? source['verified'];
+      if (v is bool) return v;
+      if (v is String) {
+        final t = v.toLowerCase();
+        if (t == 'true') return true;
+        if (t == 'false') return false;
+      }
+    }
+    return null;
+  }
+
+  /// What to show for the account number: the server's masked value, or the
+  /// full number masked here.
+  String get displayAccountNumber {
+    if (maskedAccountNumber.isNotEmpty) return maskedAccountNumber;
+    if (accountNumber.length <= 4) return accountNumber;
+    return '${'X' * (accountNumber.length - 4)}${accountNumber.substring(accountNumber.length - 4)}';
+  }
+
   bool get isEmpty =>
-      accountNumber.isEmpty && bankName.isEmpty && accountHolderName.isEmpty;
+      accountNumber.isEmpty &&
+      maskedAccountNumber.isEmpty &&
+      bankName.isEmpty &&
+      accountHolderName.isEmpty;
 }
 
 /// Form to add or replace the driver's bank account. Pops with the saved

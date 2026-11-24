@@ -39,7 +39,7 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
           'BANK_SCREEN_03A | parsed: holder="${_details.accountHolderName}" '
           'bank="${_details.bankName}" ifsc="${_details.ifscCode}" '
           'branch="${_details.branchName}" '
-          'account_len=${_details.accountNumber.length}',
+          'masked="${_details.maskedAccountNumber}" verified=${_details.isVerified}',
         );
         _loading = false;
       });
@@ -56,11 +56,6 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
       ),
     );
     if (result != null && mounted) setState(() => _details = result);
-  }
-
-  static String _masked(String number) {
-    if (number.length <= 4) return number;
-    return '${'*' * (number.length - 4)}${number.substring(number.length - 4)}';
   }
 
   @override
@@ -126,9 +121,9 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
                       ),
                     ),
                     TText(
-                      _details.accountNumber.isEmpty
+                      _details.displayAccountNumber.isEmpty
                           ? '-'
-                          : _masked(_details.accountNumber),
+                          : _details.displayAccountNumber,
                       style: AppTypography.regular.copyWith(
                         fontSize: 12,
                         color: context.torkk.textSecondary,
@@ -152,9 +147,9 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
               ProfileValueRow(
                 icon: Icons.credit_card_outlined,
                 label: AppStrings.accountNumber,
-                value: _details.accountNumber.isEmpty
+                value: _details.displayAccountNumber.isEmpty
                     ? '-'
-                    : _details.accountNumber,
+                    : _details.displayAccountNumber,
               ),
               ProfileValueRow(
                 icon: Icons.account_balance_outlined,
@@ -165,6 +160,13 @@ class _BankInformationScreenState extends State<BankInformationScreen> {
                 icon: Icons.location_city_outlined,
                 label: 'Branch name',
                 value: _details.branchName.isEmpty ? '-' : _details.branchName,
+              ),
+              ProfileValueRow(
+                icon: Icons.verified_outlined,
+                label: 'Verification',
+                value: _details.isVerified == null
+                    ? '-'
+                    : (_details.isVerified! ? 'Verified' : 'Pending'),
               ),
             ],
           ),
