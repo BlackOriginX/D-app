@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:rider_app/common/utils/translations.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -24,6 +25,12 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 import 'package:rider_app/common/maps/live_map.dart';
 import 'package:rider_app/common/maps/map_icons.dart';
+import 'package:rider_app/service/ride_tracking/ride_progress.dart';
+import 'package:rider_app/service/ride_tracking/ride_tracking_banner.dart';
+import 'package:rider_app/service/ride_tracking/ride_tracking_controller.dart';
+import 'package:rider_app/service/ride_tracking/ride_tracking_repository.dart';
+import 'package:rider_app/service/ride_tracking/tracked_fix.dart';
+import 'package:rider_app/service/ride_picture_in_picture_service.dart';
 export '../widgets/widgets.dart';
 part 'driver_navigation_screen_sections.dart';
 
@@ -52,6 +59,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
   Map<String, dynamic>? _ride;
   bool _isLoading = true;
   bool _isProcessing = false;
+  bool _isInPipMode = false;
 
   Position? _currentPosition;
   GoogleMapController? _mapController;
@@ -68,17 +76,62 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
   BitmapDescriptor? _dropIcon;
   bool _routeDrawn = false;
   bool _followActive = false;
-  // ===== TESTING: the sample rides (9901 / 9902) have Delhi coordinates, so a
-  // phone anywhere else never moves along them. With this on, the vehicle drives
-  // along the route by itself so the movement can be seen.
-  // Set to false (PRODUCTION) before building a release.
+  // Enable only when testing sample rides with a simulated route.
   static const bool _simulateSampleRideMovement = false;
   Timer? _simTimer;
   LatLng? _simPosition;
   DateTime? _lastReroute;
 
+  // Simulation can never run in a release build, whatever the flag says.
   bool get _simulating =>
-      _simulateSampleRideMovement && (_rideId == 9901 || _rideId == 9902);
+      kDebugMode &&
+      _simulateSampleRideMovement &&
+      (_rideId == 9901 || _rideId == 9902);
+
+  StreamSubscription<TrackedFix>? _fixSub;
+
+  /// Listens to the cleaned location stream (real GPS, or the debug
+  /// simulation) and moves the vehicle marker.
+  void _listenToTracking() {
+    _fixSub ??= RideTrackingController.instance.fixes.listen((fix) {
+      if (!mounted) return;
+      _currentPosition = fix.position;
+      if (_simulating) _simPosition = fix.latLng;
+      // Standing still: keep the marker (and its direction) where it is.
+      if (!fix.stationary) _live.moveDriver(fix.latLng);
+      _checkArrivedAtPickup(fix.position);
+    });
+  }
+
+  /// Pickup done: the vehicle now heads to the drop point.
+  void _syncTrackingTarget() {
+    final toDrop = _tripPhase == TripPhase.goingToDrop;
+    final lat = _asDouble(_ride?[toDrop ? 'drop_lat' : 'pickup_lat']);
+    final lng = _asDouble(_ride?[toDrop ? 'drop_lng' : 'pickup_lng']);
+    RideTrackingController.instance.setTarget(
+      leg: toDrop ? RideLeg.toDrop : RideLeg.toPickup,
+      destination: (lat != null && lng != null) ? LatLng(lat, lng) : null,
+    );
+  }
+
+  /// Starts live tracking for this ride (real GPS unless simulating).
+  void _startTracking({RideTrackingRepository? repository}) {
+    final id = _rideId;
+    if (id == null || _ride == null) return;
+    _listenToTracking();
+    final toDrop = _tripPhase == TripPhase.goingToDrop;
+    final lat = _asDouble(_ride?[toDrop ? 'drop_lat' : 'pickup_lat']);
+    final lng = _asDouble(_ride?[toDrop ? 'drop_lng' : 'pickup_lng']);
+    unawaited(
+      RideTrackingController.instance.start(
+        rideId: id,
+        leg: toDrop ? RideLeg.toDrop : RideLeg.toPickup,
+        destination: (lat != null && lng != null) ? LatLng(lat, lng) : null,
+        customerName: (_ride?['customer_name'] ?? '').toString(),
+        repository: repository,
+      ),
+    );
+  }
 
   /// Where the driver is: the simulated spot, else the GPS position.
   LatLng? get _driverLatLng {
@@ -87,21 +140,11 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
     return p == null ? null : LatLng(p.latitude, p.longitude);
   }
 
-  /// Drives the vehicle along [route] by itself (about 90 seconds in total).
+  /// Debug only: drives the vehicle along [route] through the same stream
+  /// interface the real GPS uses.
   void _startSimulation(List<LatLng> route) {
-    _simTimer?.cancel();
-    if (route.length < 2) return;
-    final step = (route.length ~/ 90).clamp(1, 1000);
-    var index = 0;
-    _simTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      index += step;
-      if (!mounted || index >= route.length) {
-        timer.cancel();
-        return;
-      }
-      _simPosition = route[index];
-      _live.moveDriver(route[index]);
-    });
+    if (!kDebugMode || route.length < 2) return;
+    _startTracking(repository: SimulatedTrackingRepository(route));
   }
 
   /// The driver left the route: find a new one (not more than once in 20 s).
@@ -279,15 +322,30 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
   @override
   void initState() {
     super.initState();
+    RidePictureInPictureService.initialize();
+    _isInPipMode = RidePictureInPictureService.isInPictureInPicture.value;
+    RidePictureInPictureService.isInPictureInPicture.addListener(
+      _onPictureInPictureChanged,
+    );
     _initMapIcons();
     _initTrip();
   }
 
+  void _onPictureInPictureChanged() {
+    final isInPip = RidePictureInPictureService.isInPictureInPicture.value;
+    if (!mounted || _isInPipMode == isInPip) return;
+    setState(() => _isInPipMode = isInPip);
+  }
+
   @override
   void dispose() {
+    RidePictureInPictureService.isInPictureInPicture.removeListener(
+      _onPictureInPictureChanged,
+    );
     _locationTimer?.cancel();
     _waitingTimer?.cancel();
     _simTimer?.cancel();
+    _fixSub?.cancel();
     _live.dispose();
     _mapController?.dispose();
     super.dispose();
@@ -429,6 +487,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
         });
         _setupMap();
         _startLocationUpdates();
+        if (!_simulating) _startTracking();
         _startWaitingTimer();
 
         DriverApiService.fetchProfile(_driverPhone)
@@ -694,6 +753,7 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
         _uiMode = DriverRideUiMode.navigation;
         _isProcessing = false;
       });
+      _syncTrackingTarget();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -864,31 +924,293 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
                       ),
                     ),
 
-                    // 2. TOP FLOATING BAR (Notification Bell + Green >| Icon on Left, ONLINE Pill in Center, Driver Avatar on Right)
-                    Positioned(
-                      top: MediaQuery.of(context).padding.top + 10,
-                      left: 16,
-                      right: 16,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Left Group: Notification Bell + (Green >| Button when Ride Active)
-                          Row(
+                    if (!_isInPipMode) ...[
+                      // 2. TOP FLOATING BAR (Notification Bell + Green >| Icon on Left, ONLINE Pill in Center, Driver Avatar on Right)
+                      Positioned(
+                        top: MediaQuery.of(context).padding.top + 10,
+                        left: 16,
+                        right: 16,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Left Group: Notification Bell + (Green >| Button when Ride Active)
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Notification Bell Button
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DriverNotificationsScreen(
+                                              profilePhotoUrl: _driverPhotoUrl,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF334155),
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.notifications_none_rounded,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                                  ),
+                                ),
+                                if (_ride != null) ...[
+                                  const SizedBox(width: 8),
+                                  // Green >| Circular Icon (Placed right next to Notification Bell in RideAccept/RideStart)
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        if (isNavigatingMode) {
+                                          _uiMode =
+                                              _tripPhase ==
+                                                  TripPhase.goingToPickup
+                                              ? DriverRideUiMode.waiting
+                                              : DriverRideUiMode.accept;
+                                        } else {
+                                          _uiMode = DriverRideUiMode.navigation;
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xFF22C55E,
+                                            ).withValues(alpha: 0.35),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: ClipOval(
+                                        child: Image.asset(
+                                          'assets/nav_next_icon.png',
+                                          width: 44,
+                                          height: 44,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+
+                            // Center Action Pill: ONLINE Pill Button (in RideSearch1 when _ride == null)
+                            if (_ride == null)
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF22C55E),
+                                    borderRadius: BorderRadius.circular(24),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(
+                                          0xFF22C55E,
+                                        ).withValues(alpha: 0.35),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const TText(
+                                    'ONLINE',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 15,
+                                      letterSpacing: 0.8,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            else
+                              const SizedBox.shrink(),
+
+                            // Driver Profile Avatar with Dynamic Gender Ring
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProfileScreen(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color:
+                                        _driverGender.trim().toLowerCase() ==
+                                            'female'
+                                        ? const Color(0xFFEC4899)
+                                        : const Color(0xFF1D4ED8),
+                                    width: 2.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.15,
+                                      ),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: _driverPhotoUrl.isNotEmpty
+                                      ? Image.network(
+                                          _driverPhotoUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (
+                                                _,
+                                                error,
+                                                stackTrace,
+                                              ) => Container(
+                                                color: context.themed(
+                                                  light: Colors.grey.shade200,
+                                                  dark: context
+                                                      .torkk
+                                                      .surfaceMuted,
+                                                ),
+                                                child: Icon(
+                                                  Icons.person,
+                                                  color: context.torkk.textBody,
+                                                  size: 24,
+                                                ),
+                                              ),
+                                        )
+                                      : Container(
+                                          color: context.themed(
+                                            light: Colors.grey.shade200,
+                                            dark: context.torkk.surfaceMuted,
+                                          ),
+                                          child: Icon(
+                                            Icons.person,
+                                            color: context.torkk.textBody,
+                                            size: 24,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // GPS / permission problems: clear message + one-tap fix.
+                      Positioned(
+                        top: MediaQuery.of(context).padding.top + 120,
+                        left: 16,
+                        right: 16,
+                        child: const RideTrackingBanner(),
+                      ),
+
+                      // 3. RIDESTART FLOATING SPEEDOMETER (Top-Left, Real GPS Speed)
+                      if (isNavigatingMode)
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top + 68,
+                          left: 16,
+                          child: SpeedometerWidget(speedKmH: _currentSpeedKmH),
+                        ),
+
+                      // 4. RIDESTART FLOATING "Open Maps" CAPSULE (Bottom-Left)
+                      if (isNavigatingMode)
+                        Positioned(
+                          bottom: 124,
+                          left: 16,
+                          child: GestureDetector(
+                            onTap: _openGoogleMapsApp,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF334155),
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.25),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 18,
+                                    height: 18,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.near_me_rounded,
+                                      color: Color(0xFF2563EB),
+                                      size: 13,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const TText(
+                                    'Open Maps',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                      letterSpacing: 0.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      // 5. RIDESTART FLOATING BUTTONS (Recenter & SOS, Bottom-Right)
+                      if (isNavigatingMode)
+                        Positioned(
+                          bottom: 124,
+                          right: 16,
+                          child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Notification Bell Button
                               GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          DriverNotificationsScreen(
-                                            profilePhotoUrl: _driverPhotoUrl,
-                                          ),
-                                    ),
-                                  );
-                                },
+                                onTap: _recenterMap,
                                 child: Container(
                                   width: 44,
                                   height: 44,
@@ -906,471 +1228,227 @@ class _DriverNavigationScreenState extends State<DriverNavigationScreen>
                                     ],
                                   ),
                                   child: const Icon(
-                                    Icons.notifications_none_rounded,
+                                    Icons.my_location_rounded,
                                     color: Colors.white,
-                                    size: 22,
+                                    size: 20,
                                   ),
                                 ),
                               ),
-                              if (_ride != null) ...[
-                                const SizedBox(width: 8),
-                                // Green >| Circular Icon (Placed right next to Notification Bell in RideAccept/RideStart)
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if (isNavigatingMode) {
-                                        _uiMode =
-                                            _tripPhase ==
-                                                TripPhase.goingToPickup
-                                            ? DriverRideUiMode.waiting
-                                            : DriverRideUiMode.accept;
-                                      } else {
-                                        _uiMode = DriverRideUiMode.navigation;
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color(
-                                            0xFF22C55E,
-                                          ).withValues(alpha: 0.35),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        'assets/nav_next_icon.png',
-                                        width: 44,
-                                        height: 44,
-                                        fit: BoxFit.cover,
+                              const SizedBox(height: 12),
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SosScreen(),
+                                  ),
+                                ),
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFEF4444),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(
+                                          0xFFEF4444,
+                                        ).withValues(alpha: 0.4),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Center(
+                                    child: TText(
+                                      'SOS',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 12,
+                                        letterSpacing: 0.5,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ],
+                              ),
                             ],
                           ),
+                        ),
 
-                          // Center Action Pill: ONLINE Pill Button (in RideSearch1 when _ride == null)
-                          if (_ride == null)
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF22C55E),
-                                  borderRadius: BorderRadius.circular(24),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF22C55E,
-                                      ).withValues(alpha: 0.35),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: const TText(
-                                  'ONLINE',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 15,
-                                    letterSpacing: 0.8,
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            const SizedBox.shrink(),
-
-                          // Driver Profile Avatar with Dynamic Gender Ring
-                          GestureDetector(
+                      // 6. RIDESTART BOTTOM ETA DRAWER (Dynamic GPS ETA & Instruction)
+                      if (isNavigatingMode)
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ProfileScreen(),
-                                ),
-                              );
+                              setState(() {
+                                _uiMode = _tripPhase == TripPhase.goingToPickup
+                                    ? DriverRideUiMode.waiting
+                                    : DriverRideUiMode.accept;
+                              });
                             },
                             child: Container(
-                              width: 44,
-                              height: 44,
+                              padding: EdgeInsets.fromLTRB(
+                                20,
+                                10,
+                                20,
+                                MediaQuery.of(context).padding.bottom + 12,
+                              ),
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color:
-                                      _driverGender.trim().toLowerCase() ==
-                                          'female'
-                                      ? const Color(0xFFEC4899)
-                                      : const Color(0xFF1D4ED8),
-                                  width: 2.5,
+                                color: context.torkk.surface,
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(24),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.15),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
+                                    color: Colors.black.withValues(alpha: 0.12),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, -4),
                                   ),
                                 ],
                               ),
-                              child: ClipOval(
-                                child: _driverPhotoUrl.isNotEmpty
-                                    ? Image.network(
-                                        _driverPhotoUrl,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, error, stackTrace) =>
-                                            Container(
-                                              color: context.themed(
-                                                light: Colors.grey.shade200,
-                                                dark:
-                                                    context.torkk.surfaceMuted,
-                                              ),
-                                              child: Icon(
-                                                Icons.person,
-                                                color: context.torkk.textBody,
-                                                size: 24,
-                                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFCBD5E1),
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.format_list_bulleted_rounded,
+                                        color: context.torkk.textBody,
+                                        size: 24,
+                                      ),
+                                      Column(
+                                        children: [
+                                          TText(
+                                            _dynamicEtaText,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w800,
+                                              color: context.torkk.textPrimary,
                                             ),
-                                      )
-                                    : Container(
-                                        color: context.themed(
-                                          light: Colors.grey.shade200,
-                                          dark: context.torkk.surfaceMuted,
-                                        ),
-                                        child: Icon(
-                                          Icons.person,
-                                          color: context.torkk.textBody,
-                                          size: 24,
+                                          ),
+                                          const SizedBox(height: 2),
+                                          TText(
+                                            _dynamicInstructionText,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  context.torkk.textSecondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      GestureDetector(
+                                        onTap: _openChat,
+                                        child: Image.asset(
+                                          'assets/chat_icon.png',
+                                          width: 22,
+                                          height: 22,
+                                          color: const Color(0xFF334155),
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-
-                    // 3. RIDESTART FLOATING SPEEDOMETER (Top-Left, Real GPS Speed)
-                    if (isNavigatingMode)
-                      Positioned(
-                        top: MediaQuery.of(context).padding.top + 68,
-                        left: 16,
-                        child: SpeedometerWidget(speedKmH: _currentSpeedKmH),
-                      ),
-
-                    // 4. RIDESTART FLOATING "Open Maps" CAPSULE (Bottom-Left)
-                    if (isNavigatingMode)
-                      Positioned(
-                        bottom: 124,
-                        left: 16,
-                        child: GestureDetector(
-                          onTap: _openGoogleMapsApp,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF334155),
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.25),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 18,
-                                  height: 18,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.near_me_rounded,
-                                    color: Color(0xFF2563EB),
-                                    size: 13,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                const TText(
-                                  'Open Maps',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 13,
-                                    letterSpacing: 0.2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
-                      ),
 
-                    // 5. RIDESTART FLOATING BUTTONS (Recenter & SOS, Bottom-Right)
-                    if (isNavigatingMode)
-                      Positioned(
-                        bottom: 124,
-                        right: 16,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            GestureDetector(
-                              onTap: _recenterMap,
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF334155),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(
-                                  Icons.my_location_rounded,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SosScreen(),
-                                ),
-                              ),
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFEF4444),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFFEF4444,
-                                      ).withValues(alpha: 0.4),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: const Center(
-                                  child: TText(
-                                    'SOS',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 12,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    // 6. RIDESTART BOTTOM ETA DRAWER (Dynamic GPS ETA & Instruction)
-                    if (isNavigatingMode)
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _uiMode = _tripPhase == TripPhase.goingToPickup
-                                  ? DriverRideUiMode.waiting
-                                  : DriverRideUiMode.accept;
-                            });
-                          },
+                      // 7. UNIFIED BOTTOM PANEL (RideAccept, RideWaiting, RideCompleted matching Figma)
+                      if (!isNavigatingMode)
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
                           child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                              20,
-                              10,
-                              20,
-                              MediaQuery.of(context).padding.bottom + 12,
-                            ),
                             decoration: BoxDecoration(
-                              color: context.torkk.surface,
+                              color: context.torkk.surfaceMuted,
                               borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(24),
+                                top: Radius.circular(28),
                               ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.12),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, -4),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, -6),
                                 ),
                               ],
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
-                                  width: 40,
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFCBD5E1),
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
                                 const SizedBox(height: 12),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Icon(
-                                      Icons.format_list_bulleted_rounded,
-                                      color: context.torkk.textBody,
-                                      size: 24,
+                                // 02:30 countdown pill in RideWaiting
+                                if (_uiMode == DriverRideUiMode.waiting) ...[
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 4,
                                     ),
-                                    Column(
-                                      children: [
-                                        TText(
-                                          _dynamicEtaText,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800,
-                                            color: context.torkk.textPrimary,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        TText(
-                                          _dynamicInstructionText,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: context.torkk.textSecondary,
-                                          ),
-                                        ),
-                                      ],
+                                    decoration: BoxDecoration(
+                                      color: context.adaptiveTint(
+                                        const Color(0xFFE2E8F0),
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
                                     ),
-                                    GestureDetector(
-                                      onTap: _openChat,
-                                      child: Image.asset(
-                                        'assets/chat_icon.png',
-                                        width: 22,
-                                        height: 22,
-                                        color: const Color(0xFF334155),
+                                    child: TText(
+                                      _formattedWaitingTime,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: context.torkk.textBody,
+                                        letterSpacing: 0.5,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    // 7. UNIFIED BOTTOM PANEL (RideAccept, RideWaiting, RideCompleted matching Figma)
-                    if (!isNavigatingMode)
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: context.torkk.surfaceMuted,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(28),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.12),
-                                blurRadius: 20,
-                                offset: const Offset(0, -6),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 12),
-                              // 02:30 countdown pill in RideWaiting
-                              if (_uiMode == DriverRideUiMode.waiting) ...[
-                                Container(
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    width: 36,
+                                    height: 3,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF334155),
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                                Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                    vertical: 4,
+                                    horizontal: 16,
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: context.adaptiveTint(
-                                      const Color(0xFFE2E8F0),
-                                    ),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: TText(
-                                    _formattedWaitingTime,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: context.torkk.textBody,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
+                                  child: _buildRideCard(),
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 12),
                                 Container(
-                                  width: 36,
-                                  height: 3,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF334155),
-                                    borderRadius: BorderRadius.circular(2),
+                                  height: 1,
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                  ),
+                                  color: context.adaptiveTint(
+                                    const Color(0xFFE2E8F0),
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                _buildBottomNav(),
                               ],
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: _buildRideCard(),
-                              ),
-                              const SizedBox(height: 12),
-                              Container(
-                                height: 1,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                ),
-                                color: context.adaptiveTint(
-                                  const Color(0xFFE2E8F0),
-                                ),
-                              ),
-                              _buildBottomNav(),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                    ],
                   ],
                 ),
         );

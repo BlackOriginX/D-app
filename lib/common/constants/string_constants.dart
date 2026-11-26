@@ -391,6 +391,9 @@ class AppStrings {
   static String get perMonth => AppTranslations.tr('perMonth');
   static String get validTill24Aug => AppTranslations.tr('validTill24Aug');
   static String get transactionHistory => AppTranslations.tr('transactionHistory');
+  static String get downloadTransactionHistory => AppTranslations.tr('downloadTransactionHistory');
+  static String get transactionHistorySaved => AppTranslations.tr('transactionHistorySaved');
+  static String get transactionHistoryPdfFailed => AppTranslations.tr('transactionHistoryPdfFailed');
   static String get payouts => AppTranslations.tr('payouts');
   static String get BankAccount => AppTranslations.tr('BankAccount');
   static String get rechargeSubscription => AppTranslations.tr('rechargeSubscription');

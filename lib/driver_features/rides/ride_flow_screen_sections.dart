@@ -1,7 +1,7 @@
 part of 'package:rider_app/driver_features/rides/ride_flow_screen.dart';
 
 extension _RideFlowScreenStateSections on _RideFlowScreenState {
-  Widget _mapPage(BuildContext context) {
+  Widget _mapPage(BuildContext context, {bool pipMode = false}) {
     return Scaffold(
       body: Stack(
         children: [
@@ -13,56 +13,62 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
               duration: _durationText,
               vehicleAsset: _vehicleAsset,
               navigating: _phase == _Phase.navigating,
+              pipMode: pipMode,
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  context.w(12),
-                  context.h(4),
-                  context.w(16),
-                  0,
+          if (!pipMode) ...[
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    context.w(12),
+                    context.h(4),
+                    context.w(16),
+                    0,
+                  ),
+                  child: _phase == _Phase.request
+                      ? _greeting(context)
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: _back(() => _go(_backPhase)),
+                        ),
                 ),
-                child: _phase == _Phase.request
-                    ? _greeting(context)
-                    : Align(
-                        alignment: Alignment.centerLeft,
-                        child: _back(() => _go(_backPhase)),
-                      ),
               ),
             ),
-          ),
-          if (_phase == _Phase.arrived)
-            Positioned(
-              top: context.h(100),
-              left: context.w(16),
-              right: context.w(16),
-              child: _banner("You've arrived", 'Please wait for the customer.'),
-            ),
-          if (_phase == _Phase.waiting)
-            Positioned(
-              top: context.h(100),
-              left: context.w(16),
-              right: context.w(16),
-              child: _banner(
-                'Waiting charges (if applicable) ₹10 per minute',
-                '',
-                warn: true,
+            if (_phase == _Phase.arrived)
+              Positioned(
+                top: context.h(100),
+                left: context.w(16),
+                right: context.w(16),
+                child: _banner(
+                  "You've arrived",
+                  'Please wait for the customer.',
+                ),
+              ),
+            if (_phase == _Phase.waiting)
+              Positioned(
+                top: context.h(100),
+                left: context.w(16),
+                right: context.w(16),
+                child: _banner(
+                  'Waiting charges (if applicable) ₹10 per minute',
+                  '',
+                  warn: true,
+                ),
+              ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: SheetWithSos(
+                showSos: _showSos,
+                leading: _phase == _Phase.waiting ? _waitBadge(context) : null,
+                sheet: _sheet(context),
               ),
             ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SheetWithSos(
-              showSos: _showSos,
-              leading: _phase == _Phase.waiting ? _waitBadge(context) : null,
-              sheet: _sheet(context),
-            ),
-          ),
+          ],
         ],
       ),
     );
@@ -1320,7 +1326,9 @@ extension _RideFlowScreenStateSections on _RideFlowScreenState {
                       onTap: () => setSheet(() => reason = i),
                     ),
                   _fill(context, 'Cancel Ride', () {
-                    print('[DEBUG CANCEL RIDE] 1. Cancel Ride button tapped, reason="${reasons[reason]}"');
+                    print(
+                      '[DEBUG CANCEL RIDE] 1. Cancel Ride button tapped, reason="${reasons[reason]}"',
+                    );
                     Navigator.pop(sheetContext);
                     _cancelRide();
                   }),

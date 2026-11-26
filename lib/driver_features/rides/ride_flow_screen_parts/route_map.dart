@@ -8,6 +8,7 @@ class _RouteMap extends StatefulWidget {
     required this.duration,
     required this.vehicleAsset,
     this.navigating = false,
+    this.pipMode = false,
   });
 
   final LatLng pickup;
@@ -16,6 +17,7 @@ class _RouteMap extends StatefulWidget {
   final String duration;
   final String vehicleAsset;
   final bool navigating;
+  final bool pipMode;
 
   @override
   State<_RouteMap> createState() => _RouteMapState();

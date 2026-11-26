@@ -68,10 +68,10 @@ class OtpPage extends StatelessWidget {
                 showOnboardingSnack(context, result.message!);
               }
               if (result.openDashboard) {
-                // ===== PRODUCTION: location check, then home (Coming Soon outside Delhi NCR) =====
-                await openHomeIfServiceable(context);
-                // ===== TESTING (off): skip the Delhi NCR location check =====
-                // goDashboard(context);
+                // ===== PRODUCTION (off): location check, then home (Coming Soon outside Delhi NCR) =====
+                // await openHomeIfServiceable(context);
+                // ===== TESTING: skip the Delhi NCR location check =====
+                goDashboard(context);
               } else if (result.openVehicle) {
                 context.go(AppRoutes.vehicleDetails);
               }

@@ -47,11 +47,13 @@ class AuthClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     var attachedToken = false;
+    var sentToken = '';
     if (isProtected(request.url)) {
       final token = await TokenStore.read();
       if (token.isNotEmpty) {
         request.headers['Authorization'] = 'Bearer $token';
         attachedToken = true;
+        sentToken = token;
       }
     }
     final response = await _logged(request, attachedToken);
@@ -60,6 +62,26 @@ class AuthClient extends http.BaseClient {
         '[API] 401 on ${request.method} ${request.url.path} '
         '(token sent: $attachedToken)',
       );
+      // Registering the FCM token must never end the session: if that one
+      // endpoint rejects the token, only the push registration fails.
+      if (request.url.path == Uri.parse(AppUrls.fcmToken).path) {
+        debugPrint(
+          '[API] 401 on fcm-token ignored (session kept). Ask the backend why '
+          'this endpoint rejects a token the driver APIs accept.',
+        );
+        return response;
+      }
+      // A reply to a request that was sent BEFORE the driver logged in (or with
+      // an older token) must not log out the fresh session. Only a 401 for the
+      // token that is saved right now counts.
+      final currentToken = await TokenStore.read();
+      if (currentToken.isNotEmpty && currentToken != sentToken) {
+        debugPrint(
+          '[API] 401 ignored: it answers an older request (token changed '
+          'since it was sent)',
+        );
+        return response;
+      }
       unawaited(_handleUnauthorized());
     } else if (response.statusCode == 403 && isProtected(request.url)) {
       debugPrint(

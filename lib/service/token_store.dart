@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The single place the login token is read, saved and cleared.
@@ -30,15 +31,27 @@ class TokenStore {
     for (final key in _legacyKeys) {
       await prefs.remove(key);
     }
+    // Debug only: prove the token really is stored and can be read back.
+    await prefs.reload();
+    debugPrint(
+      '[TOKEN] saved len=${token.length}, read back len='
+      '${(prefs.getString(_key) ?? '').length}',
+    );
   }
 
   /// Drops the token and the logged-in flag; other preferences stay.
   static Future<void> clear() async {
+    debugPrint(
+      '[TOKEN] CLEARED by:\n'
+      '${StackTrace.current.toString().split('\n').skip(1).take(6).join('\n')}',
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
     for (final key in _legacyKeys) {
       await prefs.remove(key);
     }
     await prefs.setBool('isLoggedIn', false);
+    // Logged out means not online: stops the background ride poll too.
+    await prefs.setBool('driver_is_online', false);
   }
 }

@@ -212,6 +212,21 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
     _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 100));
   }
 
+  /// Starts the waiting timer once the driver is within 150 m of the pickup.
+  void _checkArrivedAtPickup(Position position) {
+    if (_tripPhase != TripPhase.goingToPickup) return;
+    final pickupLat = _asDouble(_ride?['pickup_lat']);
+    final pickupLng = _asDouble(_ride?['pickup_lng']);
+    if (pickupLat == null || pickupLng == null) return;
+    final distM = Geolocator.distanceBetween(
+      position.latitude,
+      position.longitude,
+      pickupLat,
+      pickupLng,
+    );
+    if (distM <= 150) _startWaitingTimer();
+  }
+
   void _startLocationUpdates() {
     _updateLocation();
     _locationTimer = Timer.periodic(
@@ -237,6 +252,7 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
           final prefs = await SharedPreferences.getInstance();
           await prefs.remove('active_ride_id');
           await prefs.remove('active_ride_picked_up');
+          await RideTrackingController.instance.stop(reason: 'cancelled');
           if (mounted) {
             showDialog(
               context: context,
@@ -271,7 +287,10 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
         return;
       }
 
-      final position = await Geolocator.getCurrentPosition();
+      // The tracking controller already has a cleaned fix; one-off read only
+      // when it has none yet.
+      final tracked = RideTrackingController.instance.latest;
+      final position = tracked?.position ?? await Geolocator.getCurrentPosition();
       await DriverApiService.updateLocation(
         driverPhone: _driverPhone,
         latitude: position.latitude,
@@ -283,25 +302,10 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
       final newPos = LatLng(position.latitude, position.longitude);
       _currentPosition = position;
 
-      // Move driver marker every tick; only rebuild road route when cache misses (~100m).
-      _updateDriverMarkerOnly();
+      // The tracking stream moves the marker; fall back here only if it has no fix.
+      if (tracked == null) _updateDriverMarkerOnly();
 
-      // Trigger waiting timer automatically when driver arrives at pickup location (<=150m)
-      if (_tripPhase == TripPhase.goingToPickup) {
-        final pickupLat = _asDouble(_ride?['pickup_lat']);
-        final pickupLng = _asDouble(_ride?['pickup_lng']);
-        if (pickupLat != null && pickupLng != null) {
-          final distM = Geolocator.distanceBetween(
-            position.latitude,
-            position.longitude,
-            pickupLat,
-            pickupLng,
-          );
-          if (distM <= 150) {
-            _startWaitingTimer();
-          }
-        }
-      }
+      _checkArrivedAtPickup(position);
 
       if (!_routeDrawn || _cachedRoutePoints.length < 2) {
         await _setupMap();
@@ -378,6 +382,7 @@ extension _DriverNavigationScreenStateSections on _DriverNavigationScreenState {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('active_ride_id');
     await prefs.remove('active_ride_picked_up');
+    await RideTrackingController.instance.stop(reason: 'completed');
 
     if (mounted) {
       final bool isParcel =

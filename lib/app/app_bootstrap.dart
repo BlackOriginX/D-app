@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +12,7 @@ import 'package:rider_app/common/utils/translations.dart';
 import 'package:rider_app/service/api_client.dart';
 import 'package:rider_app/service/ride_alert_service.dart';
 import 'package:rider_app/service/fcm_service.dart';
+import 'package:rider_app/service/ride_tracking/ride_tracking_controller.dart';
 
 const _driverOnlineKey = 'driver_is_online';
 
@@ -27,6 +30,9 @@ class AppBootstrap {
     await RideAlertService.initialize();
     await FCMService.setupHandlers();
     await AppTranslations.init();
+    // A ride may still be in progress after the app was killed: verify with
+    // the backend and resume tracking (or clean up). Never blocks start-up.
+    unawaited(RideTrackingController.instance.recoverIfNeeded());
     final preferences = await SharedPreferences.getInstance();
     return ThemeRepository(preferences);
   }

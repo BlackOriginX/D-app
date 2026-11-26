@@ -18,6 +18,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:rider_app/service/fcm_service.dart';
 import 'package:rider_app/service/driver_api_service.dart';
 import 'package:rider_app/service/ride_alert_service.dart';
+import 'package:rider_app/service/ride_picture_in_picture_service.dart';
 import 'package:rider_app/service/location_permission_flow.dart';
 import 'package:rider_app/common/widgets/online_location_consent_dialog.dart';
 import 'package:rider_app/common/utils/translations.dart';
@@ -53,11 +54,11 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-  // ===== TESTING: inject sample rides 9901/9902 so the ride/payment UI can be viewed =====
-  // Set to false (PRODUCTION) before building a release.
+  // Enable only when testing the ride UI without backend requests.
   static const bool _showSampleRideForTesting = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isOnline = false;
+  bool _isInPipMode = false;
   final bool _wantsRides = true;
   final bool _wantsParcels = true;
   Timer? _pollingTimer;
@@ -174,6 +175,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   void initState() {
     super.initState();
+    RidePictureInPictureService.initialize();
+    _isInPipMode = RidePictureInPictureService.isInPictureInPicture.value;
+    RidePictureInPictureService.isInPictureInPicture.addListener(
+      _onPictureInPictureChanged,
+    );
     _rideAlertPlayer.setReleaseMode(ReleaseMode.stop);
     _initHomePuckIcon();
     _loadDriverPhone();
@@ -181,10 +187,19 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   @override
   void dispose() {
+    RidePictureInPictureService.isInPictureInPicture.removeListener(
+      _onPictureInPictureChanged,
+    );
     _stopPolling();
     _stopRealtimeLocationStream();
     _rideAlertPlayer.dispose();
     super.dispose();
+  }
+
+  void _onPictureInPictureChanged() {
+    final isInPip = RidePictureInPictureService.isInPictureInPicture.value;
+    if (!mounted || _isInPipMode == isInPip) return;
+    setState(() => _isInPipMode = isInPip);
   }
 
   Future<void> _loadDriverPhone() async {
@@ -832,33 +847,35 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           child: Scaffold(
             key: _scaffoldKey,
             backgroundColor: context.torkk.background,
-            bottomNavigationBar: CircularBottomNav(
-              currentIndex: _currentIndex,
-              onAiChat: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const DriverLiveChatScreen(),
+            bottomNavigationBar: _isInPipMode
+                ? null
+                : CircularBottomNav(
+                    currentIndex: _currentIndex,
+                    onAiChat: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const DriverLiveChatScreen(),
+                        ),
+                      );
+                    },
+                    onItemSelected: (idx) {
+                      // Parcel tab (index 2): coming soon for now, so don't switch tabs.
+                      if (idx == 2) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const ParcelComingSoonScreen(),
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() {
+                        _currentIndex = idx;
+                        // All tabs are built once at startup, so rebuild the profile
+                        // tab on every open to run its profile API call again.
+                        if (idx == 4) _profileOpenCount++;
+                      });
+                    },
                   ),
-                );
-              },
-              onItemSelected: (idx) {
-                // Parcel tab (index 2): coming soon for now, so don't switch tabs.
-                if (idx == 2) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const ParcelComingSoonScreen(),
-                    ),
-                  );
-                  return;
-                }
-                setState(() {
-                  _currentIndex = idx;
-                  // All tabs are built once at startup, so rebuild the profile
-                  // tab on every open to run its profile API call again.
-                  if (idx == 4) _profileOpenCount++;
-                });
-              },
-            ),
             body: Stack(
               children: [
                 IndexedStack(

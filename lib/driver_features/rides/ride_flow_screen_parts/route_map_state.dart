@@ -3,6 +3,8 @@ part of 'package:rider_app/driver_features/rides/ride_flow_screen.dart';
 class _RouteMapState extends State<_RouteMap> with TickerProviderStateMixin {
   GoogleMapController? _controller;
   Set<Marker> _markers = {};
+  StreamSubscription<TrackedFix>? _fixSub;
+  LatLng? _driverPosition;
 
   // The route is drawn dimmed with a light travelling along it
   // (polyline_animation_plus). It follows the real road when it can be found.
@@ -30,14 +32,50 @@ class _RouteMapState extends State<_RouteMap> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    final tracking = RideTrackingController.instance;
+    _driverPosition = tracking.latest?.latLng;
+    _fixSub = tracking.fixes.listen(_onTrackedFix);
     _loadMarkers();
     _loadRoute();
   }
 
   @override
   void dispose() {
+    _fixSub?.cancel();
     _live.dispose();
     super.dispose();
+  }
+
+  void _onTrackedFix(TrackedFix fix) {
+    _driverPosition = fix.latLng;
+    final markers = _markers.where((m) => m.markerId.value != 'driver').toSet()
+      ..add(
+        Marker(
+          markerId: const MarkerId('driver'),
+          position: fix.latLng,
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueAzure,
+          ),
+          anchor: const Offset(0.5, 0.5),
+          flat: true,
+          rotation: fix.position.heading.isFinite && fix.position.heading >= 0
+              ? fix.position.heading
+              : 0,
+          zIndexInt: 4,
+        ),
+      );
+    if (!mounted) return;
+    setState(() => _markers = markers);
+    final controller = _controller;
+    if (widget.pipMode && controller != null) {
+      unawaited(
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: fix.latLng, zoom: 16),
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _loadRoute() async {
@@ -63,6 +101,7 @@ class _RouteMapState extends State<_RouteMap> with TickerProviderStateMixin {
   void didUpdateWidget(covariant _RouteMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.navigating == widget.navigating &&
+        oldWidget.pipMode == widget.pipMode &&
         oldWidget.vehicleAsset == widget.vehicleAsset &&
         oldWidget.pickup == widget.pickup &&
         oldWidget.drop == widget.drop) {
@@ -105,6 +144,21 @@ class _RouteMapState extends State<_RouteMap> with TickerProviderStateMixin {
         ),
       );
     }
+    final driverPosition = _driverPosition;
+    if (driverPosition != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('driver'),
+          position: driverPosition,
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueAzure,
+          ),
+          anchor: const Offset(0.5, 0.5),
+          flat: true,
+          zIndexInt: 4,
+        ),
+      );
+    }
     if (!mounted) return;
     setState(() => _markers = markers);
   }
@@ -112,14 +166,28 @@ class _RouteMapState extends State<_RouteMap> with TickerProviderStateMixin {
   void _frame() {
     final controller = _controller;
     if (controller == null) return;
+    final driverPosition = _driverPosition;
+    if (widget.pipMode && driverPosition != null) {
+      controller.moveCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: driverPosition, zoom: 16),
+        ),
+      );
+      return;
+    }
     controller.moveCamera(CameraUpdate.newLatLngBounds(_bounds, 28));
   }
 
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
-      initialCameraPosition: CameraPosition(target: _middle, zoom: 14.6),
-      padding: EdgeInsets.only(top: 64, bottom: widget.navigating ? 130 : 240),
+      initialCameraPosition: CameraPosition(
+        target: widget.pipMode ? (_driverPosition ?? _middle) : _middle,
+        zoom: widget.pipMode ? 16 : 14.6,
+      ),
+      padding: widget.pipMode
+          ? EdgeInsets.zero
+          : EdgeInsets.only(top: 64, bottom: widget.navigating ? 130 : 240),
       zoomControlsEnabled: false,
       myLocationButtonEnabled: false,
       compassEnabled: false,

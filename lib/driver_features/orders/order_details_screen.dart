@@ -28,7 +28,6 @@ class OrderDetailsScreen extends StatefulWidget {
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   late Map<String, dynamic> trip = widget.trip;
   bool _loading = true;
-  String? _error;
 
   bool get _parcel =>
       trip['is_parcel'] == true ||
@@ -48,7 +47,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
     setState(() {
       _loading = true;
-      _error = null;
     });
     try {
       final detail = await DriverApiService.fetchOrderDetail(
@@ -60,12 +58,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         trip = {...widget.trip, ...detail};
         _loading = false;
       });
-    } catch (_) {
+    } on Exception catch (error) {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = AppStrings.orderDetailsLoadFailed;
       });
+      debugPrint(
+        '[ORDER DETAIL] Using order list data after fetch failed: $error',
+      );
     }
   }
 
@@ -120,20 +120,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     context.h(24),
                   ),
                   children: [
-                    if (_error != null)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: context.h(12)),
-                        child: TText(
-                          _error!,
-                          style: AppTypography.regular.copyWith(
-                            fontSize: 12,
-                            color: AppColors.error,
-                          ),
-                        ),
-                      ),
                     _summary(context, accent),
                     SizedBox(height: context.h(16)),
-                    _customer(context, accent),
+                    _customer(context),
                     SizedBox(height: context.h(14)),
                     _rateRow(context),
                     SizedBox(height: context.h(18)),

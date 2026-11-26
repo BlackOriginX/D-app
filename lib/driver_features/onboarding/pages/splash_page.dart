@@ -31,16 +31,16 @@ class SplashPage extends StatelessWidget {
         AccentChanged(isPink: gender == AppStrings.genderFemale),
       );
       _session.gender = gender;
-      // ===== PRODUCTION: location check, then home (Coming Soon outside Delhi NCR) =====
-      final blocked = await openHomeIfServiceable(context);
-      // Back from Coming Soon: nothing to show on the splash, so go to login.
-      if (blocked && context.mounted) context.go(AppRoutes.login);
-      // ===== TESTING (off): skip the Delhi NCR location check =====
-      // context.go(
-      //   gender == AppStrings.genderFemale
-      //       ? AppRoutes.dashboardFemale
-      //       : AppRoutes.dashboardMale,
-      // );
+      // ===== PRODUCTION (off): location check, then home (Coming Soon outside Delhi NCR) =====
+      // final blocked = await openHomeIfServiceable(context);
+      // // Back from Coming Soon: nothing to show on the splash, so go to login.
+      // if (blocked && context.mounted) context.go(AppRoutes.login);
+      // ===== TESTING: skip the Delhi NCR location check =====
+      context.go(
+        gender == AppStrings.genderFemale
+            ? AppRoutes.dashboardFemale
+            : AppRoutes.dashboardMale,
+      );
       return;
     }
     // Not logged in (first launch, killed app, cleared storage, logout):

@@ -24,6 +24,10 @@ import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 import 'package:rider_app/common/maps/live_map.dart';
 import 'package:rider_app/common/maps/route_service.dart';
+import 'package:rider_app/service/ride_tracking/ride_tracking_controller.dart';
+import 'package:rider_app/service/ride_tracking/ride_progress.dart';
+import 'package:rider_app/service/ride_tracking/tracked_fix.dart';
+import 'package:rider_app/service/ride_picture_in_picture_service.dart';
 
 part 'ride_flow_screen_parts/ride_otp_boxes.dart';
 part 'ride_flow_screen_parts/ride_otp_boxes_state.dart';
@@ -84,6 +88,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
   };
   late Map<String, dynamic> _ride = Map<String, dynamic>.from(widget.ride);
   bool _busy = false;
+  bool _isInPipMode = false;
   double _earnings = 0;
   int _offer = 28;
   int _wait = 133;
@@ -103,6 +108,15 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
   @override
   void initState() {
     super.initState();
+    RidePictureInPictureService.initialize();
+    _isInPipMode = RidePictureInPictureService.isInPictureInPicture.value;
+    RidePictureInPictureService.isInPictureInPicture.addListener(
+      _onPictureInPictureChanged,
+    );
+    // A ride resumed after a restart keeps its live tracking and ride card.
+    if (_phase == _Phase.toPickup || _phase == _Phase.active) {
+      _trackRide(_phase);
+    }
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
       setState(() {
@@ -149,11 +163,20 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
 
   @override
   void dispose() {
+    RidePictureInPictureService.isInPictureInPicture.removeListener(
+      _onPictureInPictureChanged,
+    );
     _timer?.cancel();
     _navTimer?.cancel();
     _otp.dispose();
     _comment.dispose();
     super.dispose();
+  }
+
+  void _onPictureInPictureChanged() {
+    final isInPip = RidePictureInPictureService.isInPictureInPicture.value;
+    if (!mounted || _isInPipMode == isInPip) return;
+    setState(() => _isInPipMode = isInPip);
   }
 
   void _go(_Phase phase) {
@@ -196,6 +219,26 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
 
   void _close() => widget.onClose();
 
+  /// Live tracking + ongoing ride card for this ride (idempotent).
+  void _trackRide(_Phase phase) {
+    final id = _rideId;
+    if (id == null) return;
+    final toDrop = phase == _Phase.active || phase == _Phase.drop;
+    unawaited(
+      RideTrackingController.instance.start(
+        rideId: id,
+        leg: toDrop ? RideLeg.toDrop : RideLeg.toPickup,
+        destination: toDrop ? _dropPoint : _pickupPoint,
+        customerName: _customerName,
+      ),
+    );
+  }
+
+  /// The ride is over (cancelled / completed): stop GPS, the ride card and
+  /// the "no distractions" mode right away.
+  void _endTracking(String reason) =>
+      unawaited(RideTrackingController.instance.stop(reason: reason));
+
   /// "Cancel Ride" in the cancel sheet: tells the backend, then closes the
   /// flow. If the call fails the ride stays open and an error is shown.
   Future<void> _cancelRide() async {
@@ -208,7 +251,10 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
       return;
     }
     if (!_callsApi) {
-      print('[DEBUG CANCEL RIDE] SKIPPED API (sample ride or empty phone), closing');
+      print(
+        '[DEBUG CANCEL RIDE] SKIPPED API (sample ride or empty phone), closing',
+      );
+      _endTracking('cancelled (sample)');
       _close();
       return;
     }
@@ -221,6 +267,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('active_ride_id');
       await prefs.remove('active_ride_picked_up');
+      _endTracking('cancelled');
       if (!mounted) return;
       setState(() => _busy = false);
       _close();
@@ -364,6 +411,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
         await prefs.setInt('active_ride_id', _rideId!);
         await prefs.remove('active_ride_picked_up');
       }
+      _trackRide(_Phase.toPickup);
       if (!mounted) return;
       setState(() => _busy = false);
       _openNextSheet(_Phase.toPickup);
@@ -413,6 +461,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('active_ride_picked_up', true);
       }
+      _trackRide(_Phase.active);
       if (!mounted) return;
       _otp.clear();
       setState(() => _busy = false);
@@ -491,6 +540,7 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
       } else {
         _earnings = double.tryParse(_text(['estimated_fare'], '')) ?? 0;
       }
+      _endTracking('completed');
       if (!mounted) return;
       setState(() => _busy = false);
       _go(_Phase.payment);
@@ -527,6 +577,10 @@ class _RideFlowScreenState extends State<RideFlowScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isInPipMode && RideTrackingController.instance.isRunning) {
+      return _mapPage(context, pipMode: true);
+    }
+
     return switch (_phase) {
       _Phase.loading => const Stack(
         children: [

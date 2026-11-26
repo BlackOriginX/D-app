@@ -21,10 +21,10 @@ class ApplicationStatusPage extends StatelessWidget {
           submittedAt: _session.submittedAt ?? DateTime.now(),
           outcome: _session.outcome,
           onBack: () => context.go(AppRoutes.review),
-          // ===== PRODUCTION: location check, then home =====
-          onGoHome: () => openHomeIfServiceable(context),
-          // ===== TESTING (off): skip the Delhi NCR location check =====
-          // onGoHome: () => goDashboard(context),
+          // ===== PRODUCTION (off): location check, then home =====
+          // onGoHome: () => openHomeIfServiceable(context),
+          // ===== TESTING: skip the Delhi NCR location check =====
+          onGoHome: () => goDashboard(context),
           onResubmit: () => context.go(AppRoutes.kyc),
           onMakeCorrections: () => context.go(AppRoutes.review),
         );

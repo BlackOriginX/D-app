@@ -9,6 +9,7 @@ import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/common/theme/torkk_colors.dart';
 import 'package:rider_app/driver_features/wallet/models/wallet_txn.dart';
 import 'package:rider_app/driver_features/wallet/screens/transaction_details_screen.dart';
+import 'package:rider_app/driver_features/wallet/earnings_statement_pdf.dart';
 import 'package:rider_app/common/widgets/t_text.dart';
 
 class TransactionHistoryScreen extends StatefulWidget {
@@ -38,7 +39,10 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   ];
 
   bool _loading = true;
+  bool _downloading = false;
   String? _error;
+  String _phone = '';
+  String _driverName = '';
   List<WalletTxn> _txns = [];
 
   @override
@@ -54,8 +58,12 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
     });
     try {
       final prefs = await SharedPreferences.getInstance();
-      final phone = prefs.getString('user_phone') ?? '';
-      final data = await DriverApiService.fetchTransactionHistory(phone);
+      final savedPhone = prefs.getString('user_phone');
+      _phone = savedPhone?.isNotEmpty == true
+          ? savedPhone!
+          : prefs.getString('phone') ?? '';
+      _driverName = prefs.getString('user_name') ?? '';
+      final data = await DriverApiService.fetchTransactionHistory(_phone);
       final txns =
           data
               .whereType<Map>()
@@ -93,21 +101,52 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
     return label;
   }
 
+  Future<void> _download() async {
+    if (_loading || _downloading || _txns.isEmpty) return;
+    setState(() => _downloading = true);
+    try {
+      await downloadTransactionHistoryPdf(
+        context,
+        driverName: _driverName,
+        phone: _phone,
+        transactions: _txns,
+      );
+    } finally {
+      if (mounted) setState(() => _downloading = false);
+    }
+  }
+
+  Widget _downloadAction(BuildContext context) {
+    return IconButton(
+      onPressed: _loading || _error != null || _txns.isEmpty || _downloading
+          ? null
+          : _download,
+      tooltip: AppStrings.downloadTransactionHistory,
+      icon: Icon(
+        Icons.file_download_outlined,
+        color: context.torkk.textPrimary,
+        size: context.w(24),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(
+    debugPrint(
       'TransactionHistoryScreen build: loading=$_loading error=$_error txns=${_txns.length}',
     );
     if (widget.showEmpty) return const _EmptyTransactions();
     if (_loading) {
       return ProfilePage(
         title: AppStrings.transactionHistory,
+        trailing: _downloadAction(context),
         child: const Center(child: CircularProgressIndicator()),
       );
     }
     if (_error != null) {
       return ProfilePage(
         title: AppStrings.transactionHistory,
+        trailing: _downloadAction(context),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -140,6 +179,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
 
     return ProfilePage(
       title: AppStrings.transactionHistory,
+      trailing: _downloadAction(context),
       child: RefreshIndicator(
         onRefresh: _load,
         child: ListView(

@@ -21,6 +21,7 @@ import 'package:rider_app/driver_features/profile/screens/profile_notifications_
 import 'package:rider_app/driver_features/profile/screens/vehicle_information_screen.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_header.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
+import 'package:rider_app/service/ride_tracking/ride_tracking_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onBack});
@@ -154,6 +155,8 @@ Future<void> showProfileLogoutDialog(BuildContext context) async {
     confirmLabel: AppStrings.logout,
   );
   if (confirmed != true || !context.mounted) return;
+  // No zombie tracking / muted alerts after logout.
+  await RideTrackingController.instance.stop(reason: 'logout');
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear();
   if (context.mounted) context.go(AppRoutes.login);

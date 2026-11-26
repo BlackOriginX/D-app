@@ -100,7 +100,7 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
     );
   }
 
-  Widget _customer(BuildContext context, Color accent) {
+  Widget _customer(BuildContext context) {
     return Row(
       children: [
         CircleAvatar(
@@ -160,9 +160,6 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
             ],
           ),
         ),
-        _roundAction(context, accent, Icons.chat_bubble_rounded),
-        SizedBox(width: context.w(8)),
-        _roundAction(context, accent, Icons.call_rounded),
       ],
     );
   }
@@ -364,15 +361,6 @@ extension _OrderDetailsScreenSections on _OrderDetailsScreenState {
           color: color,
         ),
       ),
-    );
-  }
-
-  Widget _roundAction(BuildContext context, Color color, IconData icon) {
-    return Container(
-      width: context.w(36),
-      height: context.w(36),
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      child: Icon(icon, color: Colors.white, size: context.w(16)),
     );
   }
 
