@@ -8,6 +8,7 @@ import 'package:rider_app/driver_features/coins/screens/coins_screen.dart';
 import 'package:rider_app/driver_features/profile/widgets/profile_widgets.dart';
 import 'package:rider_app/driver_features/subscription/screens/subscription_screen.dart';
 import 'package:rider_app/driver_features/parcels/new_feature_coming_soon_screen.dart';
+import 'package:rider_app/driver_features/wallet/screens/add_money_screen.dart';
 import 'package:rider_app/driver_features/wallet/wallet_format.dart';
 import 'package:rider_app/driver_features/wallet/wallet_pages.dart';
 import 'package:rider_app/service/driver_api_service.dart';
@@ -114,7 +115,11 @@ class _WalletScreenState extends State<WalletScreen> {
             context.h(20),
           ),
           children: [
-            _BalanceCard(balance: _balance, trips: _todayTrips),
+            _BalanceCard(
+              balance: _balance,
+              trips: _todayTrips,
+              onAddMoney: () => _open(context, const AddMoneyScreen()),
+            ),
             SizedBox(height: context.h(12)),
             Row(
               children: [
@@ -348,10 +353,15 @@ class _WalletScreenState extends State<WalletScreen> {
 }
 
 class _BalanceCard extends StatelessWidget {
-  const _BalanceCard({required this.balance, required this.trips});
+  const _BalanceCard({
+    required this.balance,
+    required this.trips,
+    required this.onAddMoney,
+  });
 
   final double balance;
   final int trips;
+  final VoidCallback onAddMoney;
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +372,7 @@ class _BalanceCard extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFBA2879), Color(0xFF61217E), Color(0xFF0F3FBF)],
+          colors: [Color(0xFF0F3FBF), Color(0xFF61217E), Color(0xFFBA2879)],
         ),
       ),
       child: Column(
@@ -379,36 +389,69 @@ class _BalanceCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                width: context.w(32),
-                height: context.w(32),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(context.r(10)),
-                ),
-                child: Icon(
-                  Icons.show_chart_rounded,
-                  color: Colors.white,
-                  size: context.w(16),
+              Material(
+                color: Colors.white.withValues(alpha: 0.95),
+                borderRadius: BorderRadius.circular(context.r(10)),
+                child: SizedBox(
+                  width: context.w(34),
+                  height: context.w(34),
+                  child: Icon(
+                    Icons.show_chart_rounded,
+                    color: const Color(0xFF111827),
+                    size: context.w(18),
+                  ),
                 ),
               ),
             ],
           ),
-          TText(
-            rupees(balance, decimals: 0),
-            style: AppTypography.bold.copyWith(
-              fontSize: 28,
-              height: 1.2,
-              color: Colors.white,
-              letterSpacing: -0.6,
-            ),
-          ),
-          TText(
-            trips == 1 ? '1 ride' : '$trips rides',
-            style: AppTypography.regular.copyWith(
-              fontSize: 12,
-              color: Colors.white70,
-            ),
+          SizedBox(height: context.h(4)),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TText(
+                      rupees(balance, decimals: 0),
+                      style: AppTypography.bold.copyWith(
+                        fontSize: 28,
+                        height: 1.2,
+                        color: Colors.white,
+                        letterSpacing: -0.6,
+                      ),
+                    ),
+                    TText(
+                      trips == 1 ? '1 ride' : '$trips rides',
+                      style: AppTypography.regular.copyWith(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: context.h(42),
+                child: FilledButton.icon(
+                  onPressed: onAddMoney,
+                  icon: Icon(Icons.add, size: context.w(20)),
+                  label: const Text('Add Money'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF0F3FBF),
+                    textStyle: AppTypography.bold.copyWith(
+                      fontSize: 13,
+                      height: 1,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: context.w(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(context.r(10)),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: context.h(14)),
           Container(
@@ -417,8 +460,8 @@ class _BalanceCard extends StatelessWidget {
               vertical: context.h(10),
             ),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(context.r(12)),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(context.r(14)),
             ),
             child: Row(
               children: [
@@ -426,8 +469,8 @@ class _BalanceCard extends StatelessWidget {
                   child: TText(
                     AppStrings.todaysCompletedJobs,
                     style: AppTypography.regular.copyWith(
-                      fontSize: 13,
-                      color: Colors.white,
+                      fontSize: 12,
+                      color: const Color(0xFF64748B),
                     ),
                   ),
                 ),
@@ -436,14 +479,22 @@ class _BalanceCard extends StatelessWidget {
                   style: AppTypography.bold.copyWith(
                     fontSize: 16,
                     height: 1,
-                    color: Colors.white,
+                    color: const Color(0xFF111827),
                   ),
                 ),
                 SizedBox(width: context.w(8)),
-                Icon(
-                  Icons.directions_car_filled_rounded,
-                  color: Colors.white,
-                  size: context.w(18),
+                Container(
+                  width: context.w(34),
+                  height: context.w(34),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F0FF),
+                    borderRadius: BorderRadius.circular(context.r(10)),
+                  ),
+                  child: Icon(
+                    Icons.directions_car_filled_rounded,
+                    color: const Color(0xFF7C3AED),
+                    size: context.w(18),
+                  ),
                 ),
               ],
             ),
