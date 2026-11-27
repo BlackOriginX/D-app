@@ -54,5 +54,6 @@ class AppAssets {
   static const String goldCoins = 'assets/images/gold_coins.png';
   static const String rewardCoins = 'assets/images/reward_coins.png';
   static const String rewardPending = 'assets/images/reward pending.png';
+  static const String addMoneyBanner = 'assets/images/add_money_banner.png';
   static const String rideAlert = 'assets/sounds/ride_alert.wav';
 }

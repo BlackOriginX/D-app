@@ -177,7 +177,11 @@ class _AddMoneyScreenState extends State<AddMoneyScreen> {
               context.w(20),
               context.h(8),
             ),
-            child: const _WalletPromo(),
+            child: SizedBox(
+              width: double.infinity,
+              height: context.h(112),
+              child: Image.asset(AppAssets.addMoneyBanner, fit: BoxFit.contain),
+            ),
           ),
         ],
       ),
@@ -262,86 +266,6 @@ class _PaymentMethodTile extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _WalletPromo extends StatelessWidget {
-  const _WalletPromo();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: context.h(112),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            height: context.h(58),
-            margin: EdgeInsets.symmetric(horizontal: context.w(14)),
-            padding: EdgeInsets.only(left: context.w(70), right: context.w(70)),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF1F7FF),
-              border: Border.all(color: const Color(0xFFDCEBFF)),
-              borderRadius: BorderRadius.circular(context.r(12)),
-            ),
-            alignment: Alignment.center,
-            child: TText(
-              'Add money & enjoy seamless rides and deliveries!',
-              textAlign: TextAlign.center,
-              style: AppTypography.bold.copyWith(
-                fontSize: 10,
-                height: 1.3,
-                color: const Color(0xFF18243A),
-              ),
-            ),
-          ),
-          Positioned(
-            left: context.w(8),
-            child: Container(
-              width: context.w(62),
-              height: context.w(62),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8DFFF),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
-              ),
-              child: Icon(
-                Icons.account_balance_wallet_rounded,
-                color: const Color(0xFF5B2BC4),
-                size: context.w(30),
-              ),
-            ),
-          ),
-          Positioned(
-            right: context.w(8),
-            child: Container(
-              width: context.w(58),
-              height: context.w(58),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF2CB),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
-              ),
-              child: Icon(
-                Icons.directions_bike_rounded,
-                color: const Color(0xFF1642C8),
-                size: context.w(30),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: context.h(13),
-            child: TText(
-              'Keep your wallet ready for faster payments',
-              style: AppTypography.regular.copyWith(
-                fontSize: 8,
-                color: const Color(0xFF718096),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
